@@ -6,368 +6,259 @@
 <title>Kampanya Dönüştürücü</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #f5f5f0; min-height: 100vh; color: #1a1a1a; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0F1117;min-height:100vh;color:#E2E8F0}
 
-  .header {
-    background: #1a1a2e;
-    color: white;
-    padding: 1.5rem 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  .header h1 { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em; }
-  .header .badge { background: #e63946; color: white; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#1a1f2e 0%,#12161f 100%);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.hdr-brand{display:flex;align-items:center;gap:12px}
+.hdr-icon{width:36px;height:36px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(99,102,241,0.4)}
+.hdr-title{font-size:16px;font-weight:600;color:#F1F5F9;letter-spacing:-0.02em}
+.hdr-sub{font-size:12px;color:#475569;margin-top:1px}
+.hdr-status{display:flex;align-items:center;gap:6px;font-size:12px;color:#64748B}
+.hdr-dot{width:6px;height:6px;background:#22c55e;border-radius:50%;box-shadow:0 0 6px rgba(34,197,94,0.6)}
 
-  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+/* LAYOUT */
+.wrap{max-width:1280px;margin:0 auto;padding:2rem}
 
-  /* TABS */
-  .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-  .tab-btn {
-    padding: 0.65rem 1.4rem;
-    border-radius: 8px;
-    border: 2px solid transparent;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    background: white;
-    color: #666;
-    transition: all 0.15s;
-  }
-  .tab-btn:hover { border-color: #e63946; color: #e63946; }
-  .tab-btn.active { background: #e63946; color: white; border-color: #e63946; }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+/* TABS */
+.tabs{display:flex;gap:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:4px;width:fit-content;margin-bottom:1.75rem}
+.tab{padding:8px 20px;border-radius:9px;border:none;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:#64748B;transition:all 0.2s;font-family:inherit;display:flex;align-items:center;gap:7px}
+.tab:hover{color:#CBD5E1}
+.tab.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 2px 12px rgba(99,102,241,0.35)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
-  /* UPLOAD */
-  .upload-section {
-    background: white;
-    border: 2px dashed #ddd;
-    border-radius: 12px;
-    padding: 3rem 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 1.5rem;
-  }
-  .upload-section:hover, .upload-section.drag-over { border-color: #e63946; background: #fff5f5; }
-  .upload-section .icon { font-size: 3rem; margin-bottom: 1rem; }
-  .upload-section h2 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #333; }
-  .upload-section p { font-size: 0.9rem; color: #888; }
+/* CARDS */
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;margin-bottom:1.25rem;overflow:hidden;transition:border-color 0.2s}
+.card:hover{border-color:rgba(255,255,255,0.12)}
+.card-hdr{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
+.card-hdr h3{font-size:13px;font-weight:600;color:#CBD5E1;display:flex;align-items:center;gap:8px}
+.card-hdr h3 span{opacity:0.6}
+.card-body{padding:1.5rem}
 
-  /* CONTROLS */
-  .controls {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    display: none;
-    gap: 1rem;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  }
-  .controls.visible { display: flex; }
-  .control-group { display: flex; flex-direction: column; gap: 0.4rem; flex: 1; min-width: 200px; }
-  .control-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.04em; }
-  .control-group input {
-    border: 1.5px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-    background: white;
-  }
-  .control-group input:focus { border-color: #e63946; }
+/* UPLOAD ZONE */
+.upload{border:2px dashed rgba(255,255,255,0.1);border-radius:12px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all 0.25s;background:rgba(99,102,241,0.03);position:relative;overflow:hidden}
+.upload::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(99,102,241,0.08) 0%,transparent 70%);opacity:0;transition:opacity 0.3s}
+.upload:hover{border-color:rgba(99,102,241,0.5);background:rgba(99,102,241,0.06)}
+.upload:hover::before{opacity:1}
+.upload.drag-over{border-color:#6366f1;background:rgba(99,102,241,0.1)}
+.upload-ico{font-size:3rem;margin-bottom:1rem;filter:drop-shadow(0 4px 12px rgba(99,102,241,0.3))}
+.upload h2{font-size:15px;font-weight:600;color:#E2E8F0;margin-bottom:6px}
+.upload p{font-size:13px;color:#475569}
 
-  .btn {
-    padding: 0.65rem 1.4rem;
-    border-radius: 8px;
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-primary { background: #e63946; color: white; }
-  .btn-primary:hover { background: #c1121f; }
-  .btn-secondary { background: #1a1a2e; color: white; }
-  .btn-secondary:hover { background: #16213e; }
-  .btn:active { transform: scale(0.97); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+/* AI BADGE */
+.ai-badge{background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(16,185,129,0.08));border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:12px 16px;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px}
+.ai-badge-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 8px rgba(34,197,94,0.6);flex-shrink:0}
+.ai-badge strong{font-size:13px;font-weight:600;color:#4ade80}
+.ai-badge small{font-size:12px;color:#6ee7b7;display:block;margin-top:1px}
 
-  /* PRODUCT TABLE */
-  .product-table {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    display: none;
-  }
-  .product-table.visible { display: block; }
-  .table-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .table-header h3 { font-size: 0.95rem; color: #333; }
-  .table-header .count { font-size: 13px; color: #888; }
-  table { width: 100%; border-collapse: collapse; }
-  thead tr { background: #f8f8f6; }
-  th {
-    padding: 0.85rem 1rem;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #666;
-    border-bottom: 1px solid #eee;
-    white-space: nowrap;
-  }
-  td { padding: 0.75rem 1rem; font-size: 14px; border-bottom: 1px solid #f5f5f5; color: #222; }
-  tr:hover td { background: #fafaf8; }
-  tr:last-child td { border-bottom: none; }
-  .marka-cell { font-weight: 700; color: #1a1a2e; font-size: 13px; }
-  .price-cell { font-weight: 700; color: #e63946; text-align: right; white-space: nowrap; }
-  .tarih-cell { color: #555; font-size: 13px; white-space: nowrap; }
-  .arasinda-cell { color: #888; font-size: 12px; font-style: italic; }
-  .action-cell { text-align: center; }
-  .btn-delete {
-    background: none; border: 1px solid #ddd; border-radius: 6px;
-    padding: 4px 10px; cursor: pointer; font-size: 12px; color: #999; transition: all 0.15s;
-  }
-  .btn-delete:hover { border-color: #e63946; color: #e63946; background: #fff5f5; }
-  .input-row { background: #f8f8f6; border-top: 1px solid #eee; }
-  .input-row td { padding: 0.5rem 0.5rem; }
-  .input-row input {
-    border: 1.5px solid #e0e0e0; border-radius: 6px; padding: 0.45rem 0.6rem;
-    font-size: 13px; width: 100%; outline: none; background: white;
-  }
-  .input-row input:focus { border-color: #e63946; }
-  .btn-add {
-    background: #e63946; color: white; border: none; border-radius: 6px;
-    padding: 0.45rem 1rem; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
-  }
-  .btn-add:hover { background: #c1121f; }
+/* SETTINGS */
+.settings-row{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+.field label{font-size:11px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px}
+.field input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;font-size:13px;color:#E2E8F0;font-family:inherit;outline:none;transition:all 0.2s}
+.field input:focus{border-color:rgba(99,102,241,0.6);background:rgba(99,102,241,0.06);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+.field input::placeholder{color:#334155}
 
-  /* EXPORT BAR */
-  .export-bar { display: none; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
-  .export-bar.visible { display: flex; }
+/* BUTTONS */
+.btn{padding:9px 16px;border-radius:9px;border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;white-space:nowrap}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 2px 12px rgba(99,102,241,0.3)}
+.btn-primary:hover{box-shadow:0 4px 20px rgba(99,102,241,0.5)}
+.btn-green{background:linear-gradient(135deg,#059669,#10b981);color:#fff;box-shadow:0 2px 12px rgba(16,185,129,0.3)}
+.btn-green:hover{box-shadow:0 4px 20px rgba(16,185,129,0.5)}
+.btn-ghost{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#94A3B8}
+.btn-ghost:hover{background:rgba(255,255,255,0.08);color:#CBD5E1}
+.btn-del{background:none;border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;color:#475569;transition:all 0.15s;font-family:inherit}
+.btn-del:hover{border-color:rgba(239,68,68,0.4);color:#f87171;background:rgba(239,68,68,0.06)}
+.btn-add{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit}
 
-  /* IMAGE ANALYSIS */
-  .image-drop {
-    background: white;
-    border: 2px dashed #ddd;
-    border-radius: 12px;
-    padding: 3rem 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 1.5rem;
-    position: relative;
-  }
-  .image-drop:hover, .image-drop.drag-over { border-color: #e63946; background: #fff5f5; }
-  .image-drop .icon { font-size: 3rem; margin-bottom: 1rem; }
-  .image-drop h2 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #333; }
-  .image-drop p { font-size: 0.9rem; color: #888; }
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:rgba(255,255,255,0.02)}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#334155;border-bottom:1px solid rgba(255,255,255,0.06)}
+td{padding:10px 14px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);color:#CBD5E1;vertical-align:middle}
+tbody tr:hover td{background:rgba(255,255,255,0.02)}
+.marka{font-weight:600;color:#E2E8F0;font-size:12px}
+.price{font-weight:700;color:#818cf8;text-align:right}
+.tarih-c{color:#475569;font-size:12px}
+.arasinda-c{color:#334155;font-size:11px;font-style:italic}
 
-  .image-preview-wrap {
-    display: none;
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  }
-  .image-preview-wrap.visible { display: block; }
-  .image-preview-wrap img { max-width: 100%; max-height: 320px; border-radius: 8px; display: block; margin: 0 auto 1rem; object-fit: contain; }
+.inp-row{background:rgba(99,102,241,0.03);border-top:1px solid rgba(99,102,241,0.15)}
+.inp-row td{padding:6px 6px}
+.inp-row input{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:12px;width:100%;color:#E2E8F0;font-family:inherit;outline:none}
+.inp-row input:focus{border-color:rgba(99,102,241,0.5)}
+.inp-row input::placeholder{color:#1e293b}
 
-  .ai-status {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.2rem;
-    border-radius: 10px;
-    font-size: 14px;
-    margin-bottom: 1rem;
-  }
-  .ai-status.loading { background: #fff8e1; color: #b45309; }
-  .ai-status.success { background: #f0fdf4; color: #166534; }
-  .ai-status.error { background: #fff5f5; color: #c1121f; }
+/* EXPORT */
+.export-bar{display:none;justify-content:flex-end;gap:8px;margin-top:1.25rem;flex-wrap:wrap}
+.export-bar.visible{display:flex}
 
-  .spinner {
-    width: 18px; height: 18px;
-    border: 2px solid #f3c369;
-    border-top-color: #b45309;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    flex-shrink: 0;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* COUNT */
+.badge{background:rgba(99,102,241,0.15);color:#818cf8;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid rgba(99,102,241,0.2)}
 
-  .ai-result-table {
-    border: 1.5px solid #e0e0e0;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
-  .ai-result-table table { width: 100%; }
-  .ai-result-table th { background: #f8f8f6; }
+/* AI STATUS */
+.ai-status{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:12px}
+.ai-status.loading{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);color:#fbbf24}
+.ai-status.success{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:#4ade80}
+.ai-status.error{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#f87171}
+.spin{width:16px;height:16px;border:2px solid rgba(251,191,36,0.3);border-top-color:#fbbf24;border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-  .add-all-btn {
-    background: #1a1a2e; color: white; border: none; border-radius: 8px;
-    padding: 0.65rem 1.4rem; font-size: 14px; font-weight: 600; cursor: pointer;
-    transition: all 0.15s; width: 100%;
-  }
-  .add-all-btn:hover { background: #16213e; }
+.ai-tbl{border:1px solid rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.ai-acts{display:flex;gap:8px;flex-wrap:wrap}
 
+/* IMAGE PREVIEW */
+.img-wrap{display:none}
+.img-wrap.visible{display:block}
+.img-wrap img{max-width:100%;max-height:260px;border-radius:10px;display:block;margin:0 auto 16px;object-fit:contain;border:1px solid rgba(255,255,255,0.08)}
 
+#sheetsStatus,#sheetsAiStatus{display:none;margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;text-align:center}
 
-  @media print {
-    .header, .tabs, .upload-section, .controls, .table-header .btn,
-    .action-cell, .export-bar, .input-row, .image-drop { display: none !important; }
-    body { background: white; }
-    .product-table { box-shadow: none; }
-    .tab-panel { display: block !important; }
-  }
+@media(max-width:768px){.wrap{padding:1rem}.settings-row{grid-template-columns:1fr}}
+@media print{.hdr,.tabs,.upload,.card-hdr .btn,.export-bar,.inp-row,.ai-badge,#sheetsStatus{display:none!important}body{background:#fff;color:#000}.card{border:none}.price{color:#000!important}.marka{color:#000!important}}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div><h1>📋 Kampanya Dönüştürücü</h1></div>
-
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-icon">📋</div>
+    <div>
+      <div class="hdr-title">Kampanya Dönüştürücü</div>
+      <div class="hdr-sub">Stok verilerini kampanya formatına çevir</div>
+    </div>
+  </div>
+  <div class="hdr-status"><div class="hdr-dot"></div>Aktif</div>
 </div>
 
-<div class="container">
+<div class="wrap">
 
-  <!-- TABS -->
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('excel')">📂 Excel ile Yükle</button>
-    <button class="tab-btn" onclick="switchTab('gorsel')">🖼️ Görsel Analiz</button>
+    <button class="tab active" onclick="switchTab('excel')">📂 Excel ile Yükle</button>
+    <button class="tab" onclick="switchTab('gorsel')">🖼️ Görsel Analiz</button>
   </div>
 
-  <!-- TAB: EXCEL -->
   <div class="tab-panel active" id="tab-excel">
-    <div class="upload-section" id="uploadZone">
-      <div class="icon">📂</div>
-      <h2>Excel Dosyasını Yükle</h2>
-      <p>Dosyayı buraya sürükle veya tıklayarak seç (.xlsx, .xls)</p>
-      <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+    <div class="card">
+      <div class="card-body">
+        <div class="upload" id="uploadZone">
+          <div class="upload-ico">📂</div>
+          <h2>Excel Dosyasını Yükle</h2>
+          <p>Stok kodlu Excel dosyasını buraya sürükle veya tıkla (.xlsx, .xls)</p>
+          <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- TAB: GÖRSEL -->
   <div class="tab-panel" id="tab-gorsel">
-
-
-    <div style="background:white;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.06);display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-      <label style="font-size:12px;font-weight:700;color:#666;text-transform:uppercase;white-space:nowrap;">🔑 API Key</label>
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off"
-        style="flex:1;min-width:200px;border:1.5px solid #e0e0e0;border-radius:8px;padding:0.55rem 0.8rem;font-size:13px;outline:none;font-family:monospace;">
-      <small style="font-size:11px;color:#aaa;flex-basis:100%;">
-        🔒 Anahtar sadece bu sayfada kullanılır, hiçbir yere kaydedilmez. 
-        <a href="https://console.anthropic.com" target="_blank" style="color:#e63946;">console.anthropic.com</a>'dan alabilirsin.
-      </small>
-    </div>
-
-    <div class="image-drop" id="imageDropZone">
-      <div class="icon">🖼️</div>
-      <h2>Fiyat Listesi Görselini Yükle</h2>
-      <p>Fotoğraf, ekran görüntüsü, el yazısı liste — Claude analiz edip tabloya aktarır</p>
-      <input type="file" id="imageInput" accept="image/*" style="display:none">
-    </div>
-
-    <div class="image-preview-wrap" id="imagePreviewWrap">
-      <img id="imagePreview" src="" alt="Yüklenen görsel">
-      <div id="aiStatus" class="ai-status loading" style="display:none">
-        <div class="spinner"></div>
-        <span id="aiStatusText">Claude görseli analiz ediyor...</span>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-body" style="padding:1.25rem 1.5rem">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:8px;height:8px;background:#6366f1;border-radius:50%;box-shadow:0 0 8px rgba(99,102,241,0.6)"></div>
+          <span style="font-size:13px;font-weight:600;color:#a5b4fc">Claude AI — Görsel Analiz</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <input type="password" id="claudeApiKey" placeholder="sk-ant-api03-..." autocomplete="off"
+            style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;font-size:13px;color:#E2E8F0;font-family:monospace;outline:none"
+            oninput="saveApiKey(this.value)">
+          <button class="btn btn-primary" onclick="testApiKey()" style="white-space:nowrap">Bağlan</button>
+        </div>
+        <div style="font-size:11px;color:#334155;margin-top:8px">🔒 API anahtarın sadece tarayıcında saklanır, hiçbir yere gönderilmez. <a href="https://console.anthropic.com" target="_blank" style="color:#6366f1">console.anthropic.com</a></div>
+        <div id="apiKeyStatus" style="display:none;margin-top:8px;font-size:12px;padding:6px 10px;border-radius:6px"></div>
       </div>
-      <div class="ai-result-table" id="aiResultTable" style="display:none">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:120px">Marka</th>
-              <th>Ürün</th>
-              <th style="width:100px; text-align:right">Fiyat (₺)</th>
-            </tr>
-          </thead>
-          <tbody id="aiResultBody"></tbody>
-        </table>
-      </div>
-      <div style="display:flex;gap:0.75rem;margin-top:0;" id="aiActionBtns" style="display:none">
-        <button class="add-all-btn" id="addAllBtn" style="display:none;flex:1;" onclick="addAllAiRows()">
-          ✅ Tümünü Tabloya Ekle
-        </button>
-        <button class="add-all-btn" id="downloadAiBtn" style="display:none;flex:1;background:#1a1a2e;" onclick="downloadAiExcel()">
-          ⬇ Excel Olarak İndir
-        </button>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="upload" id="imageDropZone">
+          <div class="upload-ico">🖼️</div>
+          <h2>Fiyat Listesi Görselini Yükle</h2>
+          <p>Fotoğraf, ekran görüntüsü veya el yazısı liste — Claude analiz edip tabloya aktarır</p>
+          <input type="file" id="imageInput" accept="image/*" style="display:none">
+        </div>
+        <div class="img-wrap" id="imagePreviewWrap" style="margin-top:1.25rem">
+          <img id="imagePreview" src="" alt="">
+          <div id="aiStatus" class="ai-status loading" style="display:none">
+            <div class="spin"></div><span>Analiz ediliyor...</span>
+          </div>
+          <div class="ai-tbl" id="aiResultTable" style="display:none">
+            <table>
+              <thead><tr>
+                <th style="width:130px">Marka</th>
+                <th>Ürün</th>
+                <th style="width:110px;text-align:right">Fiyat (₺)</th>
+              </tr></thead>
+              <tbody id="aiResultBody"></tbody>
+            </table>
+          </div>
+          <div class="ai-acts">
+            <button class="btn btn-primary" id="addAllBtn" style="display:none;flex:1" onclick="addAllAiRows()">✅ Tümünü Tabloya Ekle</button>
+            <button class="btn btn-ghost" id="downloadAiBtn" style="display:none;flex:1" onclick="downloadAiExcel()">⬇ Excel İndir</button>
+            <button class="btn btn-green" id="sheetsAiBtn" style="display:none;flex:1" onclick="exportAiToSheets()">
+              <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Google Sheets
+            </button>
+          </div>
+          <div id="sheetsAiStatus"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- SETTINGS -->
-  <div class="controls" id="controlsPanel">
-    <div class="control-group">
-      <label>Tarih Aralığı</label>
-      <input type="text" id="tarihText" value="" placeholder="21 - 24 Mayıs 2026">
-    </div>
-    <div class="control-group">
-      <label>Arasında Metni</label>
-      <input type="text" id="arasindaText" value="Tarihleri arasında geçerlidir." placeholder="Tarihleri arasında geçerlidir.">
-    </div>
-    <div class="control-group" style="flex: 0 0 auto;">
-      <label>&nbsp;</label>
-      <button class="btn btn-primary" onclick="applySettings()">🔄 Güncelle</button>
+  <div class="card" id="controlsPanel" style="display:none">
+    <div class="card-hdr"><h3><span>⚙️</span>Kampanya Ayarları</h3></div>
+    <div class="card-body">
+      <div class="settings-row">
+        <div class="field"><label>Tarih Aralığı</label><input type="text" id="tarihText" value="" placeholder="21 - 24 Mayıs 2026"></div>
+        <div class="field"><label>Geçerlilik Metni</label><input type="text" id="arasindaText" value="Tarihleri arasında geçerlidir."></div>
+        <button class="btn btn-primary" onclick="applySettings()">🔄 Güncelle</button>
+      </div>
     </div>
   </div>
 
-  <!-- MAIN TABLE -->
-  <div class="product-table" id="productTable">
-    <div class="table-header">
-      <h3>Kampanya Ürünleri</h3>
-      <span class="count" id="rowCount"></span>
+  <div class="card" id="productTable" style="display:none">
+    <div class="card-hdr">
+      <h3><span>📋</span>Kampanya Ürünleri</h3>
+      <span class="badge" id="rowCount">0 ürün</span>
     </div>
-    <table id="mainTable">
-      <thead>
-        <tr>
-          <th style="width:120px">Marka</th>
-          <th>Ürün</th>
-          <th style="width:100px; text-align:right">Fiyat (₺)</th>
-          <th style="width:180px">Tarih</th>
-          <th style="width:220px">Arasında</th>
-          <th style="width:60px">Sil</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-      <tfoot>
-        <tr class="input-row">
-          <td><input type="text" id="newMarka" placeholder="MARKA"></td>
-          <td><input type="text" id="newUrun" placeholder="Ürün adı"></td>
-          <td><input type="text" id="newFiyat" placeholder="0,00" style="text-align:right"></td>
-          <td><input type="text" id="newTarih" placeholder="Tarih aralığı"></td>
-          <td><input type="text" id="newArasinda" placeholder="Geçerlilik metni"></td>
-          <td><button class="btn-add" onclick="addRow()">+ Ekle</button></td>
-        </tr>
-      </tfoot>
-    </table>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:130px">Marka</th>
+            <th>Ürün</th>
+            <th style="width:110px;text-align:right">Fiyat (₺)</th>
+            <th style="width:175px">Tarih</th>
+            <th style="width:215px">Arasında</th>
+            <th style="width:55px"></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+        <tfoot>
+          <tr class="inp-row">
+            <td><input type="text" id="newMarka" placeholder="MARKA"></td>
+            <td><input type="text" id="newUrun" placeholder="Ürün adı"></td>
+            <td><input type="text" id="newFiyat" placeholder="0,00" style="text-align:right"></td>
+            <td><input type="text" id="newTarih" placeholder="Tarih"></td>
+            <td><input type="text" id="newArasinda" placeholder="Geçerlilik metni"></td>
+            <td style="text-align:center"><button class="btn-add" onclick="addRow()">+ Ekle</button></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
 
   <div class="export-bar" id="exportBar">
-    <button class="btn btn-secondary" onclick="exportExcel()">⬇ Excel İndir</button>
-    <button class="btn" style="background:#0F9D58;color:white;" onclick="exportToSheets()">
-      <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;">Google Sheets'e Aktar
+    <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
+    <button class="btn btn-green" onclick="exportToSheets()">
+      <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Google Sheets
     </button>
-    <button class="btn btn-primary" onclick="window.print()">🖨 Yazdır</button>
+    <button class="btn btn-ghost" onclick="window.print()">🖨 Yazdır</button>
   </div>
-  <div id="sheetsStatus" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;border-radius:8px;font-size:13px;text-align:center;"></div>
+  <div id="sheetsStatus"></div>
 
 </div>
 
@@ -375,7 +266,6 @@
 let rows = [];
 let aiPendingRows = [];
 
-// ── TAB ──────────────────────────────────────────────────────
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i === (tab==='excel'?0:1)));
   document.getElementById('tab-excel').classList.toggle('active', tab==='excel');
@@ -385,30 +275,23 @@ function switchTab(tab) {
 // ── EXCEL ────────────────────────────────────────────────────
 const uploadZone = document.getElementById('uploadZone');
 const fileInput  = document.getElementById('fileInput');
-
 uploadZone.addEventListener('click', () => fileInput.click());
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-uploadZone.addEventListener('drop', e => {
-  e.preventDefault(); uploadZone.classList.remove('drag-over');
-  if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
-});
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); });
 fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
 
 function processFile(file) {
-  // Dosya adından tarih aralığını çıkar (örn: 21-24_ARASI.xlsx → 21 - 24 Mayıs 2026)
   const fileName = file.name.replace(/\.xlsx?$/i, '');
   const dateMatch = fileName.match(/(\d{1,2})[\-_](\d{1,2})/);
   if (dateMatch) {
     const months = ['','Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
     const now = new Date();
-    const monthName = months[now.getMonth() + 1];
-    const year = now.getFullYear();
-    document.getElementById('tarihText').value = dateMatch[1] + ' - ' + dateMatch[2] + ' ' + monthName + ' ' + year;
+    document.getElementById('tarihText').value = dateMatch[1] + ' - ' + dateMatch[2] + ' ' + months[now.getMonth()+1] + ' ' + now.getFullYear();
   }
   const reader = new FileReader();
   reader.onload = function(e) {
-    const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+    const wb = XLSX.read(new Uint8Array(e.target.result), { type:'array' });
     const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header:1, defval:'' });
     const tarih = document.getElementById('tarihText').value;
     const arasinda = document.getElementById('arasindaText').value;
@@ -416,9 +299,14 @@ function processFile(file) {
     rows = [];
     for (let i = 1; i < json.length; i++) {
       const r = json[i];
-      const kod  = String(r[0]||'').trim();
+      const kod = String(r[0]||'').trim();
       const isim = String(r[1]||'').trim();
-      const fiyat = r[3] !== undefined && r[3] !== '' ? Number(r[3]).toFixed(2).replace('.',',') : '';
+      let fiyat = '';
+      for (const idx of [3,4,2]) {
+        if (r[idx] !== undefined && r[idx] !== '' && !isNaN(Number(r[idx])) && Number(r[idx]) > 0) {
+          fiyat = Number(r[idx]).toFixed(2).replace('.',','); break;
+        }
+      }
       if (!kod || !isim || seen.has(kod)) continue;
       seen.add(kod);
       const p = parseName(isim);
@@ -432,66 +320,64 @@ function processFile(file) {
 // ── IMAGE ANALYSIS ───────────────────────────────────────────
 const imageDropZone = document.getElementById('imageDropZone');
 const imageInput    = document.getElementById('imageInput');
-
 imageDropZone.addEventListener('click', () => imageInput.click());
 imageDropZone.addEventListener('dragover', e => { e.preventDefault(); imageDropZone.classList.add('drag-over'); });
 imageDropZone.addEventListener('dragleave', () => imageDropZone.classList.remove('drag-over'));
-imageDropZone.addEventListener('drop', e => {
-  e.preventDefault(); imageDropZone.classList.remove('drag-over');
-  if (e.dataTransfer.files[0]) handleImage(e.dataTransfer.files[0]);
-});
+imageDropZone.addEventListener('drop', e => { e.preventDefault(); imageDropZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) handleImage(e.dataTransfer.files[0]); });
 imageInput.addEventListener('change', e => { if (e.target.files[0]) handleImage(e.target.files[0]); });
 
 function handleImage(file) {
   const reader = new FileReader();
   reader.onload = function(e) {
-    const base64 = e.target.result; // data:image/...;base64,...
+    const base64 = e.target.result;
     document.getElementById('imagePreview').src = base64;
     document.getElementById('imagePreviewWrap').classList.add('visible');
     document.getElementById('aiResultTable').style.display = 'none';
     document.getElementById('addAllBtn').style.display = 'none';
-    analyzeWithClaude(base64);
+    document.getElementById('downloadAiBtn').style.display = 'none';
+    document.getElementById('sheetsAiBtn').style.display = 'none';
+    analyzeWithOllama(base64);
   };
   reader.readAsDataURL(file);
 }
 
-async function analyzeWithClaude(dataUrl) {
-  const apiKey = document.getElementById('apiKeyInput').value.trim();
-  if (!apiKey) {
-    showAiStatus('error', '⚠️ Lütfen önce API anahtarını gir.');
-    document.getElementById('imagePreviewWrap').classList.add('visible');
+let ANTHROPIC_API_KEY = localStorage.getItem('claude_api_key') || '';
+
+async function analyzeWithOllama(dataUrl) {
+  ANTHROPIC_API_KEY = (document.getElementById('claudeApiKey')?.value?.trim()) || localStorage.getItem('claude_api_key') || '';
+  if (!ANTHROPIC_API_KEY) {
+    showAiStatus('error', '❌ Lütfen önce Claude API anahtarını gir.');
     return;
   }
-
-  showAiStatus('loading', 'Claude görseli analiz ediyor...');
-
+  showAiStatus('loading', '🤖 Claude görseli analiz ediyor...');
   const [meta, b64] = dataUrl.split(',');
   const mimeType = meta.match(/:(.*?);/)[1];
+
+  const prompt = `You are a product data extractor. Look at this product price list image and extract ALL products.
+Return ONLY a valid JSON array. No explanation, no markdown, just the array.
+Format: [{"marka":"BRAND NAME","urun":"Product Name","fiyat":"69.95"}]
+Rules:
+- marka: brand in uppercase (e.g. MR MUSCLE, ULKER)
+- urun: product name with proper capitalization
+- fiyat: price as decimal string with dot separator, empty string if not visible`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
         messages: [{
           role: 'user',
           content: [
             { type: 'image', source: { type: 'base64', media_type: mimeType, data: b64 } },
-            { type: 'text', text: `Bu görselde bir ürün fiyat listesi, kampanya afişi veya fiyat etiketi var.
-Görseldeki tüm ürünleri tespit et ve JSON formatında döndür.
-Sadece JSON döndür, başka hiçbir şey yazma.
-Format:
-[
-  {"marka": "MARKA ADI", "urun": "Ürün Adı", "fiyat": "0,00"},
-  ...
-]
-Kurallar:
-- marka: büyük harf (ÇEVİK, ÜLKER gibi Türkçe karakterlerle)
-- urun: Türkçe karakterlerle title case (Ayçiçek Yağı 4 Lt gibi)
-- fiyat: virgüllü format (199,95) — görünmüyorsa boş string ""
-- Ürün bulunamazsa boş dizi []` }
+            { type: 'text', text: prompt }
           ]
         }]
       })
@@ -499,26 +385,24 @@ Kurallar:
 
     if (!response.ok) {
       const err = await response.json();
-      throw new Error(err.error?.message || 'API hatası');
+      throw new Error(err.error?.message || 'Claude API hatası');
     }
 
     const data = await response.json();
-    const text = data.content.map(c => c.text||'').join('');
-    const clean = text.replace(/```json|```/g,'').trim();
-    const parsed = JSON.parse(clean);
-
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      showAiStatus('error', '❌ Görselde ürün bulunamadı. Farklı bir görsel dene.');
-      return;
-    }
-
+    const text = data.content?.[0]?.text || '';
+    let clean = text.replace(/```json|```/g,'').trim();
+    const match = clean.match(/\[[\s\S]*\]/);
+    if (!match) { showAiStatus('error', '❌ Veri bulunamadı: ' + text.substring(0, 200)); return; }
+    const parsed = JSON.parse(match[0]);
+    parsed.forEach(p => { if (p.fiyat) p.fiyat = p.fiyat.toString().replace('.',','); });
+    if (!Array.isArray(parsed) || parsed.length === 0) { showAiStatus('error', '❌ Görselde ürün bulunamadı.'); return; }
     aiPendingRows = parsed;
     renderAiResults(parsed);
-    showAiStatus('success', `✅ ${parsed.length} ürün tespit edildi. İnceleyip tabloya ekleyebilirsin.`);
+    showAiStatus('success', `✅ ${parsed.length} ürün tespit edildi.`);
     document.getElementById('aiResultTable').style.display = 'block';
     document.getElementById('addAllBtn').style.display = 'block';
     document.getElementById('downloadAiBtn').style.display = 'block';
-
+    document.getElementById('sheetsAiBtn').style.display = 'block';
   } catch(err) {
     showAiStatus('error', '❌ Hata: ' + err.message);
   }
@@ -528,9 +412,7 @@ function showAiStatus(type, msg) {
   const el = document.getElementById('aiStatus');
   el.style.display = 'flex';
   el.className = 'ai-status ' + type;
-  el.innerHTML = type === 'loading'
-    ? `<div class="spinner"></div><span>${msg}</span>`
-    : `<span>${msg}</span>`;
+  el.innerHTML = type === 'loading' ? `<div class="spinner"></div><span>${msg}</span>` : `<span>${msg}</span>`;
 }
 
 function renderAiResults(items) {
@@ -539,10 +421,10 @@ function renderAiResults(items) {
   items.forEach((item, i) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><div contenteditable="true" style="font-weight:700;color:#1a1a2e;" onblur="aiPendingRows[${i}].marka=this.innerText.trim()">${esc(item.marka)}</div></td>
+      <td><div contenteditable="true" style="font-weight:600;color:#1C2B3A;" onblur="aiPendingRows[${i}].marka=this.innerText.trim()">${esc(item.marka)}</div></td>
       <td contenteditable="true" onblur="aiPendingRows[${i}].urun=this.innerText.trim()">${esc(item.urun)}</td>
       <td><input type="text" value="${esc(item.fiyat)}" placeholder="0,00"
-        style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#e63946;font-size:14px;outline:none;"
+        style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#2E7CF6;font-size:13px;outline:none;font-family:inherit;"
         oninput="aiPendingRows[${i}].fiyat=this.value"></td>
     `;
     tbody.appendChild(tr);
@@ -552,22 +434,17 @@ function renderAiResults(items) {
 function addAllAiRows() {
   const tarih = document.getElementById('tarihText').value;
   const arasinda = document.getElementById('arasindaText').value;
-  aiPendingRows.forEach((item, i) => {
-    rows.push({ marka: item.marka||'', urun: item.urun||'', fiyat: item.fiyat||'', tarih, arasinda, id: Date.now()+i });
-  });
+  aiPendingRows.forEach((item, i) => rows.push({ marka:item.marka||'', urun:item.urun||'', fiyat:item.fiyat||'', tarih, arasinda, id:Date.now()+i }));
   showTable();
   switchTab('excel');
-  document.getElementById('aiResultTable').style.display = 'none';
-  document.getElementById('addAllBtn').style.display = 'none';
-  showAiStatus('success', `✅ ${aiPendingRows.length} ürün tabloya eklendi!`);
   aiPendingRows = [];
 }
 
 // ── HELPERS ──────────────────────────────────────────────────
 function showTable() {
   renderTable();
-  document.getElementById('controlsPanel').classList.add('visible');
-  document.getElementById('productTable').classList.add('visible');
+  document.getElementById('controlsPanel').style.display = 'block';
+  document.getElementById('productTable').style.display = 'block';
   document.getElementById('exportBar').classList.add('visible');
 }
 
@@ -575,16 +452,13 @@ function asciiToTr(str) {
   const wordMap = {
     'AYCICEK':'ayçiçek','BUGDAY':'buğday','SUZME':'süzme','DILIMLI':'dilimli',
     'TOST':'tost','PEYNIRI':'peyniri','PEYNIR':'peynir','KASAR':'kaşar',
-    'LOKUM':'lokum','KIVAMINDA':'kıvamında','BEYAZ':'beyaz','YARIM':'yarım',
-    'YAGLI':'yağlı','YOGURT':'yoğurt','YUMUSATICI':'yumuşatıcı',
-    'TUVALET':'tuvalet','KAGIDI':'kağıdı','KISISEL':'kişisel','BAKIM':'bakım',
-    'HAVLUSU':'havlusu','YUZEY':'yüzey','TEMIZLIK':'temizlik','CAMASIR':'çamaşır',
-    'CICEGI':'çiçeği','BUKETI':'buketi','BAHCESI':'bahçesi',
-    'KAVRULMUS':'kavrulmuş','CIFT':'çift','LEYLEK':'leylek','KETCAP':'ketçap',
-    'MAYONEZ':'mayonez','BALDO':'baldo','PIRINC':'pirinç','ORTA':'orta',
-    'YAGI':'yağı','DOGAL':'doğal','SEKER':'şeker','CIKOLATA':'çikolata',
-    'SUTLU':'sütlü','FINDIKLI':'fındıklı','SABUN':'sabun','YESIL':'yeşil',
-    'COKOKREM':'çokokrem','BAGET':'baget','UN':'un','BAK':'bak',
+    'KIVAMINDA':'kıvamında','YARIM':'yarım','YAGLI':'yağlı','YOGURT':'yoğurt',
+    'YUMUSATICI':'yumuşatıcı','TUVALET':'tuvalet','KAGIDI':'kağıdı',
+    'KISISEL':'kişisel','BAKIM':'bakım','HAVLUSU':'havlusu',
+    'KAVRULMUS':'kavrulmuş','CIFT':'çift','KETCAP':'ketçap',
+    'MAYONEZ':'mayonez','BALDO':'baldo','PIRINC':'pirinç',
+    'YAGI':'yağı','SEKER':'şeker','CIKOLATA':'çikolata',
+    'SUTLU':'sütlü','FINDIKLI':'fındıklı','COKOKREM':'çokokrem','BAGET':'baget',
   };
   return str.toUpperCase().split(' ').map(word => {
     if (/^\d/.test(word)) return word;
@@ -601,33 +475,24 @@ function trTitleCase(str) {
   });
 }
 
-function trLower(str) {
-  return str.replace(/İ/g,'i').replace(/I/g,'ı').replace(/Ş/g,'ş')
-            .replace(/Ç/g,'ç').replace(/Ğ/g,'ğ').replace(/Ö/g,'ö')
-            .replace(/Ü/g,'ü').toLowerCase();
-}
-
 const MARKA_MAP = {
   'CEVIK':'ÇEVİK','GOKKIZ':'GÖKKIZ','ULKER':'ÜLKER','OZUNALLAR':'ÖZÜNALLAR',
   'KAHVE DUNYASI':'KAH.DÜNYASI','KAH.DUNYASI':'KAH.DÜNYASI',
   'YUMOS':'YUMOŞ','SUTHAN':'SÜTHAN','EKICI':'EKİCİ','LEZITA':'LEZİTA',
   'TAT':'TAT','ANKARA':'ANKARA','FAMILIA':'FAMİLİA','SLEEPY':'SLEEPY','TORKU':'TORKU',
+  'MR MUSCLE':'MR MUSCLE','FAIRY':'FAIRY','DOMESTOS':'DOMESTOS',
+  'ARIEL':'ARİEL','PERSIL':'PERSİL','PRIL':'PRİL','VIM':'VİM',
 };
 
 function parseName(fullName) {
   const brandKeys = Object.keys(MARKA_MAP).sort((a,b)=>b.length-a.length);
   function toASCII(s) {
-    return s.toUpperCase().replace(/İ/g,'I').replace(/Ğ/g,'G').replace(/Ş/g,'S')
-            .replace(/Ç/g,'C').replace(/Ö/g,'O').replace(/Ü/g,'U');
+    return s.toUpperCase().replace(/İ/g,'I').replace(/Ğ/g,'G').replace(/Ş/g,'S').replace(/Ç/g,'C').replace(/Ö/g,'O').replace(/Ü/g,'U');
   }
   const asciiFull = toASCII(fullName);
   let markaDisplay='', urunRaw=fullName;
   for (const key of brandKeys) {
-    if (asciiFull.startsWith(toASCII(key))) {
-      markaDisplay = MARKA_MAP[key]||key;
-      urunRaw = fullName.substring(key.length).trim();
-      break;
-    }
+    if (asciiFull.startsWith(toASCII(key))) { markaDisplay=MARKA_MAP[key]||key; urunRaw=fullName.substring(key.length).trim(); break; }
   }
   if (!markaDisplay) { const p=fullName.split(' '); markaDisplay=p[0]; urunRaw=p.slice(1).join(' '); }
   return { marka: markaDisplay, urun: trTitleCase(asciiToTr(urunRaw)) };
@@ -642,11 +507,11 @@ function renderTable() {
       <td><div class="marka-cell" contenteditable="true" onblur="updateField(${idx},'marka',this.innerText)">${esc(r.marka)}</div></td>
       <td contenteditable="true" onblur="updateField(${idx},'urun',this.innerText)">${esc(r.urun)}</td>
       <td><input type="text" class="price-cell" value="${esc(r.fiyat)}" placeholder="0,00"
-           style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#e63946;font-size:14px;outline:none;"
+           style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#2E7CF6;font-size:13px;outline:none;font-family:inherit;"
            oninput="updateField(${idx},'fiyat',this.value)"></td>
       <td class="tarih-cell">${esc(r.tarih)}</td>
       <td class="arasinda-cell">${esc(r.arasinda)}</td>
-      <td class="action-cell"><button class="btn-delete" onclick="deleteRow(${idx})">✕</button></td>
+      <td style="text-align:center"><button class="btn-danger-ghost" onclick="deleteRow(${idx})">✕</button></td>
     `;
     tbody.appendChild(tr);
   });
@@ -657,15 +522,15 @@ function updateField(idx,field,val) { rows[idx][field]=val.trim(); }
 function deleteRow(idx) { rows.splice(idx,1); renderTable(); }
 
 function addRow() {
-  const marka = document.getElementById('newMarka').value.trim().toUpperCase();
-  const urun  = document.getElementById('newUrun').value.trim();
-  const fiyat = document.getElementById('newFiyat').value.trim();
-  const tarih = document.getElementById('newTarih').value.trim() || document.getElementById('tarihText').value;
-  const arasinda = document.getElementById('newArasinda').value.trim() || document.getElementById('arasindaText').value;
-  if (!marka || !urun) return;
+  const marka=document.getElementById('newMarka').value.trim().toUpperCase();
+  const urun=document.getElementById('newUrun').value.trim();
+  const fiyat=document.getElementById('newFiyat').value.trim();
+  const tarih=document.getElementById('newTarih').value.trim()||document.getElementById('tarihText').value;
+  const arasinda=document.getElementById('newArasinda').value.trim()||document.getElementById('arasindaText').value;
+  if (!marka||!urun) return;
   rows.push({ marka, urun, fiyat, tarih, arasinda, id:Date.now() });
   renderTable();
-  ['newMarka','newUrun','newFiyat','newTarih','newArasinda'].forEach(id => document.getElementById(id).value='');
+  ['newMarka','newUrun','newFiyat','newTarih','newArasinda'].forEach(id=>document.getElementById(id).value='');
 }
 
 function applySettings() {
@@ -687,15 +552,15 @@ function exportExcel() {
 
 function downloadAiExcel() {
   if (!aiPendingRows.length) return;
-  const tarih = document.getElementById('tarihText').value;
-  const arasinda = document.getElementById('arasindaText').value;
-  const wsData = [['MARKA', 'ÜRÜN', 'FİYAT', 'TARİH', 'ARASINDA']];
-  aiPendingRows.forEach(r => wsData.push([r.marka||'', r.urun||'', r.fiyat||'', tarih, arasinda]));
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-  ws['!cols'] = [{wch:15},{wch:40},{wch:12},{wch:22},{wch:30}];
-  XLSX.utils.book_append_sheet(wb, ws, 'Kampanya');
-  XLSX.writeFile(wb, 'kampanya_gorsel_' + new Date().toISOString().slice(0,10) + '.xlsx');
+  const tarih=document.getElementById('tarihText').value;
+  const arasinda=document.getElementById('arasindaText').value;
+  const wsData=[['MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA']];
+  aiPendingRows.forEach(r=>wsData.push([r.marka||'',r.urun||'',r.fiyat||'',tarih,arasinda]));
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols']=[{wch:15},{wch:40},{wch:12},{wch:22},{wch:30}];
+  XLSX.utils.book_append_sheet(wb,ws,'Kampanya');
+  XLSX.writeFile(wb,'kampanya_gorsel_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 
 // ── GOOGLE SHEETS ─────────────────────────────────────────────
@@ -706,20 +571,22 @@ let accessToken = null;
 function showSheetsStatus(msg, type) {
   const el = document.getElementById('sheetsStatus');
   el.style.display = 'block';
-  el.style.background = type === 'success' ? '#f0fdf4' : type === 'error' ? '#fff5f5' : '#fff8e1';
-  el.style.color = type === 'success' ? '#166534' : type === 'error' ? '#c1121f' : '#b45309';
+  el.style.background = type==='success'?'#F0FDF4':type==='error'?'#FEF2F2':'#FFF8E1';
+  el.style.color = type==='success'?'#166534':type==='error'?'#DC2626':'#B45309';
+  el.style.borderRadius = '8px';
+  el.style.padding = '0.75rem 1rem';
+  el.style.fontSize = '13px';
+  el.style.textAlign = 'center';
   el.innerHTML = msg;
 }
 
 function exportToSheets() {
-  if (rows.length === 0) { showSheetsStatus('⚠️ Önce tablo doldur!', 'error'); return; }
-  showSheetsStatus('<span style="display:inline-flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border:2px solid #f3c369;border-top-color:#b45309;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Google hesabına bağlanılıyor...</span>', 'loading');
-
+  if (rows.length===0) { showSheetsStatus('⚠️ Önce tablo doldur!','error'); return; }
+  showSheetsStatus('<span style="display:inline-flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border:2px solid #FDE68A;border-top-color:#B45309;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Google hesabına bağlanılıyor...</span>','loading');
   const client = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
+    client_id: CLIENT_ID, scope: SCOPES,
     callback: async (resp) => {
-      if (resp.error) { showSheetsStatus('❌ Google girişi başarısız: ' + resp.error, 'error'); return; }
+      if (resp.error) { showSheetsStatus('❌ Google girişi başarısız: '+resp.error,'error'); return; }
       accessToken = resp.access_token;
       await createSheet(accessToken);
     },
@@ -728,62 +595,123 @@ function exportToSheets() {
 }
 
 async function createSheet(token) {
-  showSheetsStatus('<span style="display:inline-flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border:2px solid #f3c369;border-top-color:#b45309;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Google Sheets oluşturuluyor...</span>', 'loading');
-
+  showSheetsStatus('<span style="display:inline-flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border:2px solid #FDE68A;border-top-color:#B45309;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Google Sheets oluşturuluyor...</span>','loading');
   const tarih = document.getElementById('tarihText').value;
   const now = new Date();
   const pad = n => String(n).padStart(2,'0');
   const zaman = pad(now.getDate())+'.'+pad(now.getMonth()+1)+'.'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
   const sheetTitle = 'Kampanya ' + tarih + ' - ' + zaman;
-
-  // 1. Spreadsheet oluştur
   const createRes = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ properties: { title: sheetTitle } })
   });
   const sheet = await createRes.json();
-  if (!sheet.spreadsheetId) { showSheetsStatus('❌ Sheets oluşturulamadı.', 'error'); return; }
-
+  if (!sheet.spreadsheetId) { showSheetsStatus('❌ Sheets oluşturulamadı.','error'); return; }
   const sid = sheet.spreadsheetId;
-
-  // 2. Veriyi yaz
-  const values = [
-    ['MARKA', 'ÜRÜN', 'FİYAT', 'TARİH', 'ARASINDA'],
-    ...rows.map(r => [r.marka, r.urun, r.fiyat, r.tarih, r.arasinda])
-  ];
-
+  const values = [['MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'], ...rows.map(r=>[r.marka,r.urun,r.fiyat,r.tarih,r.arasinda])];
   await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:E${values.length}?valueInputOption=RAW`, {
-    method: 'PUT',
-    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ values })
   });
-
-  // 3. Başlık satırı formatla
   await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}:batchUpdate`, {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ requests: [
-      { repeatCell: {
-        range: { sheetId: 0, startRowIndex: 0, endRowIndex: 1 },
-        cell: { userEnteredFormat: {
-          backgroundColor: { red: 0.102, green: 0.102, blue: 0.180 },
-          textFormat: { foregroundColor: { red:1, green:1, blue:1 }, bold: true, fontSize: 11 },
-          horizontalAlignment: 'CENTER'
-        } },
-        fields: 'userEnteredFormat'
-      } },
-      { autoResizeDimensions: { dimensions: { sheetId: 0, dimension: 'COLUMNS', startIndex: 0, endIndex: 5 } } }
-    ] })
+    method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body: JSON.stringify({ requests:[
+      { repeatCell: { range:{sheetId:0,startRowIndex:0,endRowIndex:1},
+        cell:{ userEnteredFormat:{ backgroundColor:{red:0.110,green:0.169,blue:0.227}, textFormat:{foregroundColor:{red:1,green:1,blue:1},bold:true,fontSize:11}, horizontalAlignment:'CENTER' } },
+        fields:'userEnteredFormat' } },
+      { autoResizeDimensions: { dimensions:{sheetId:0,dimension:'COLUMNS',startIndex:0,endIndex:5} } }
+    ]})
   });
-
   const url = `https://docs.google.com/spreadsheets/d/${sid}/edit`;
-  showSheetsStatus(`✅ Google Sheets oluşturuldu! <a href="${url}" target="_blank" style="color:#166534;font-weight:700;text-decoration:underline;">Aç →</a>`, 'success');
+  showSheetsStatus(`✅ Google Sheets oluşturuldu! <a href="${url}" target="_blank" style="color:#166534;font-weight:600;text-decoration:underline;">Aç →</a>`,'success');
 }
 
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function showSheetsAiStatus(msg, type) {
+  const el = document.getElementById('sheetsAiStatus');
+  el.style.display = 'block';
+  el.style.background = type==='success'?'#F0FDF4':type==='error'?'#FEF2F2':'#FFF8E1';
+  el.style.color = type==='success'?'#166534':type==='error'?'#DC2626':'#B45309';
+  el.innerHTML = msg;
 }
+
+function exportAiToSheets() {
+  if (!aiPendingRows.length) return;
+  showSheetsAiStatus('<span style="display:inline-flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border:2px solid #FDE68A;border-top-color:#B45309;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Google hesabına bağlanılıyor...</span>','loading');
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID, scope: SCOPES,
+    callback: async (resp) => {
+      if (resp.error) { showSheetsAiStatus('❌ Google girişi başarısız: '+resp.error,'error'); return; }
+      await createAiSheet(resp.access_token);
+    },
+  });
+  client.requestAccessToken();
+}
+
+async function createAiSheet(token) {
+  showSheetsAiStatus('<span style="display:inline-flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border:2px solid #FDE68A;border-top-color:#B45309;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Google Sheets oluşturuluyor...</span>','loading');
+  const tarih = document.getElementById('tarihText').value || '';
+  const arasinda = document.getElementById('arasindaText').value || 'Tarihleri arasında geçerlidir.';
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const zaman = pad(now.getDate())+'.'+pad(now.getMonth()+1)+'.'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
+  const sheetTitle = 'Kampanya Görsel - ' + zaman;
+  const createRes = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
+    method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body: JSON.stringify({ properties: { title: sheetTitle } })
+  });
+  const sheet = await createRes.json();
+  if (!sheet.spreadsheetId) { showSheetsAiStatus('❌ Sheets oluşturulamadı.','error'); return; }
+  const sid = sheet.spreadsheetId;
+  const values = [['MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'], ...aiPendingRows.map(r=>[r.marka||'',r.urun||'',r.fiyat||'',tarih,arasinda])];
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:E${values.length}?valueInputOption=RAW`, {
+    method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body: JSON.stringify({ values })
+  });
+  const url = `https://docs.google.com/spreadsheets/d/${sid}/edit`;
+  showSheetsAiStatus(`✅ Google Sheets oluşturuldu! <a href="${url}" target="_blank" style="color:#166534;font-weight:600;text-decoration:underline;">Aç →</a>`,'success');
+}
+
+function saveApiKey(val) {
+  localStorage.setItem('claude_api_key', val.trim());
+  ANTHROPIC_API_KEY = val.trim();
+}
+
+async function testApiKey() {
+  const key = document.getElementById('claudeApiKey').value.trim();
+  if (!key) { showKeyStatus('❌ API anahtarı boş!', 'error'); return; }
+  localStorage.setItem('claude_api_key', key);
+  ANTHROPIC_API_KEY = key;
+  showKeyStatus('⏳ Kontrol ediliyor...', 'loading');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 10, messages: [{ role: 'user', content: 'hi' }] })
+    });
+    if (res.ok) { showKeyStatus('✅ Bağlantı başarılı! Görsel yükleyebilirsin.', 'success'); }
+    else { const e = await res.json(); showKeyStatus('❌ ' + (e.error?.message || 'Geçersiz anahtar'), 'error'); }
+  } catch(e) { showKeyStatus('❌ Bağlantı hatası: ' + e.message, 'error'); }
+}
+
+function showKeyStatus(msg, type) {
+  const el = document.getElementById('apiKeyStatus');
+  el.style.display = 'block';
+  el.style.background = type==='success'?'rgba(34,197,94,0.1)':type==='error'?'rgba(239,68,68,0.1)':'rgba(251,191,36,0.1)';
+  el.style.color = type==='success'?'#4ade80':type==='error'?'#f87171':'#fbbf24';
+  el.textContent = msg;
+}
+
+// Sayfa açılınca kayıtlı key'i yükle
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('claude_api_key');
+  if (saved) {
+    document.getElementById('claudeApiKey').value = saved;
+    ANTHROPIC_API_KEY = saved;
+    showKeyStatus('✅ Kayıtlı anahtar yüklendi.', 'success');
+  }
+});
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
 </body>
 </html>
