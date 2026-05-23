@@ -5,14 +5,121 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kampanya Dönüştürücü</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#0F1117;min-height:100vh;color:#E2E8F0}
+
+/* TEMALAR */
+:root {
+  --bg: #0F1117;
+  --bg2: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.06);
+  --text: #E2E8F0;
+  --text2: #CBD5E1;
+  --text3: #475569;
+  --text4: #334155;
+  --hdr-bg: linear-gradient(135deg,#1a1f2e 0%,#12161f 100%);
+  --hdr-border: rgba(255,255,255,0.06);
+  --card-bg: rgba(255,255,255,0.03);
+  --input-bg: rgba(255,255,255,0.04);
+  --input-border: rgba(255,255,255,0.1);
+  --upload-bg: rgba(99,102,241,0.03);
+  --upload-border: rgba(255,255,255,0.1);
+  --tab-bg: rgba(255,255,255,0.04);
+  --tab-border: rgba(255,255,255,0.08);
+  --thead-bg: rgba(255,255,255,0.02);
+  --row-hover: rgba(255,255,255,0.02);
+  --row-border: rgba(255,255,255,0.04);
+  --price-color: #818cf8;
+  --marka-color: #E2E8F0;
+  --tarih-color: #475569;
+  --arasinda-color: #334155;
+  --badge-bg: rgba(99,102,241,0.15);
+  --badge-color: #818cf8;
+  --badge-border: rgba(99,102,241,0.2);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+[data-tema="gunduz"] {
+  --bg: #F4F6F9;
+  --bg2: #ffffff;
+  --border: #E2E8F0;
+  --border2: #F1F5F9;
+  --text: #1C2B3A;
+  --text2: #334155;
+  --text3: #64748B;
+  --text4: #94A3B8;
+  --hdr-bg: linear-gradient(135deg,#1C2B3A 0%,#253545 100%);
+  --hdr-border: rgba(0,0,0,0.1);
+  --card-bg: #ffffff;
+  --input-bg: #F8FAFC;
+  --input-border: #E2E8F0;
+  --upload-bg: #F8FAFC;
+  --upload-border: #CBD5E1;
+  --tab-bg: #F1F5F9;
+  --tab-border: #E2E8F0;
+  --thead-bg: #F8FAFC;
+  --row-hover: #F8FAFC;
+  --row-border: #F1F5F9;
+  --price-color: #4F46E5;
+  --marka-color: #1C2B3A;
+  --tarih-color: #475569;
+  --arasinda-color: #94A3B8;
+  --badge-bg: #EEF2FF;
+  --badge-color: #4F46E5;
+  --badge-border: #C7D2FE;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+[data-tema="goz"] {
+  --bg: #1A1608;
+  --bg2: rgba(255,240,180,0.04);
+  --border: rgba(255,220,120,0.12);
+  --border2: rgba(255,220,120,0.07);
+  --text: #F5E6C0;
+  --text2: #E8D5A0;
+  --text3: #8A7A50;
+  --text4: #5A4A30;
+  --hdr-bg: linear-gradient(135deg,#1a1500 0%,#120f00 100%);
+  --hdr-border: rgba(255,220,120,0.1);
+  --card-bg: rgba(255,240,180,0.03);
+  --input-bg: rgba(255,240,180,0.05);
+  --input-border: rgba(255,220,120,0.15);
+  --upload-bg: rgba(255,220,100,0.03);
+  --upload-border: rgba(255,220,120,0.15);
+  --tab-bg: rgba(255,240,180,0.05);
+  --tab-border: rgba(255,220,120,0.12);
+  --thead-bg: rgba(255,240,180,0.03);
+  --row-hover: rgba(255,240,180,0.03);
+  --row-border: rgba(255,220,120,0.06);
+  --price-color: #F0B429;
+  --marka-color: #F5E6C0;
+  --tarih-color: #8A7A50;
+  --arasinda-color: #5A4A30;
+  --badge-bg: rgba(240,180,40,0.12);
+  --badge-color: #F0B429;
+  --badge-border: rgba(240,180,40,0.25);
+  --shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Tema butonları */
+.tema-btns { display:flex; gap:4px; }
+.tema-btn {
+  width:28px; height:28px; border-radius:50%; border:2px solid transparent;
+  cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; background:rgba(255,255,255,0.08);
+}
+.tema-btn:hover { transform:scale(1.15); }
+.tema-btn.active { border-color:white; box-shadow:0 0 8px rgba(255,255,255,0.3); }
+body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;color:var(--text);transition:background 0.3s,color 0.3s}
 
 /* HEADER */
-.hdr{background:linear-gradient(135deg,#1a1f2e 0%,#12161f 100%);border-bottom:1px solid rgba(255,255,255,0.06);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.hdr{background:var(--hdr-bg);border-bottom:1px solid var(--hdr-border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
 .hdr-brand{display:flex;align-items:center;gap:12px}
 .hdr-icon{width:36px;height:36px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(99,102,241,0.4)}
 .hdr-title{font-size:16px;font-weight:600;color:#F1F5F9;letter-spacing:-0.02em}
@@ -24,30 +131,30 @@ body{font-family:'Inter',sans-serif;background:#0F1117;min-height:100vh;color:#E
 .wrap{max-width:1280px;margin:0 auto;padding:2rem}
 
 /* TABS */
-.tabs{display:flex;gap:2px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:4px;width:fit-content;margin-bottom:1.75rem}
-.tab{padding:8px 20px;border-radius:9px;border:none;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:#64748B;transition:all 0.2s;font-family:inherit;display:flex;align-items:center;gap:7px}
+.tabs{display:flex;gap:2px;background:var(--tab-bg);border:1px solid var(--tab-border);border-radius:12px;padding:4px;width:fit-content;margin-bottom:1.75rem}
+.tab{padding:8px 20px;border-radius:9px;border:none;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--text3);transition:all 0.2s;font-family:inherit;display:flex;align-items:center;gap:7px}
 .tab:hover{color:#CBD5E1}
 .tab.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 2px 12px rgba(99,102,241,0.35)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
 /* CARDS */
-.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;margin-bottom:1.25rem;overflow:hidden;transition:border-color 0.2s}
-.card:hover{border-color:rgba(255,255,255,0.12)}
-.card-hdr{padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between}
-.card-hdr h3{font-size:13px;font-weight:600;color:#CBD5E1;display:flex;align-items:center;gap:8px}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;margin-bottom:1.25rem;overflow:hidden;transition:border-color 0.2s,background 0.3s}
+.card:hover{border-color:var(--border2)}
+.card-hdr{padding:1rem 1.5rem;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+.card-hdr h3{font-size:13px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:8px}
 .card-hdr h3 span{opacity:0.6}
 .card-body{padding:1.5rem}
 
 /* UPLOAD ZONE */
-.upload{border:2px dashed rgba(255,255,255,0.1);border-radius:12px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all 0.25s;background:rgba(99,102,241,0.03);position:relative;overflow:hidden}
+.upload{border:2px dashed var(--upload-border);border-radius:12px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all 0.25s;background:var(--upload-bg);position:relative;overflow:hidden}
 .upload::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(99,102,241,0.08) 0%,transparent 70%);opacity:0;transition:opacity 0.3s}
 .upload:hover{border-color:rgba(99,102,241,0.5);background:rgba(99,102,241,0.06)}
 .upload:hover::before{opacity:1}
 .upload.drag-over{border-color:#6366f1;background:rgba(99,102,241,0.1)}
 .upload-ico{font-size:3rem;margin-bottom:1rem;filter:drop-shadow(0 4px 12px rgba(99,102,241,0.3))}
-.upload h2{font-size:15px;font-weight:600;color:#E2E8F0;margin-bottom:6px}
-.upload p{font-size:13px;color:#475569}
+.upload h2{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
+.upload p{font-size:13px;color:var(--text3)}
 
 /* AI BADGE */
 .ai-badge{background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(16,185,129,0.08));border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:12px 16px;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px}
@@ -58,7 +165,7 @@ body{font-family:'Inter',sans-serif;background:#0F1117;min-height:100vh;color:#E
 /* SETTINGS */
 .settings-row{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
 .field label{font-size:11px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:6px}
-.field input{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;font-size:13px;color:#E2E8F0;font-family:inherit;outline:none;transition:all 0.2s}
+.field input{width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);font-family:inherit;outline:none;transition:all 0.2s}
 .field input:focus{border-color:rgba(99,102,241,0.6);background:rgba(99,102,241,0.06);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
 .field input::placeholder{color:#334155}
 
@@ -78,18 +185,18 @@ body{font-family:'Inter',sans-serif;background:#0F1117;min-height:100vh;color:#E
 /* TABLE */
 .tbl-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
-thead tr{background:rgba(255,255,255,0.02)}
-th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#334155;border-bottom:1px solid rgba(255,255,255,0.06)}
-td{padding:10px 14px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);color:#CBD5E1;vertical-align:middle}
-tbody tr:hover td{background:rgba(255,255,255,0.02)}
-.marka{font-weight:600;color:#E2E8F0;font-size:12px}
-.price{font-weight:700;color:#818cf8;text-align:right}
-.tarih-c{color:#475569;font-size:12px}
-.arasinda-c{color:#334155;font-size:11px;font-style:italic}
+thead tr{background:var(--thead-bg)}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text4);border-bottom:1px solid var(--border2)}
+td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--row-border);color:var(--text2);vertical-align:middle}
+tbody tr:hover td{background:var(--row-hover)}
+.marka{font-weight:600;color:var(--marka-color);font-size:12px}
+.price{font-weight:700;color:var(--price-color);text-align:right}
+.tarih-c{color:var(--tarih-color);font-size:12px}
+.arasinda-c{color:var(--arasinda-color);font-size:11px;font-style:italic}
 
-.inp-row{background:rgba(99,102,241,0.03);border-top:1px solid rgba(99,102,241,0.15)}
+.inp-row{background:var(--card-bg);border-top:1px solid var(--border)}
 .inp-row td{padding:6px 6px}
-.inp-row input{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:7px 10px;font-size:12px;width:100%;color:#E2E8F0;font-family:inherit;outline:none}
+.inp-row input{background:var(--input-bg);border:1px solid var(--input-border);border-radius:6px;padding:7px 10px;font-size:12px;width:100%;color:var(--text);font-family:inherit;outline:none}
 .inp-row input:focus{border-color:rgba(99,102,241,0.5)}
 .inp-row input::placeholder{color:#1e293b}
 
@@ -98,7 +205,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 .export-bar.visible{display:flex}
 
 /* COUNT */
-.badge{background:rgba(99,102,241,0.15);color:#818cf8;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid rgba(99,102,241,0.2)}
+.badge{background:var(--badge-bg);color:var(--badge-color);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid var(--badge-border)}
 
 /* AI STATUS */
 .ai-status{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:12px}
@@ -118,8 +225,388 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 
 #sheetsStatus,#sheetsAiStatus{display:none;margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;text-align:center}
 
+
+/* ── ANIMATIONS & EFFECTS ── */
+
+/* Sayfa yüklenme animasyonu */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes pulse-dot {
+  0%,100% { box-shadow:0 0 6px rgba(34,197,94,0.6); }
+  50%      { box-shadow:0 0 12px rgba(34,197,94,1); }
+}
+@keyframes float-icon {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-4px); }
+}
+@keyframes gradient-shift {
+  0%   { background-position:0% 50%; }
+  50%  { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
+
+/* Header glow */
+.hdr {
+  box-shadow: 0 1px 0 var(--hdr-border), 0 4px 24px rgba(0,0,0,0.3);
+}
+.hdr-icon {
+  animation: float-icon 3s ease-in-out infinite;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6,#a78bfa);
+  background-size: 200% 200%;
+  animation: float-icon 3s ease-in-out infinite, gradient-shift 4s ease infinite;
+}
+.hdr-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* Wrap giriş animasyonu */
+.wrap { animation: fadeIn 0.4s ease; }
+
+/* Tabs geliştirme */
+.tabs {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  animation: fadeUp 0.4s ease 0.1s both;
+}
+.tab { position:relative; overflow:hidden; }
+.tab::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.1),transparent);
+  opacity:0;
+  transition:opacity 0.2s;
+}
+.tab:hover::after { opacity:1; }
+
+/* Kartlar */
+.card {
+  box-shadow: var(--shadow);
+  animation: fadeUp 0.4s ease 0.15s both;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+}
+.card:hover {
+  border-color: rgba(99,102,241,0.25) !important;
+  box-shadow: 0 4px 24px rgba(99,102,241,0.08), var(--shadow);
+  transform: translateY(-1px);
+}
+
+/* Upload zone */
+.upload-ico { animation: float-icon 3s ease-in-out infinite; }
+.upload {
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.upload:hover .upload-ico { transform:scale(1.1) translateY(-4px); }
+
+/* Butonlar */
+.btn {
+  position:relative; overflow:hidden;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+.btn::before {
+  content:'';
+  position:absolute;
+  top:50%; left:50%;
+  width:0; height:0;
+  background:rgba(255,255,255,0.15);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  transition:width 0.4s, height 0.4s, opacity 0.4s;
+  opacity:0;
+}
+.btn:active::before { width:200px; height:200px; opacity:0; }
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 6px 24px rgba(99,102,241,0.5); }
+.btn-green:hover   { transform:translateY(-1px); box-shadow:0 6px 24px rgba(16,185,129,0.5); }
+.btn-ghost:hover   { transform:translateY(-1px); }
+.btn-add { transition:all 0.2s; }
+.btn-add:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(99,102,241,0.4); }
+
+/* Tablo satır animasyonu */
+tbody tr {
+  transition: background 0.15s;
+  animation: fadeIn 0.3s ease both;
+}
+tbody tr:nth-child(1)  { animation-delay:0.05s; }
+tbody tr:nth-child(2)  { animation-delay:0.08s; }
+tbody tr:nth-child(3)  { animation-delay:0.11s; }
+tbody tr:nth-child(4)  { animation-delay:0.14s; }
+tbody tr:nth-child(5)  { animation-delay:0.17s; }
+tbody tr:nth-child(6)  { animation-delay:0.20s; }
+tbody tr:nth-child(7)  { animation-delay:0.23s; }
+tbody tr:nth-child(8)  { animation-delay:0.26s; }
+tbody tr:nth-child(9)  { animation-delay:0.29s; }
+tbody tr:nth-child(10) { animation-delay:0.32s; }
+
+/* Silme butonu */
+.btn-del { transition:all 0.15s cubic-bezier(0.4,0,0.2,1); }
+.btn-del:hover { transform:scale(1.05); }
+
+/* Export bar */
+.export-bar { animation: fadeUp 0.4s ease 0.2s both; }
+
+/* Badge pulse */
+.badge {
+  transition: all 0.3s;
+  animation: fadeIn 0.4s ease;
+}
+
+/* Input focus glow */
+.field input, .inp-row input {
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Tema butonları */
+.tema-btn {
+  position:relative; overflow:hidden;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+.tema-btn:hover { transform:scale(1.2) rotate(10deg); }
+
+/* Tab panel geçişi */
+.tab-panel { animation: none; }
+.tab-panel.active { animation: fadeUp 0.3s ease; }
+
+/* Skeleton Loader */
+@keyframes shimmer-wave {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.10) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer-wave 1.4s ease-in-out infinite;
+  border-radius: 6px;
+}
+[data-tema="gunduz"] .skeleton {
+  background: linear-gradient(90deg,
+    #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer-wave 1.4s ease-in-out infinite;
+}
+[data-tema="goz"] .skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,220,120,0.06) 25%,
+    rgba(255,220,120,0.14) 50%,
+    rgba(255,220,120,0.06) 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer-wave 1.4s ease-in-out infinite;
+}
+.skeleton-row td { padding: 10px 14px; border-bottom: 1px solid var(--row-border); }
+.skeleton-cell { height: 14px; }
+.skeleton-img  { width:52px; height:40px; border-radius:6px; }
+.skeleton-marka { width:70%; height:12px; }
+.skeleton-urun  { width:85%; height:12px; }
+.skeleton-fiyat { width:50%; height:12px; margin-left:auto; }
+.skeleton-tarih { width:80%; height:12px; }
+.skeleton-arasinda { width:90%; height:11px; }
+
+/* Excel yükleme overlay */
+.upload-loading {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 10;
+  animation: fadeIn 0.2s ease;
+}
+.upload-loading .big-spin {
+  width: 40px; height: 40px;
+  border: 3px solid rgba(99,102,241,0.3);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.upload-loading p {
+  font-size: 13px; font-weight: 500; color: #a5b4fc;
+}
+.upload { position: relative; }
+
+/* Checkbox */
+.cb-wrap { display:flex; align-items:center; justify-content:center; }
+input[type="checkbox"] {
+  width:15px; height:15px; cursor:pointer; accent-color:#6366f1;
+  border-radius:4px;
+}
+
+/* Aksiyon çubuğu */
+.action-bar {
+  display:none; align-items:center; gap:12px; flex-wrap:wrap;
+  padding:10px 16px; border-radius:10px; margin-bottom:1rem;
+  background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.12));
+  border:1px solid rgba(99,102,241,0.3);
+  animation: fadeUp 0.25s ease;
+}
+.action-bar.visible { display:flex; }
+.action-bar-info { font-size:13px; font-weight:600; color:#a5b4fc; flex:1; }
+.action-bar .btn { padding:6px 12px; font-size:12px; }
+.btn-danger { background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
+.btn-danger:hover { background:rgba(239,68,68,0.25); }
+
+/* Drag handle */
+.drag-handle {
+  cursor: grab;
+  color: var(--text4);
+  font-size: 14px;
+  padding: 0 4px;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  user-select: none;
+  letter-spacing: -2px;
+}
+.drag-handle:hover { opacity: 1; color: var(--badge-color); }
+.drag-handle:active { cursor: grabbing; }
+.sortable-ghost { opacity: 0.4; background: rgba(99,102,241,0.1) !important; }
+.sortable-chosen { background: rgba(99,102,241,0.06) !important; box-shadow: 0 4px 16px rgba(99,102,241,0.2); }
+.sortable-drag { opacity: 0.9; }
+
+/* Context menu */
+.ctx-menu {
+  position:fixed; z-index:9999;
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:10px; padding:4px; min-width:180px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  animation:fadeIn 0.15s ease;
+}
+.ctx-item {
+  padding:8px 12px; border-radius:7px; cursor:pointer;
+  font-size:13px; color:var(--text2); display:flex; align-items:center; gap:8px;
+  transition:background 0.15s;
+}
+.ctx-item:hover { background:rgba(99,102,241,0.1); color:var(--text); }
+.ctx-sep { height:1px; background:var(--border); margin:4px 0; }
+
+/* Afiş modal */
+.afis-overlay {
+  display:none; position:fixed; inset:0; z-index:1001;
+  background:rgba(0,0,0,0.7); backdrop-filter:blur(6px);
+  animation:fadeIn 0.2s ease;
+}
+.afis-overlay.visible { display:flex; align-items:center; justify-content:center; gap:24px; padding:24px; flex-wrap:wrap; }
+.afis-modal {
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:16px; padding:1.5rem; width:320px; flex-shrink:0;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5); animation:fadeUp 0.25s ease;
+  max-height:90vh; overflow-y:auto;
+}
+.afis-modal h2 { font-size:15px; font-weight:700; color:var(--text); margin:0 0 1rem; }
+.afis-field { margin-bottom:12px; }
+.afis-field label { font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:4px; }
+.afis-field input { width:100%; background:var(--input-bg); border:1px solid var(--input-border); border-radius:7px; padding:7px 10px; font-size:13px; color:var(--text); font-family:inherit; outline:none; }
+.afis-slider-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.afis-slider-row span:first-child { font-size:11px; color:var(--text3); width:44px; }
+.afis-slider-row input[type=range] { flex:1; }
+.afis-slider-row span:last-child { font-size:11px; color:var(--text2); width:28px; text-align:right; }
+.afis-colors { display:flex; gap:6px; flex-wrap:wrap; }
+.afis-color-btn { width:24px; height:24px; border-radius:50%; border:2px solid transparent; cursor:pointer; padding:0; transition:transform 0.15s; }
+.afis-color-btn:hover { transform:scale(1.15); }
+.afis-color-btn.active { border-color:white; box-shadow:0 0 0 2px rgba(99,102,241,0.5); }
+
+/* Afiş önizleme */
+.afis-preview-wrap {
+  background:#f5f5f5; border-radius:12px; padding:16px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+#afisCanvas {
+  background:#fff; border-radius:8px;
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:space-between; padding:20px 16px;
+  width:300px; height:424px; box-sizing:border-box; gap:8px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.15);
+}
+
+/* Yardım butonu & modal */
+.help-btn {
+  position:fixed; bottom:24px; right:24px; z-index:999;
+  width:40px; height:40px; border-radius:50%;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  border:none; cursor:pointer; font-size:18px; font-weight:700;
+  color:white; box-shadow:0 4px 16px rgba(99,102,241,0.5);
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; font-family:inherit;
+}
+.help-btn:hover { transform:scale(1.1); box-shadow:0 6px 24px rgba(99,102,241,0.7); }
+
+.help-overlay {
+  display:none; position:fixed; inset:0; z-index:1000;
+  background:rgba(0,0,0,0.6); backdrop-filter:blur(4px);
+  animation:fadeIn 0.2s ease;
+}
+.help-overlay.visible { display:flex; align-items:center; justify-content:center; }
+
+.help-modal {
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:2rem;
+  width:420px;
+  max-width:90vw;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  animation:fadeUp 0.25s ease;
+}
+.help-modal h2 {
+  font-size:16px; font-weight:700; color:var(--text);
+  margin-bottom:1.25rem; display:flex; align-items:center; gap:8px;
+}
+.help-section { margin-bottom:1.25rem; }
+.help-section h4 { font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.6rem; }
+.shortcut-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 0; border-bottom:1px solid var(--border2);
+}
+.shortcut-row:last-child { border-bottom:none; }
+.shortcut-desc { font-size:13px; color:var(--text2); }
+.shortcut-keys { display:flex; gap:4px; }
+.kbd {
+  background:rgba(255,255,255,0.08); border:1px solid var(--border);
+  border-radius:5px; padding:3px 8px; font-size:11px; font-weight:600;
+  color:var(--badge-color); font-family:monospace;
+}
+[data-tema="gunduz"] .kbd { background:#F1F5F9; }
+.help-close {
+  width:100%; margin-top:1rem; padding:10px;
+  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  color:white; border:none; border-radius:9px; font-size:13px;
+  font-weight:600; cursor:pointer; font-family:inherit;
+  transition:all 0.2s;
+}
+.help-close:hover { box-shadow:0 4px 16px rgba(99,102,241,0.4); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(99,102,241,0.3); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(99,102,241,0.5); }
+
+/* Selection */
+::selection { background:rgba(99,102,241,0.3); color:#E2E8F0; }
+
+/* Folder status bar */
+#folderStatus {
+  animation: fadeUp 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
 @media(max-width:768px){.wrap{padding:1rem}.settings-row{grid-template-columns:1fr}}
-@media print{.hdr,.tabs,.upload,.card-hdr .btn,.export-bar,.inp-row,.ai-badge,#sheetsStatus{display:none!important}body{background:#fff;color:#000}.card{border:none}.price{color:#000!important}.marka{color:#000!important}}
+@media print{.hdr,.tabs,.upload,.card-hdr .btn,.export-bar,.inp-row,.ai-badge,#sheetsStatus{display:none!important}body{background:#fff;color:#000}.card{border:none;box-shadow:none;transform:none}.price{color:#000!important}.marka{color:#000!important}}
 </style>
 </head>
 <body>
@@ -128,18 +615,29 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
   <div class="hdr-brand">
     <div class="hdr-icon">📋</div>
     <div>
-      <div class="hdr-title">Kampanya Dönüştürücü</div>
-      <div class="hdr-sub">Stok verilerini kampanya formatına çevir</div>
+      <div class="hdr-title" data-i18n="app_title">Kampanya Dönüştürücü</div>
+      <div class="hdr-sub" data-i18n="app_sub">Stok verilerini kampanya formatına çevir</div>
     </div>
   </div>
-  <div class="hdr-status"><div class="hdr-dot"></div>Aktif</div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;gap:2px;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px;">
+      <button id="btn-tr" onclick="setLang('tr')" style="padding:3px 10px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;background:rgba(99,102,241,0.8);color:white;font-family:inherit;transition:all 0.2s">TR</button>
+      <button id="btn-en" onclick="setLang('en')" style="padding:3px 10px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:#64748B;font-family:inherit;transition:all 0.2s">EN</button>
+    </div>
+    <div class="tema-btns">
+      <button class="tema-btn" onclick="setTema('gece')" title="Gece Modu" id="btn-gece">🌙</button>
+      <button class="tema-btn active" onclick="setTema('gunduz')" title="Gündüz Modu" id="btn-gunduz">☀️</button>
+      <button class="tema-btn" onclick="setTema('goz')" title="Göz Filtresi" id="btn-goz">🟡</button>
+    </div>
+    <div class="hdr-status"><div class="hdr-dot"></div>Aktif</div>
+  </div>
 </div>
 
 <div class="wrap">
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('excel')">📂 Excel ile Yükle</button>
-    <button class="tab" onclick="switchTab('gorsel')">🖼️ Görsel Analiz</button>
+    <button class="tab active" onclick="switchTab('excel')">📂 <span data-i18n="tab_excel">Excel ile Yükle</span></button>
+    <button class="tab" onclick="switchTab('gorsel')">🖼️ <span data-i18n="tab_gorsel">Görsel Analiz</span></button>
   </div>
 
   <div class="tab-panel active" id="tab-excel">
@@ -147,8 +645,8 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
       <div class="card-body">
         <div class="upload" id="uploadZone">
           <div class="upload-ico">📂</div>
-          <h2>Excel Dosyasını Yükle</h2>
-          <p>Stok kodlu Excel dosyasını buraya sürükle veya tıkla (.xlsx, .xls)</p>
+          <h2 data-i18n="upload_title">Excel Dosyasını Yükle</h2>
+          <p data-i18n="upload_desc">Stok kodlu Excel dosyasını buraya sürükle veya tıkla (.xlsx, .xls)</p>
           <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
         </div>
       </div>
@@ -163,12 +661,12 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
           <span style="font-size:13px;font-weight:600;color:#a5b4fc">Claude AI — Görsel Analiz</span>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
-          <input type="password" id="claudeApiKey" placeholder="sk-ant-api03-..." autocomplete="off"
+          <input type="password" id="claudeApiKey" placeholder="sk-ant-api03-..." data-i18n-placeholder="api_placeholder" autocomplete="off"
             style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;font-size:13px;color:#E2E8F0;font-family:monospace;outline:none"
             oninput="saveApiKey(this.value)">
-          <button class="btn btn-primary" onclick="testApiKey()" style="white-space:nowrap">Bağlan</button>
+          <button class="btn btn-primary" onclick="testApiKey()" style="white-space:nowrap" data-i18n="btn_connect">Bağlan</button>
         </div>
-        <div style="font-size:11px;color:#334155;margin-top:8px">🔒 API anahtarın sadece tarayıcında saklanır, hiçbir yere gönderilmez. <a href="https://console.anthropic.com" target="_blank" style="color:#6366f1">console.anthropic.com</a></div>
+        <div style="font-size:11px;color:#334155;margin-top:8px"><span data-i18n="api_info">🔒 API anahtarın sadece tarayıcında saklanır, hiçbir yere gönderilmez.</span> <a href="https://console.anthropic.com" target="_blank" style="color:#6366f1">console.anthropic.com</a></div>
         <div id="apiKeyStatus" style="display:none;margin-top:8px;font-size:12px;padding:6px 10px;border-radius:6px"></div>
       </div>
     </div>
@@ -176,8 +674,8 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
       <div class="card-body">
         <div class="upload" id="imageDropZone">
           <div class="upload-ico">🖼️</div>
-          <h2>Fiyat Listesi Görselini Yükle</h2>
-          <p>Fotoğraf, ekran görüntüsü veya el yazısı liste — Claude analiz edip tabloya aktarır</p>
+          <h2 data-i18n="img_upload_title">Fiyat Listesi Görselini Yükle</h2>
+          <p data-i18n="img_upload_desc">Fotoğraf, ekran görüntüsü veya el yazısı liste — Claude analiz edip tabloya aktarır</p>
           <input type="file" id="imageInput" accept="image/*" style="display:none">
         </div>
         <div class="img-wrap" id="imagePreviewWrap" style="margin-top:1.25rem">
@@ -188,20 +686,22 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
           <div class="ai-tbl" id="aiResultTable" style="display:none">
             <table>
               <thead><tr>
-                <th style="width:130px">Marka</th>
-                <th>Ürün</th>
+                <th style="width:80px">Görsel</th>
+                <th style="width:130px" data-i18n="col_marka">Marka</th>
+                <th data-i18n="col_urun">Ürün</th>
                 <th style="width:110px;text-align:right">Fiyat (₺)</th>
               </tr></thead>
               <tbody id="aiResultBody"></tbody>
             </table>
           </div>
-          <div class="ai-acts">
-            <button class="btn btn-primary" id="addAllBtn" style="display:none;flex:1" onclick="addAllAiRows()">✅ Tümünü Tabloya Ekle</button>
-            <button class="btn btn-ghost" id="downloadAiBtn" style="display:none;flex:1" onclick="downloadAiExcel()">⬇ Excel İndir</button>
+          <div class="ai-acts" id="aiActionBtns">
+            <button class="btn btn-primary" id="aiGorselBtn" style="display:none;flex:1" onclick="selectAiImageFolder()"><span data-i18n="btn_folder"><span data-i18n="btn_folder">📁 Görsel Klasörü Seç</span></span></button>
+            <button class="btn btn-ghost" id="downloadAiBtn" style="display:none;flex:1" onclick="downloadAiExcel()"><span data-i18n="btn_excel">⬇ Excel İndir</span></button>
             <button class="btn btn-green" id="sheetsAiBtn" style="display:none;flex:1" onclick="exportAiToSheets()">
-              <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Google Sheets
+              <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
             </button>
           </div>
+          <div id="aiGorselStatus" style="display:none;margin-top:8px;padding:8px 12px;border-radius:8px;font-size:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;text-align:center"></div>
           <div id="sheetsAiStatus"></div>
         </div>
       </div>
@@ -209,25 +709,40 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
   </div>
 
   <div class="card" id="controlsPanel" style="display:none">
-    <div class="card-hdr"><h3><span>⚙️</span>Kampanya Ayarları</h3></div>
+    <div class="card-hdr"><h3><span>⚙️</span><span data-i18n="settings_title">Kampanya Ayarları</span></h3></div>
     <div class="card-body">
       <div class="settings-row">
-        <div class="field"><label>Tarih Aralığı</label><input type="text" id="tarihText" value="" placeholder="21 - 24 Mayıs 2026"></div>
-        <div class="field"><label>Geçerlilik Metni</label><input type="text" id="arasindaText" value="Tarihleri arasında geçerlidir."></div>
-        <button class="btn btn-primary" onclick="applySettings()">🔄 Güncelle</button>
+        <div class="field"><label data-i18n="label_tarih">Tarih Aralığı</label><input type="text" id="tarihText" value="" placeholder="21 - 24 Mayıs 2026"></div>
+        <div class="field"><label data-i18n="label_gecerlilik">Geçerlilik Metni</label><input type="text" id="arasindaText" value="Tarihleri arasında geçerlidir."></div>
+        <button class="btn btn-primary" onclick="applySettings()"><span data-i18n="btn_guncelle">🔄 Güncelle</span></button>
       </div>
     </div>
   </div>
 
+  <!-- EXCEL TAB İÇERİĞİ - Ayarlar, Tablo, Export -->
+  <div id="excelContent" style="display:none">
+
+  <!-- Aksiyon Çubuğu -->
+  <div class="action-bar" id="actionBar">
+    <span class="action-bar-info" id="actionInfo">0 satır seçildi</span>
+    <button class="btn btn-ghost" data-i18n="btn_bulk_date" onclick="bulkChangeTarih()" title="Seçilenlerin tarihini değiştir">📅 Tarih Değiştir</button>
+    <button class="btn btn-ghost" data-i18n="btn_bulk_excel" onclick="bulkExcel()" title="Seçilenleri Excel olarak indir">⬇ Excel Yap</button>
+    <button class="btn btn-danger" data-i18n="btn_bulk_delete" onclick="bulkDelete()" title="Seçilenleri sil">🗑 Toplu Sil</button>
+    <button class="btn btn-ghost" onclick="clearSelection()" style="padding:6px 10px;">✕</button>
+  </div>
+
   <div class="card" id="productTable" style="display:none">
     <div class="card-hdr">
-      <h3><span>📋</span>Kampanya Ürünleri</h3>
+      <h3><span>📋</span><span data-i18n="table_title">Kampanya Ürünleri</span></h3>
       <span class="badge" id="rowCount">0 ürün</span>
     </div>
     <div class="tbl-wrap">
       <table>
         <thead>
           <tr>
+            <th style="width:36px"><div class="cb-wrap"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)"></div></th>
+            <th style="width:30px"></th>
+            <th style="width:70px" data-i18n="col_gorsel">Görsel</th>
             <th style="width:130px">Marka</th>
             <th>Ürün</th>
             <th style="width:110px;text-align:right">Fiyat (₺)</th>
@@ -253,23 +768,185 @@ tbody tr:hover td{background:rgba(255,255,255,0.02)}
 
   <div class="export-bar" id="exportBar">
     <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
+    <button class="btn btn-primary" onclick="selectImageFolder()" id="folderBtn">📁 Görsel Klasörü Seç</button>
     <button class="btn btn-green" onclick="exportToSheets()">
       <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Google Sheets
     </button>
-    <button class="btn btn-ghost" onclick="window.print()">🖨 Yazdır</button>
+    <button class="btn btn-ghost" onclick="window.print()"><span data-i18n="btn_print">🖨 Yazdır</span></button>
   </div>
+  <div id="folderStatus" style="display:none;margin-top:0.5rem;padding:8px 12px;border-radius:8px;font-size:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;text-align:center"></div>
   <div id="sheetsStatus"></div>
 
+  </div><!-- /excelContent -->
+
+</div>
+
+<!-- Context Menu -->
+<div class="ctx-menu" id="ctxMenu" style="display:none">
+  <div class="ctx-item" onclick="openAfisFromCtx()">🖼️ Afiş Oluştur</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="deleteRow(_ctxIdx); hideCtx()">🗑 Satırı Sil</div>
+</div>
+
+<!-- Afiş Modal -->
+<div class="afis-overlay" id="afisOverlay" onclick="if(event.target===this)closeAfis()">
+  <div class="afis-preview-wrap">
+    <div id="afisCanvas">
+      <div style="text-align:center;width:100%">
+        <p id="afis-marka" style="font-size:26px;font-weight:700;color:#111;margin:0;line-height:1.15;text-transform:uppercase">MARKA</p>
+        <p id="afis-urun" style="font-size:20px;font-weight:700;color:#111;margin:6px 0 0;line-height:1.15;text-transform:uppercase">ÜRÜN ADI</p>
+      </div>
+      <div id="afis-img-wrap" style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0;">
+        <div style="width:180px;height:180px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa">Görsel</div>
+      </div>
+      <div id="afis-fiyat-box" style="background:#e63030;width:100%;border-radius:8px;padding:14px 0;text-align:center">
+        <p id="afis-fiyat" style="font-size:52px;font-weight:700;color:#fff;margin:0;letter-spacing:-2px;line-height:1">0,00</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="afis-modal">
+    <h2>🖼️ Afiş Oluştur</h2>
+
+    <div class="afis-field">
+      <label>Marka</label>
+      <input type="text" id="afis-i-marka" oninput="afisUpdate()">
+    </div>
+    <div class="afis-field">
+      <label>Ürün Adı</label>
+      <input type="text" id="afis-i-urun" oninput="afisUpdate()">
+    </div>
+    <div class="afis-field">
+      <label>Fiyat</label>
+      <input type="text" id="afis-i-fiyat" oninput="afisUpdate()">
+    </div>
+    <div class="afis-field">
+      <label>Görsel URL</label>
+      <input type="text" id="afis-i-gorsel" placeholder="https://drive.google.com/uc?id=..." oninput="afisUpdateImg()">
+    </div>
+
+    <div class="afis-field">
+      <label>Punto Ayarları</label>
+      <div class="afis-slider-row">
+        <span>Marka</span>
+        <input type="range" id="afis-s-marka" min="14" max="48" value="26" oninput="afisUpdate()">
+        <span id="afis-v-marka">26px</span>
+      </div>
+      <div class="afis-slider-row">
+        <span>Ürün</span>
+        <input type="range" id="afis-s-urun" min="12" max="40" value="20" oninput="afisUpdate()">
+        <span id="afis-v-urun">20px</span>
+      </div>
+      <div class="afis-slider-row">
+        <span>Fiyat</span>
+        <input type="range" id="afis-s-fiyat" min="24" max="80" value="52" oninput="afisUpdate()">
+        <span id="afis-v-fiyat">52px</span>
+      </div>
+      <div class="afis-slider-row">
+        <span>Görsel</span>
+        <input type="range" id="afis-s-gorsel" min="80" max="260" value="200" oninput="afisUpdate()">
+        <span id="afis-v-gorsel">200px</span>
+      </div>
+    </div>
+
+    <div class="afis-field">
+      <label>Etiket Rengi</label>
+      <div class="afis-colors">
+        <button class="afis-color-btn active" style="background:#e63030" onclick="afisSetClr('#e63030',this)"></button>
+        <button class="afis-color-btn" style="background:#1a1a2e" onclick="afisSetClr('#1a1a2e',this)"></button>
+        <button class="afis-color-btn" style="background:#0f9d58" onclick="afisSetClr('#0f9d58',this)"></button>
+        <button class="afis-color-btn" style="background:#f59e0b" onclick="afisSetClr('#f59e0b',this)"></button>
+        <button class="afis-color-btn" style="background:#6366f1" onclick="afisSetClr('#6366f1',this)"></button>
+        <input type="color" value="#e63030" oninput="afisSetClr(this.value,null)" style="width:24px;height:24px;border:none;border-radius:50%;cursor:pointer;padding:0;background:none">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:1rem">
+      <button class="btn btn-primary" style="flex:1" onclick="afisIndir()">⬇ PNG İndir</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeAfis()">İptal</button>
+    </div>
+    <button class="btn btn-dark" style="width:100%;margin-top:8px" onclick="afisTopluIndir()" id="afis-toplu-btn" style="display:none">📦 Seçilenleri ZIP İndir</button>
+  </div>
+</div>
+
+<!-- Yardım Butonu -->
+<button class="help-btn" onclick="toggleHelp()" title="Klavye kısayolları">?</button>
+
+<!-- Yardım Modal -->
+<div class="help-overlay" id="helpOverlay" onclick="if(event.target===this)toggleHelp()">
+  <div class="help-modal">
+    <h2>⌨️ Klavye Kısayolları</h2>
+
+    <div class="help-section">
+      <h4>Genel</h4>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Yeni satır odağı</span>
+        <div class="shortcut-keys"><span class="kbd">Alt</span><span class="kbd">N</span></div>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Drive'a kaydet / Sheets güncelle</span>
+        <div class="shortcut-keys"><span class="kbd">Ctrl</span><span class="kbd">S</span></div>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Yazdır / PDF al</span>
+        <div class="shortcut-keys"><span class="kbd">Ctrl</span><span class="kbd">P</span></div>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Excel indir</span>
+        <div class="shortcut-keys"><span class="kbd">Ctrl</span><span class="kbd">E</span></div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <h4>Tablo</h4>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Satır ekle (input doluyken)</span>
+        <div class="shortcut-keys"><span class="kbd">Enter</span></div>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Tümünü seç</span>
+        <div class="shortcut-keys"><span class="kbd">Ctrl</span><span class="kbd">A</span></div>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Seçimi iptal et</span>
+        <div class="shortcut-keys"><span class="kbd">Esc</span></div>
+      </div>
+    </div>
+
+    <div class="help-section">
+      <h4>Temalar</h4>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Gece modu</span>
+        <div class="shortcut-keys"><span class="kbd">Alt</span><span class="kbd">1</span></div>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Gündüz modu</span>
+        <div class="shortcut-keys"><span class="kbd">Alt</span><span class="kbd">2</span></div>
+      </div>
+      <div class="shortcut-row">
+        <span class="shortcut-desc">Göz filtresi</span>
+        <div class="shortcut-keys"><span class="kbd">Alt</span><span class="kbd">3</span></div>
+      </div>
+    </div>
+
+    <button class="help-close" onclick="toggleHelp()">Kapat</button>
+  </div>
 </div>
 
 <script>
 let rows = [];
 let aiPendingRows = [];
+let selectedRows = new Set();
 
 function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i === (tab==='excel'?0:1)));
+  document.querySelectorAll('.tabs .tab').forEach((b,i) => b.classList.toggle('active', i === (tab==='excel'?0:1)));
   document.getElementById('tab-excel').classList.toggle('active', tab==='excel');
   document.getElementById('tab-gorsel').classList.toggle('active', tab==='gorsel');
+  // Excel içeriğini sadece excel sekmesinde göster
+  const ec = document.getElementById('excelContent');
+  if (ec) {
+    ec.style.display = (tab === 'excel' && ec.dataset.loaded === 'true') ? 'block' : 'none';
+  }
 }
 
 // ── EXCEL ────────────────────────────────────────────────────
@@ -293,24 +970,87 @@ function processFile(file) {
   reader.onload = function(e) {
     const wb = XLSX.read(new Uint8Array(e.target.result), { type:'array' });
     const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header:1, defval:'' });
+    if (json.length < 2) return;
+
     const tarih = document.getElementById('tarihText').value;
     const arasinda = document.getElementById('arasindaText').value;
-    const seen = new Set();
     rows = [];
+    selectedRows.clear();
+
+    // Başlık satırını normalize et
+    const header = json[0].map(h => String(h||'').toUpperCase().trim()
+      .replace(/İ/g,'I').replace(/Ğ/g,'G').replace(/Ş/g,'S')
+      .replace(/Ç/g,'C').replace(/Ö/g,'O').replace(/Ü/g,'U'));
+
+    // Sütun indexlerini bul
+    const colMarka   = header.findIndex(h => h.includes('MARKA'));
+    const colUrun    = header.findIndex(h => h.includes('URUN') || h.includes('STOK') || h.includes('ISMI') || h.includes('ISIM') || h.includes('STOK ISMI'));
+    const colFiyat   = header.findIndex(h => h.includes('FIYAT') || h.includes('PRICE') || h.includes('FIYATI'));
+    const colKod     = header.findIndex(h => h.includes('KOD') || h.includes('CODE'));
+    const colTarih   = header.findIndex(h => h.includes('TARIH') || h.includes('DATE'));
+    const colArasinda= header.findIndex(h => h.includes('ARASINDA') || h.includes('GECERLI'));
+    const colGorsel  = header.findIndex(h => h.includes('GORSEL') || h.includes('URL') || h.includes('IMAGE'));
+
+    // Format tespiti
+    const isHazirFormat = colMarka >= 0 && colUrun >= 0; // MARKA ve ÜRÜN sütunu var
+    const isStokFormat  = !isHazirFormat; // Hazır format değilse stok formatı
+
+    const seen = new Set();
+
     for (let i = 1; i < json.length; i++) {
       const r = json[i];
-      const kod = String(r[0]||'').trim();
-      const isim = String(r[1]||'').trim();
-      let fiyat = '';
-      for (const idx of [3,4,2]) {
-        if (r[idx] !== undefined && r[idx] !== '' && !isNaN(Number(r[idx])) && Number(r[idx]) > 0) {
-          fiyat = Number(r[idx]).toFixed(2).replace('.',','); break;
+      const isEmpty = r.every(c => String(c||'').trim() === '');
+      if (isEmpty) continue;
+
+      let marka = '', urun = '', fiyat = '', gorselUrl = '';
+
+      if (isHazirFormat) {
+        // Hazır format: MARKA, ÜRÜN, FİYAT sütunları mevcut
+        marka = String(r[colMarka]||'').trim().toUpperCase();
+        urun  = String(r[colUrun] ||'').trim();
+        const fiyatRaw = colFiyat >= 0 ? r[colFiyat] : '';
+        if (fiyatRaw !== '' && !isNaN(Number(String(fiyatRaw).replace(',','.')))) {
+          fiyat = String(fiyatRaw).includes(',') ? String(fiyatRaw) : Number(fiyatRaw).toFixed(2).replace('.',',');
+        }
+        if (colGorsel >= 0) gorselUrl = String(r[colGorsel]||'').trim();
+        if (colTarih >= 0 && r[colTarih]) {
+          // Tarih sütunu varsa override etme
+        }
+        if (!marka || !urun) continue;
+
+      } else if (isStokFormat) {
+        // Stok format: Stok kodu + Stok ismi
+        const kod  = String(r[colKod >= 0 ? colKod : 0]||'').trim();
+        const isim = String(r[colUrun >= 0 ? colUrun : 1]||'').trim();
+        if (!kod || !isim || seen.has(kod)) continue;
+        seen.add(kod);
+        // Fiyat: farklı sütunlarda ara
+        for (const idx of [3,4,2,5]) {
+          if (r[idx] !== undefined && r[idx] !== '' && !isNaN(Number(r[idx])) && Number(r[idx]) > 0) {
+            fiyat = Number(r[idx]).toFixed(2).replace('.',','); break;
+          }
+        }
+        const p = parseName(isim);
+        marka = p.marka;
+        urun  = p.urun;
+
+      } else {
+        // Bilinmeyen format: ilk iki sütunu marka+ürün say, üçüncüyü fiyat
+        const col0 = String(r[0]||'').trim();
+        const col1 = String(r[1]||'').trim();
+        const col2 = r[2];
+        if (!col0 && !col1) continue;
+        if (col1) { marka = col0.toUpperCase(); urun = col1; }
+        else { const p = parseName(col0); marka = p.marka; urun = p.urun; }
+        if (col2 !== '' && !isNaN(Number(col2)) && Number(col2) > 0) {
+          fiyat = Number(col2).toFixed(2).replace('.',',');
         }
       }
-      if (!kod || !isim || seen.has(kod)) continue;
-      seen.add(kod);
-      const p = parseName(isim);
-      rows.push({ marka:p.marka, urun:p.urun, fiyat, tarih, arasinda, id:Date.now()+i });
+
+      const rowTarih = (colTarih >= 0 && r[colTarih]) ? String(r[colTarih]) : tarih;
+      const rowArasinda = (colArasinda >= 0 && r[colArasinda]) ? String(r[colArasinda]) : arasinda;
+
+      rows.push({ marka, urun, fiyat, tarih: rowTarih, arasinda: rowArasinda, imgUrl: gorselUrl, id: Date.now()+i });
     }
     showTable();
   };
@@ -333,7 +1073,7 @@ function handleImage(file) {
     document.getElementById('imagePreview').src = base64;
     document.getElementById('imagePreviewWrap').classList.add('visible');
     document.getElementById('aiResultTable').style.display = 'none';
-    document.getElementById('addAllBtn').style.display = 'none';
+    document.getElementById('aiGorselBtn').style.display = 'none';
     document.getElementById('downloadAiBtn').style.display = 'none';
     document.getElementById('sheetsAiBtn').style.display = 'none';
     analyzeWithOllama(base64);
@@ -350,16 +1090,20 @@ async function analyzeWithOllama(dataUrl) {
     return;
   }
   showAiStatus('loading', '🤖 Claude görseli analiz ediyor...');
+
   const [meta, b64] = dataUrl.split(',');
   const mimeType = meta.match(/:(.*?);/)[1];
 
   const prompt = `You are a product data extractor. Look at this product price list image and extract ALL products.
 Return ONLY a valid JSON array. No explanation, no markdown, just the array.
-Format: [{"marka":"BRAND NAME","urun":"Product Name","fiyat":"69.95"}]
+For each product also provide bounding box coordinates as percentage of image dimensions.
+Format: [{"marka":"BRAND NAME","urun":"Product Name","fiyat":"69.95","x":10,"y":20,"w":30,"h":25}]
 Rules:
-- marka: brand in uppercase (e.g. MR MUSCLE, ULKER)
+- marka: brand in uppercase (e.g. MR MUSCLE, PAREX, MACROMAX)
 - urun: product name with proper capitalization
-- fiyat: price as decimal string with dot separator, empty string if not visible`;
+- fiyat: price as decimal string with dot separator, empty string if not visible
+- x,y: top-left corner of product box as percentage of image width/height (0-100)
+- w,h: width and height of product box as percentage of image width/height (0-100)`;
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -397,10 +1141,10 @@ Rules:
     parsed.forEach(p => { if (p.fiyat) p.fiyat = p.fiyat.toString().replace('.',','); });
     if (!Array.isArray(parsed) || parsed.length === 0) { showAiStatus('error', '❌ Görselde ürün bulunamadı.'); return; }
     aiPendingRows = parsed;
-    renderAiResults(parsed);
+    await renderAiResults(parsed);
     showAiStatus('success', `✅ ${parsed.length} ürün tespit edildi.`);
     document.getElementById('aiResultTable').style.display = 'block';
-    document.getElementById('addAllBtn').style.display = 'block';
+    document.getElementById('aiGorselBtn').style.display = 'block';
     document.getElementById('downloadAiBtn').style.display = 'block';
     document.getElementById('sheetsAiBtn').style.display = 'block';
   } catch(err) {
@@ -415,20 +1159,41 @@ function showAiStatus(type, msg) {
   el.innerHTML = type === 'loading' ? `<div class="spinner"></div><span>${msg}</span>` : `<span>${msg}</span>`;
 }
 
-function renderAiResults(items) {
+function cropProductImage(item) {
+  return new Promise(resolve => {
+    const img = document.getElementById('imagePreview');
+    if (!img || !item.x || !item.y || !item.w || !item.h) { resolve(null); return; }
+    const canvas = document.createElement('canvas');
+    const cx = Math.round((item.x / 100) * img.naturalWidth);
+    const cy = Math.round((item.y / 100) * img.naturalHeight);
+    const cw = Math.round((item.w / 100) * img.naturalWidth);
+    const ch = Math.round((item.h / 100) * img.naturalHeight);
+    canvas.width = cw;
+    canvas.height = ch;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, cx, cy, cw, ch, 0, 0, cw, ch);
+    resolve(canvas.toDataURL('image/jpeg', 0.85));
+  });
+}
+
+async function renderAiResults(items) {
   const tbody = document.getElementById('aiResultBody');
   tbody.innerHTML = '';
-  items.forEach((item, i) => {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    const cropped = await cropProductImage(item);
+    if (cropped) aiPendingRows[i].cropImg = cropped;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><div contenteditable="true" style="font-weight:600;color:#1C2B3A;" onblur="aiPendingRows[${i}].marka=this.innerText.trim()">${esc(item.marka)}</div></td>
-      <td contenteditable="true" onblur="aiPendingRows[${i}].urun=this.innerText.trim()">${esc(item.urun)}</td>
+      <td style="text-align:center">${cropped ? `<img src="${cropped}" style="width:60px;height:45px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.1)">` : '<span style="color:#334155;font-size:11px">—</span>'}</td>
+      <td><div contenteditable="true" style="font-weight:600;color:#E2E8F0;" onblur="aiPendingRows[${i}].marka=this.innerText.trim()">${esc(item.marka)}</div></td>
+      <td contenteditable="true" style="color:#CBD5E1" onblur="aiPendingRows[${i}].urun=this.innerText.trim()">${esc(item.urun)}</td>
       <td><input type="text" value="${esc(item.fiyat)}" placeholder="0,00"
-        style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#2E7CF6;font-size:13px;outline:none;font-family:inherit;"
+        style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#818cf8;font-size:13px;outline:none;font-family:inherit;"
         oninput="aiPendingRows[${i}].fiyat=this.value"></td>
     `;
     tbody.appendChild(tr);
-  });
+  }
 }
 
 function addAllAiRows() {
@@ -443,6 +1208,9 @@ function addAllAiRows() {
 // ── HELPERS ──────────────────────────────────────────────────
 function showTable() {
   renderTable();
+  const ec = document.getElementById('excelContent');
+  ec.style.display = 'block';
+  ec.dataset.loaded = 'true';
   document.getElementById('controlsPanel').style.display = 'block';
   document.getElementById('productTable').style.display = 'block';
   document.getElementById('exportBar').classList.add('visible');
@@ -503,23 +1271,59 @@ function renderTable() {
   tbody.innerHTML = '';
   rows.forEach((r, idx) => {
     const tr = document.createElement('tr');
+    const imgSrc = r.imgUrl || r.imgPreview || null;
+    const imgCell = imgSrc
+      ? `<img src="${imgSrc}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.1);">`
+      : `<div style="width:52px;height:40px;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#334155;">📷</div>`;
+    tr.dataset.idx = idx;
+    tr.addEventListener('contextmenu', (e) => { e.preventDefault(); showCtx(e, idx); });
+    const isChecked = selectedRows.has(idx);
     tr.innerHTML = `
-      <td><div class="marka-cell" contenteditable="true" onblur="updateField(${idx},'marka',this.innerText)">${esc(r.marka)}</div></td>
-      <td contenteditable="true" onblur="updateField(${idx},'urun',this.innerText)">${esc(r.urun)}</td>
-      <td><input type="text" class="price-cell" value="${esc(r.fiyat)}" placeholder="0,00"
-           style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#2E7CF6;font-size:13px;outline:none;font-family:inherit;"
+      <td style="text-align:center;width:36px"><div class="cb-wrap"><input type="checkbox" ${isChecked?'checked':''} onchange="toggleRow(${idx},this.checked)"></div></td>
+      <td style="text-align:center;width:30px"><span class="drag-handle" title="Sürükle">⋮⋮</span></td>
+      <td style="text-align:center">${imgCell}</td>
+      <td><div class="marka" contenteditable="true" onblur="updateField(${idx},'marka',this.innerText)">${esc(r.marka)}</div></td>
+      <td contenteditable="true" style="color:#CBD5E1" onblur="updateField(${idx},'urun',this.innerText)">${esc(r.urun)}</td>
+      <td><input type="text" value="${esc(r.fiyat)}" placeholder="0,00"
+           style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#818cf8;font-size:13px;outline:none;font-family:inherit;"
            oninput="updateField(${idx},'fiyat',this.value)"></td>
-      <td class="tarih-cell">${esc(r.tarih)}</td>
-      <td class="arasinda-cell">${esc(r.arasinda)}</td>
-      <td style="text-align:center"><button class="btn-danger-ghost" onclick="deleteRow(${idx})">✕</button></td>
+      <td class="tarih-c">${esc(r.tarih)}</td>
+      <td class="arasinda-c">${esc(r.arasinda)}</td>
+      <td style="text-align:center"><button class="btn-del" onclick="deleteRow(${idx})">✕</button></td>
     `;
     tbody.appendChild(tr);
   });
   document.getElementById('rowCount').textContent = rows.length + ' ürün';
+
+  // SortableJS başlat
+  if (window.Sortable) {
+    if (tbody._sortable) tbody._sortable.destroy();
+    tbody._sortable = Sortable.create(tbody, {
+      handle: '.drag-handle',
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      dragClass: 'sortable-drag',
+      onEnd: (evt) => {
+        const moved = rows.splice(evt.oldIndex, 1)[0];
+        rows.splice(evt.newIndex, 0, moved);
+        renderTable();
+        scheduleSheetsSync();
+      }
+    });
+  }
 }
 
-function updateField(idx,field,val) { rows[idx][field]=val.trim(); }
-function deleteRow(idx) { rows.splice(idx,1); renderTable(); }
+function updateField(idx,field,val) { rows[idx][field]=val.trim(); scheduleSheetsSync(); }
+function deleteRow(idx) { rows.splice(idx,1); renderTable(); scheduleSheetsSync(); }
+
+// Input satırında Enter'a basınca addRow tetikle
+document.addEventListener('DOMContentLoaded', () => {
+  ['newMarka','newUrun','newFiyat','newTarih','newArasinda'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addRow(); document.getElementById('newMarka')?.focus(); } });
+  });
+});
 
 function addRow() {
   const marka=document.getElementById('newMarka').value.trim().toUpperCase();
@@ -530,6 +1334,7 @@ function addRow() {
   if (!marka||!urun) return;
   rows.push({ marka, urun, fiyat, tarih, arasinda, id:Date.now() });
   renderTable();
+  scheduleSheetsSync();
   ['newMarka','newUrun','newFiyat','newTarih','newArasinda'].forEach(id=>document.getElementById(id).value='');
 }
 
@@ -588,6 +1393,7 @@ function exportToSheets() {
     callback: async (resp) => {
       if (resp.error) { showSheetsStatus('❌ Google girişi başarısız: '+resp.error,'error'); return; }
       accessToken = resp.access_token;
+      await ensureImagesUploaded(accessToken);
       await createSheet(accessToken);
     },
   });
@@ -608,8 +1414,8 @@ async function createSheet(token) {
   const sheet = await createRes.json();
   if (!sheet.spreadsheetId) { showSheetsStatus('❌ Sheets oluşturulamadı.','error'); return; }
   const sid = sheet.spreadsheetId;
-  const values = [['MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'], ...rows.map(r=>[r.marka,r.urun,r.fiyat,r.tarih,r.arasinda])];
-  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:E${values.length}?valueInputOption=RAW`, {
+  const values = [['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'], ...rows.map(r=>[r.imgUrl||'',r.marka,r.urun,r.fiyat,r.tarih,r.arasinda])];
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:F${values.length}?valueInputOption=RAW`, {
     method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ values })
   });
@@ -623,7 +1429,21 @@ async function createSheet(token) {
     ]})
   });
   const url = `https://docs.google.com/spreadsheets/d/${sid}/edit`;
-  showSheetsStatus(`✅ Google Sheets oluşturuldu! <a href="${url}" target="_blank" style="color:#166534;font-weight:600;text-decoration:underline;">Aç →</a>`,'success');
+  _activeSheetsId = sid;
+  _syncToken = token;
+  localStorage.setItem('activeSheetsId', sid);
+
+  // Sync badge göster
+  const exportBar = document.getElementById('exportBar');
+  if (!document.getElementById('syncBadge')) {
+    const badge = document.createElement('span');
+    badge.id = 'syncBadge';
+    badge.textContent = '🔄 Canlı Sync';
+    badge.style.cssText = 'padding:6px 12px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.2);display:inline-flex;align-items:center;';
+    exportBar.appendChild(badge);
+  }
+
+  showSheetsStatus(`✅ Google Sheets oluşturuldu! Canlı senkronizasyon aktif. <a href="${url}" target="_blank" style="color:#4ade80;font-weight:600;text-decoration:underline;">Aç →</a>`,'success');
 }
 
 function showSheetsAiStatus(msg, type) {
@@ -647,14 +1467,52 @@ function exportAiToSheets() {
   client.requestAccessToken();
 }
 
+async function uploadImageToDrive(token, base64Data, fileName) {
+  try {
+    const base64 = base64Data.split(',')[1];
+    const byteStr = atob(base64);
+    const arr = new Uint8Array(byteStr.length);
+    for (let i = 0; i < byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
+    const blob = new Blob([arr], { type: 'image/jpeg' });
+    const meta = JSON.stringify({ name: fileName, mimeType: 'image/jpeg' });
+    const form = new FormData();
+    form.append('metadata', new Blob([meta], { type: 'application/json' }));
+    form.append('file', blob);
+    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: form
+    });
+    const file = await res.json();
+    await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}/permissions`, {
+      method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: 'reader', type: 'anyone' })
+    });
+    return `https://drive.google.com/uc?id=${file.id}`;
+  } catch(e) { return null; }
+}
+
 async function createAiSheet(token) {
-  showSheetsAiStatus('<span style="display:inline-flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border:2px solid #FDE68A;border-top-color:#B45309;border-radius:50%;animation:spin 0.7s linear infinite;"></span> Google Sheets oluşturuluyor...</span>','loading');
   const tarih = document.getElementById('tarihText').value || '';
   const arasinda = document.getElementById('arasindaText').value || 'Tarihleri arasında geçerlidir.';
   const now = new Date();
   const pad = n => String(n).padStart(2,'0');
   const zaman = pad(now.getDate())+'.'+pad(now.getMonth()+1)+'.'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
   const sheetTitle = 'Kampanya Görsel - ' + zaman;
+
+  // Görselleri Drive'a yükle
+  const imageUrls = [];
+  const hasImages = aiPendingRows.some(r => r.cropImg);
+  if (hasImages) {
+    for (let i = 0; i < aiPendingRows.length; i++) {
+      showSheetsAiStatus(`⏳ Görsel yükleniyor ${i+1}/${aiPendingRows.length}...`, 'loading');
+      const r = aiPendingRows[i];
+      if (r.cropImg) {
+        const url = await uploadImageToDrive(token, r.cropImg, `urun_${i+1}.jpg`);
+        imageUrls.push(url);
+      } else { imageUrls.push(null); }
+    }
+  }
+
+  showSheetsAiStatus('⏳ Google Sheets oluşturuluyor...', 'loading');
   const createRes = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
     method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ properties: { title: sheetTitle } })
@@ -662,13 +1520,39 @@ async function createAiSheet(token) {
   const sheet = await createRes.json();
   if (!sheet.spreadsheetId) { showSheetsAiStatus('❌ Sheets oluşturulamadı.','error'); return; }
   const sid = sheet.spreadsheetId;
-  const values = [['MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'], ...aiPendingRows.map(r=>[r.marka||'',r.urun||'',r.fiyat||'',tarih,arasinda])];
-  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:E${values.length}?valueInputOption=RAW`, {
+
+  const values = hasImages
+    ? [['GÖRSEL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'],
+       ...aiPendingRows.map((r,i) => [imageUrls[i] ? `=IMAGE("${imageUrls[i]}")` : '', r.marka||'', r.urun||'', r.fiyat||'', tarih, arasinda])]
+    : [['MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'],
+       ...aiPendingRows.map(r => [r.marka||'', r.urun||'', r.fiyat||'', tarih, arasinda])];
+
+  const colRange = hasImages ? `A1:F${values.length}` : `A1:E${values.length}`;
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${colRange}?valueInputOption=USER_ENTERED`, {
     method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ values })
   });
+
+  const requests = [
+    { repeatCell: { range:{sheetId:0,startRowIndex:0,endRowIndex:1},
+      cell:{ userEnteredFormat:{ backgroundColor:{red:0.102,green:0.102,blue:0.227}, textFormat:{foregroundColor:{red:1,green:1,blue:1},bold:true,fontSize:11}, horizontalAlignment:'CENTER' } },
+      fields:'userEnteredFormat' } }
+  ];
+  if (hasImages) {
+    requests.push(
+      { updateDimensionProperties: { range:{sheetId:0,dimension:'ROWS',startIndex:1,endIndex:aiPendingRows.length+1}, properties:{pixelSize:90}, fields:'pixelSize' } },
+      { updateDimensionProperties: { range:{sheetId:0,dimension:'COLUMNS',startIndex:0,endIndex:1}, properties:{pixelSize:130}, fields:'pixelSize' } }
+    );
+  }
+  requests.push({ autoResizeDimensions: { dimensions:{sheetId:0,dimension:'COLUMNS',startIndex:hasImages?1:0,endIndex:hasImages?6:5} } });
+
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}:batchUpdate`, {
+    method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body: JSON.stringify({ requests })
+  });
+
   const url = `https://docs.google.com/spreadsheets/d/${sid}/edit`;
-  showSheetsAiStatus(`✅ Google Sheets oluşturuldu! <a href="${url}" target="_blank" style="color:#166534;font-weight:600;text-decoration:underline;">Aç →</a>`,'success');
+  showSheetsAiStatus(`✅ ${hasImages ? 'Görsellerle birlikte' : ''} Sheets oluşturuldu! <a href="${url}" target="_blank" style="color:#4ade80;font-weight:600;text-decoration:underline;">Aç →</a>`,'success');
 }
 
 function saveApiKey(val) {
@@ -710,6 +1594,715 @@ window.addEventListener('load', () => {
     showKeyStatus('✅ Kayıtlı anahtar yüklendi.', 'success');
   }
 });
+
+// ── GÖRSEL KLASÖRÜ ────────────────────────────────────────────
+let folderFiles = {}; // { normalizedName: File }
+let _folderInput = document.createElement('input');
+_folderInput.type = 'file';
+_folderInput.accept = 'image/*';
+_folderInput.multiple = true;
+_folderInput.webkitdirectory = true;
+_folderInput.style.display = 'none';
+document.body.appendChild(_folderInput);
+
+_folderInput.addEventListener('change', (e) => {
+  const files = Array.from(e.target.files);
+  folderFiles = {};
+  files.forEach(f => {
+    const key = normalizeName(f.name.replace(/\.[^.]+$/, ''));
+    folderFiles[key] = f;
+  });
+  matchImagesToRows();
+});
+
+function selectImageFolder() {
+  _folderInput.click();
+}
+
+function normalizeName(str) {
+  return str.toLowerCase()
+    .replace(/i̇/g, 'i')
+    .replace(/[İ]/g, 'i').replace(/[I]/g, 'i')
+    .replace(/[Ğğ]/g, 'g').replace(/[Şş]/g, 's')
+    .replace(/[Çç]/g, 'c').replace(/[Öö]/g, 'o').replace(/[Üü]/g, 'u')
+    .replace(/ı/g, 'i')
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+// Kısmi eşleşme skoru hesapla
+function matchScore(fileKey, productKey) {
+  if (fileKey === productKey) return 100;
+  if (fileKey.includes(productKey) || productKey.includes(fileKey)) return 80;
+  // Kelime bazlı eşleşme
+  const fileWords = fileKey.split('-').filter(w => w.length > 2);
+  const prodWords = productKey.split('-').filter(w => w.length > 2);
+  const matches = prodWords.filter(w => fileWords.includes(w)).length;
+  return Math.round((matches / Math.max(fileWords.length, prodWords.length)) * 60);
+}
+
+async function matchImagesToRows() {
+  let matched = 0;
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    // Ürün adından normalize isim üret
+    const urunKey = normalizeName(r.marka + '-' + r.urun);
+    const urunOnly = normalizeName(r.urun);
+
+    // En iyi eşleşmeyi bul
+    let file = null;
+    let bestScore = 0;
+    const keys = Object.keys(folderFiles);
+    for (const key of keys) {
+      const s1 = matchScore(key, urunKey);
+      const s2 = matchScore(key, urunOnly);
+      const score = Math.max(s1, s2);
+      if (score > bestScore && score >= 40) {
+        bestScore = score;
+        file = folderFiles[key];
+      }
+    }
+
+    if (file) {
+      // Base64'e çevir, önizleme olarak kaydet
+      const base64 = await fileToBase64(file);
+      rows[i].imgPreview = base64;
+      rows[i].imgFile = file;
+      matched++;
+    }
+  }
+
+  const total = Object.keys(folderFiles).length;
+  const status = document.getElementById('folderStatus');
+  status.style.display = 'block';
+  status.textContent = `📁 ${total} görsel bulundu, ${matched}/${rows.length} ürünle eşleşti. Sheets'e aktarınca Drive'a yüklenecek.`;
+  
+  renderTable();
+}
+
+function fileToBase64(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function ensureImagesUploaded(token) {
+  const hasAny = rows.some(r => r.imgPreview || (r.imgUrl && !r.imgUrl.startsWith('http')));
+  if (!hasAny) return;
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    const src = r.imgPreview || r.imgUrl;
+    if (src && (!r.imgUrl || !r.imgUrl.startsWith('http'))) {
+      const fname = normalizeName(r.marka + '-' + r.urun) + '.jpg';
+      showSheetsStatus('Görsel yükleniyor ' + (i+1) + '/' + rows.length + ': ' + r.urun, 'loading');
+      const url = await uploadRowImageToDrive(token, src, fname);
+      if (url) rows[i].imgUrl = url;
+    }
+  }
+  renderTable();
+}
+
+// Drive klasör cache - hiyerarşik
+let _driveCache = {}; // { 'path': folderId }
+let _activeSheetsId = null; // Canlı senkronizasyon için aktif Sheets ID
+let _syncToken = null;
+let _syncDebounce = null;
+
+async function getOrCreateNestedFolder(token, pathParts, parentId = null) {
+  const cacheKey = pathParts.join('/');
+  if (_driveCache[cacheKey]) return _driveCache[cacheKey];
+  
+  let currentParentId = parentId;
+  for (const part of pathParts) {
+    const partKey = part + (currentParentId || '');
+    if (_driveCache[partKey]) {
+      currentParentId = _driveCache[partKey];
+      continue;
+    }
+    // Mevcut mi ara
+    const q = `name='${part}' and mimeType='application/vnd.google-apps.folder' and trashed=false${currentParentId ? ` and '${currentParentId}' in parents` : ''}`;
+    const search = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=files(id,name)`,
+      { headers: { 'Authorization': 'Bearer ' + token } });
+    const result = await search.json();
+    
+    if (result.files && result.files.length > 0) {
+      currentParentId = result.files[0].id;
+    } else {
+      // Oluştur
+      const body = { name: part, mimeType: 'application/vnd.google-apps.folder' };
+      if (currentParentId) body.parents = [currentParentId];
+      const create = await fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const folder = await create.json();
+      currentParentId = folder.id;
+      // Herkese açık yap
+      await fetch(`https://www.googleapis.com/drive/v3/files/${folder.id}/permissions`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: 'reader', type: 'anyone' })
+      });
+    }
+    _driveCache[partKey] = currentParentId;
+  }
+  _driveCache[cacheKey] = currentParentId;
+  return currentParentId;
+}
+
+async function getOrCreateDriveFolder(token, folderName) {
+  if (_driveCache[folderName]) return _driveCache[folderName];
+  const now = new Date();
+  const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  // Kampanyalar / 2026 / Mayıs / Görseller
+  const folderId = await getOrCreateNestedFolder(token, [
+    'Kampanyalar', String(now.getFullYear()), months[now.getMonth()], 'Görseller'
+  ]);
+  _driveCache[folderName] = folderId;
+  return folderId;
+}
+
+// ── CANLI SENKRONİZASYON ─────────────────────────────────────
+function scheduleSheetsSync() {
+  if (!_activeSheetsId || !_syncToken) return;
+  clearTimeout(_syncDebounce);
+  _syncDebounce = setTimeout(() => syncToActiveSheet(), 1500);
+}
+
+async function syncToActiveSheet() {
+  if (!_activeSheetsId || !_syncToken) return;
+  try {
+    const values = [
+      ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'],
+      ...rows.map(r => [r.imgUrl||'', r.marka, r.urun, r.fiyat, r.tarih, r.arasinda])
+    ];
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${_activeSheetsId}/values/A1:F${values.length}?valueInputOption=RAW`, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + _syncToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values })
+    });
+    // Senkron göstergesi
+    const badge = document.getElementById('syncBadge');
+    if (badge) {
+      badge.textContent = '✅ Senkronize';
+      badge.style.background = 'rgba(34,197,94,0.15)';
+      badge.style.color = '#4ade80';
+      setTimeout(() => {
+        badge.textContent = '🔄 Canlı Sync';
+        badge.style.background = 'rgba(99,102,241,0.15)';
+        badge.style.color = '#818cf8';
+      }, 2000);
+    }
+  } catch(e) { console.log('Sync error:', e); }
+}
+
+async function uploadRowImageToDrive(token, base64Data, fileName) {
+  try {
+    // Tarih bazlı klasör adı
+    const now = new Date();
+    const folderName = `Kampanya Görselleri ${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    const folderId = await getOrCreateDriveFolder(token, folderName);
+
+    const base64 = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data;
+    const byteStr = atob(base64);
+    const arr = new Uint8Array(byteStr.length);
+    for (let i = 0; i < byteStr.length; i++) arr[i] = byteStr.charCodeAt(i);
+    const blob = new Blob([arr], { type: 'image/jpeg' });
+    const meta = JSON.stringify({
+      name: fileName,
+      mimeType: 'image/jpeg',
+      parents: folderId ? [folderId] : []
+    });
+    const form = new FormData();
+    form.append('metadata', new Blob([meta], { type: 'application/json' }));
+    form.append('file', blob);
+    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: form
+    });
+    const file = await res.json();
+    if (!file.id) return null;
+    await fetch('https://www.googleapis.com/drive/v3/files/' + file.id + '/permissions', {
+      method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: 'reader', type: 'anyone' })
+    });
+    return 'https://drive.google.com/uc?id=' + file.id;
+  } catch(e) { return null; }
+}
+
+// ── TEMA ──────────────────────────────────────────────────────
+function setTema(tema) {
+  document.documentElement.setAttribute('data-tema', tema === 'gece' ? '' : tema);
+  document.body.style.background = '';
+  localStorage.setItem('tema', tema);
+  document.querySelectorAll('.tema-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + tema)?.classList.add('active');
+}
+
+// Sayfa açılınca kayıtlı temayı yükle
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('tema') || 'gece';
+  setTema(saved);
+});
+
+// ── BULK ACTIONS ──────────────────────────────────────────────
+function toggleRow(idx, checked) {
+  if (checked) selectedRows.add(idx);
+  else selectedRows.delete(idx);
+  updateActionBar();
+  // selectAll checkbox durumunu güncelle
+  const sa = document.getElementById('selectAll');
+  if (sa) sa.checked = selectedRows.size === rows.length && rows.length > 0;
+}
+
+function toggleSelectAll(checked) {
+  selectedRows.clear();
+  if (checked) rows.forEach((_, i) => selectedRows.add(i));
+  updateActionBar();
+  renderTable();
+}
+
+function clearSelection() {
+  selectedRows.clear();
+  const sa = document.getElementById('selectAll');
+  if (sa) sa.checked = false;
+  updateActionBar();
+  renderTable();
+}
+
+function updateActionBar() {
+  const bar = document.getElementById('actionBar');
+  const info = document.getElementById('actionInfo');
+  const sa = document.getElementById('selectAll');
+  if (selectedRows.size > 0) {
+    bar.classList.add('visible');
+    info.textContent = `${selectedRows.size} satır seçildi`;
+  } else {
+    bar.classList.remove('visible');
+  }
+  if (sa) sa.checked = selectedRows.size === rows.length && rows.length > 0;
+  // Tablo checkbox'larını güncelle
+  document.querySelectorAll('#tableBody input[type="checkbox"]').forEach((cb, i) => {
+    cb.checked = selectedRows.has(i);
+  });
+}
+
+function bulkDelete() {
+  if (!selectedRows.size) return;
+  if (!confirm(`${selectedRows.size} satır silinecek. Emin misin?`)) return;
+  const idxArr = Array.from(selectedRows).sort((a,b) => b-a);
+  idxArr.forEach(i => rows.splice(i, 1));
+  selectedRows.clear();
+  renderTable();
+  updateActionBar();
+  scheduleSheetsSync();
+}
+
+function bulkChangeTarih() {
+  if (!selectedRows.size) return;
+  const yeni = prompt('Yeni tarih aralığı:', document.getElementById('tarihText').value);
+  if (!yeni) return;
+  selectedRows.forEach(i => { rows[i].tarih = yeni; });
+  clearSelection();
+  renderTable();
+  scheduleSheetsSync();
+}
+
+function bulkExcel() {
+  if (!selectedRows.size) return;
+  const selected = Array.from(selectedRows).sort((a,b)=>a-b).map(i => rows[i]);
+  const wsData = [['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA']];
+  selected.forEach(r => wsData.push([r.imgUrl||'', r.marka, r.urun, r.fiyat, r.tarih, r.arasinda]));
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  ws['!cols'] = [{wch:15},{wch:15},{wch:40},{wch:12},{wch:22},{wch:30}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Seçilen Ürünler');
+  XLSX.writeFile(wb, 'secilen_urunler_' + new Date().toISOString().slice(0,10) + '.xlsx');
+}
+
+// ── YARDIM & KISAYOLLAR ───────────────────────────────────────
+function toggleHelp() {
+  document.getElementById('helpOverlay').classList.toggle('visible');
+}
+
+document.addEventListener('keydown', (e) => {
+  const tag = document.activeElement.tagName;
+  const isInput = ['INPUT','TEXTAREA'].includes(tag) || document.activeElement.contentEditable === 'true';
+
+  // Alt + N → yeni satır odağı
+  if (e.altKey && e.key === 'n') {
+    e.preventDefault();
+    document.getElementById('newMarka')?.focus();
+  }
+  // Ctrl + S → Drive sync
+  if (e.ctrlKey && e.key === 's') {
+    e.preventDefault();
+    scheduleSheetsSync();
+    showSheetsStatus('💾 Kaydediliyor...', 'loading');
+    setTimeout(() => syncToActiveSheet(), 100);
+  }
+  // Ctrl + E → Excel indir
+  if (e.ctrlKey && e.key === 'e') {
+    e.preventDefault();
+    exportExcel();
+  }
+  // Ctrl + A → tümünü seç (input dışında)
+  if (e.ctrlKey && e.key === 'a' && !isInput) {
+    e.preventDefault();
+    toggleSelectAll(true);
+    document.getElementById('selectAll').checked = true;
+  }
+  // Esc → seçimi iptal / modali kapat
+  if (e.key === 'Escape') {
+    if (document.getElementById('helpOverlay').classList.contains('visible')) {
+      toggleHelp();
+    } else {
+      clearSelection();
+    }
+  }
+  // Alt + 1/2/3 → tema
+  if (e.altKey && e.key === '1') { e.preventDefault(); setTema('gece'); }
+  if (e.altKey && e.key === '2') { e.preventDefault(); setTema('gunduz'); }
+  if (e.altKey && e.key === '3') { e.preventDefault(); setTema('goz'); }
+  // ? → yardım
+  if (e.key === '?' && !isInput) toggleHelp();
+});
+
+// ── GÖRSEL ANALİZ - Görsel Klasörü ───────────────────────────
+let _aiFolderInput = document.createElement('input');
+_aiFolderInput.type = 'file';
+_aiFolderInput.accept = 'image/*';
+_aiFolderInput.multiple = true;
+_aiFolderInput.webkitdirectory = true;
+_aiFolderInput.style.display = 'none';
+document.body.appendChild(_aiFolderInput);
+
+_aiFolderInput.addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files);
+  const aiFiles = {};
+  files.forEach(f => {
+    const key = normalizeName(f.name.replace(/\.[^.]+$/, ''));
+    aiFiles[key] = f;
+  });
+
+  let matched = 0;
+  for (let i = 0; i < aiPendingRows.length; i++) {
+    const r = aiPendingRows[i];
+    const urunKey = normalizeName(r.marka + '-' + r.urun);
+    const urunOnly = normalizeName(r.urun);
+    let file = null;
+    let bestScore = 0;
+    for (const key of Object.keys(aiFiles)) {
+      const score = Math.max(matchScore(key, urunKey), matchScore(key, urunOnly));
+      if (score > bestScore && score >= 40) { bestScore = score; file = aiFiles[key]; }
+    }
+    if (file) {
+      const base64 = await fileToBase64(file);
+      aiPendingRows[i].cropImg = base64;
+      matched++;
+    }
+  }
+
+  const status = document.getElementById('aiGorselStatus');
+  status.style.display = 'block';
+  status.textContent = `📁 ${files.length} görsel bulundu, ${matched}/${aiPendingRows.length} ürünle eşleşti.`;
+
+  // Tabloyu güncelle - önizleme göster
+  const tbody = document.getElementById('aiResultBody');
+  Array.from(tbody.rows).forEach((tr, i) => {
+    const imgTd = tr.cells[0];
+    if (aiPendingRows[i]?.cropImg) {
+      imgTd.innerHTML = `<img src="${aiPendingRows[i].cropImg}" style="width:60px;height:45px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.1)">`;
+    }
+  });
+});
+
+function selectAiImageFolder() {
+  _aiFolderInput.click();
+}
+
+// ── DİL DESTEĞİ ───────────────────────────────────────────────
+const DIL_PAKETLERI = {
+  tr: {
+    active: 'Aktif',
+    tab_excel: 'Excel ile Yükle',
+    tab_gorsel: 'Görsel Analiz',
+    upload_title: 'Excel Dosyasını Yükle',
+    upload_desc: 'Stok kodlu Excel dosyasını buraya sürükle veya tıkla (.xlsx, .xls)',
+    ai_title: 'Claude AI ile çalışıyor',
+    img_upload_title: 'Fiyat Listesi Görselini Yükle',
+    label_tarih: 'Tarih Aralığı',
+    label_gecerlilik: 'Geçerlilik Metni',
+    col_gorsel: 'Görsel',
+    col_marka: 'Marka',
+    col_urun: 'Ürün',
+    btn_excel: '⬇ Excel İndir',
+    btn_print: '🖨 Yazdır',
+    btn_guncelle: '🔄 Güncelle',
+    placeholder_tarih: '21 - 24 Mayıs 2026',
+    placeholder_gecerlilik: 'Tarihleri arasında geçerlidir.',
+    placeholder_marka: 'MARKA',
+    placeholder_urun: 'Ürün adı',
+    hdr_sub: 'Stok verilerini kampanya formatına çevir',
+    connect: 'Bağlan',
+    update: 'Güncelle',
+    app_title: 'Kampanya Dönüştürücü',
+    app_sub: 'Stok verilerini kampanya formatına çevir',
+    ai_sub: 'claude-haiku-4-5 modeli · Görsel okuma aktif',
+    img_upload_desc: 'Fotoğraf, ekran görüntüsü veya el yazısı liste — Claude analiz edip tabloya aktarır',
+    btn_connect: 'Bağlan',
+    btn_folder: '📁 Görsel Klasörü Seç',
+    btn_bulk_date: '📅 Tarih Değiştir',
+    btn_bulk_excel: '⬇ Excel Yap',
+    btn_bulk_delete: '🗑 Toplu Sil',
+    settings_title: 'Kampanya Ayarları',
+    table_title: 'Kampanya Ürünleri',
+    api_info: '🔒 API anahtarın sadece tarayıcında saklanır, hiçbir yere gönderilmez.',
+  },
+  en: {
+    active: 'Active',
+    app_title: 'Campaign Converter',
+    app_sub: 'Convert stock data to campaign format',
+    tab_excel: 'Upload Excel',
+    tab_gorsel: 'Image Analysis',
+    upload_title: 'Upload Excel File',
+    upload_desc: 'Drag & drop your stock Excel file here or click to select (.xlsx, .xls)',
+    ai_title: 'Powered by Claude AI',
+    ai_sub: 'claude-haiku-4-5 model · Vision active',
+    img_upload_title: 'Upload Price List Image',
+    img_upload_desc: 'Photo, screenshot or handwritten list — Claude analyzes and exports',
+    label_tarih: 'Date Range',
+    label_gecerlilik: 'Validity Text',
+    col_gorsel: 'Image',
+    col_marka: 'Brand',
+    col_urun: 'Product',
+    btn_excel: '⬇ Download Excel',
+    btn_print: '🖨 Print',
+    btn_guncelle: '🔄 Update',
+    btn_connect: 'Connect',
+    btn_folder: '📁 Select Image Folder',
+    btn_bulk_date: '📅 Change Date',
+    btn_bulk_excel: '⬇ Make Excel',
+    btn_bulk_delete: '🗑 Delete Selected',
+    settings_title: 'Campaign Settings',
+    table_title: 'Campaign Products',
+    api_info: '🔒 Your key is stored only in your browser, never sent anywhere.',
+    placeholder_tarih: 'May 21 - 24, 2026',
+    placeholder_gecerlilik: 'Valid between these dates.',
+    placeholder_marka: 'BRAND',
+    placeholder_urun: 'Product name',
+    hdr_sub: 'Convert stock data to campaign format',
+  }
+};
+
+let currentLang = localStorage.getItem('lang') || 'tr';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  const pack = DIL_PAKETLERI[lang];
+
+  // data-i18n elementlerini güncelle
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (pack[key]) el.textContent = pack[key];
+  });
+
+  // Placeholder'ları güncelle
+  const tarihInput = document.getElementById('tarihText');
+  if (tarihInput) tarihInput.placeholder = pack.placeholder_tarih;
+  const arasindaInput = document.getElementById('arasindaText');
+  if (arasindaInput) arasindaInput.placeholder = pack.placeholder_gecerlilik;
+  const newMarka = document.getElementById('newMarka');
+  if (newMarka) newMarka.placeholder = pack.placeholder_marka;
+  const newUrun = document.getElementById('newUrun');
+  if (newUrun) newUrun.placeholder = pack.placeholder_urun;
+
+  // Header subtitle
+  const sub = document.querySelector('.hdr-sub');
+  if (sub) sub.textContent = pack.hdr_sub;
+
+  // App title
+  document.title = lang === 'en' ? 'Campaign Converter' : 'Kampanya Dönüştürücü';
+
+  // Dil butonlarını güncelle
+  document.getElementById('btn-tr').style.background = lang === 'tr' ? 'rgba(99,102,241,0.8)' : 'transparent';
+  document.getElementById('btn-tr').style.color = lang === 'tr' ? 'white' : '#64748B';
+  document.getElementById('btn-en').style.background = lang === 'en' ? 'rgba(99,102,241,0.8)' : 'transparent';
+  document.getElementById('btn-en').style.color = lang === 'en' ? 'white' : '#64748B';
+}
+
+// Sayfa açılınca dili yükle
+window.addEventListener('DOMContentLoaded', () => {
+  setLang(currentLang);
+});
+
+// ── CONTEXT MENU ──────────────────────────────────────────────
+let _ctxIdx = -1;
+
+function showCtx(e, idx) {
+  _ctxIdx = idx;
+  const menu = document.getElementById('ctxMenu');
+  menu.style.display = 'block';
+  menu.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
+  menu.style.top = Math.min(e.clientY, window.innerHeight - 120) + 'px';
+}
+
+function hideCtx() {
+  document.getElementById('ctxMenu').style.display = 'none';
+  _ctxIdx = -1;
+}
+
+document.addEventListener('click', hideCtx);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hideCtx(); });
+
+function openAfisFromCtx() {
+  if (_ctxIdx < 0) return;
+  openAfis(_ctxIdx);
+  hideCtx();
+}
+
+// ── AFİŞ ──────────────────────────────────────────────────────
+let _afisClr = '#e63030';
+
+function openAfis(idx) {
+  const r = idx >= 0 ? rows[idx] : null;
+  document.getElementById('afis-i-marka').value = r ? r.marka : '';
+  document.getElementById('afis-i-urun').value = r ? r.urun : '';
+  document.getElementById('afis-i-fiyat').value = r ? r.fiyat : '';
+  // imgPreview (base64) varsa onu kullan, yoksa URL
+  const imgSrcForAfis = r ? (r.imgPreview || r.imgUrl || '') : '';
+  document.getElementById('afis-i-gorsel').value = imgSrcForAfis;
+  afisUpdate();
+  afisUpdateImgDirect(imgSrcForAfis);
+
+  // Toplu buton
+  const toplu = document.getElementById('afis-toplu-btn');
+  toplu.style.display = selectedRows.size > 1 ? 'block' : 'none';
+  if (selectedRows.size > 1) toplu.textContent = `📦 ${selectedRows.size} Ürünü ZIP İndir`;
+
+  document.getElementById('afisOverlay').classList.add('visible');
+}
+
+function closeAfis() {
+  document.getElementById('afisOverlay').classList.remove('visible');
+}
+
+function afisUpdate() {
+  const ms = +document.getElementById('afis-s-marka').value;
+  const us = +document.getElementById('afis-s-urun').value;
+  const fs = +document.getElementById('afis-s-fiyat').value;
+  document.getElementById('afis-v-marka').textContent = ms + 'px';
+  document.getElementById('afis-v-urun').textContent = us + 'px';
+  document.getElementById('afis-v-fiyat').textContent = fs + 'px';
+  document.getElementById('afis-marka').style.fontSize = ms + 'px';
+  document.getElementById('afis-urun').style.fontSize = us + 'px';
+  document.getElementById('afis-fiyat').style.fontSize = fs + 'px';
+  document.getElementById('afis-marka').textContent = document.getElementById('afis-i-marka').value || 'MARKA';
+  document.getElementById('afis-urun').textContent = document.getElementById('afis-i-urun').value || 'ÜRÜN ADI';
+  document.getElementById('afis-fiyat').textContent = document.getElementById('afis-i-fiyat').value || '0,00';
+  const gs = +document.getElementById('afis-s-gorsel').value;
+  document.getElementById('afis-v-gorsel').textContent = gs + 'px';
+  const imgEl = document.querySelector('#afis-img-wrap img');
+  if (imgEl) { imgEl.style.maxWidth = gs + 'px'; imgEl.style.maxHeight = gs + 'px'; }
+  const phEl = document.querySelector('#afis-img-wrap div');
+  if (phEl) { phEl.style.width = gs + 'px'; phEl.style.height = gs + 'px'; }
+}
+
+function afisUpdateImg() {
+  const url = document.getElementById('afis-i-gorsel').value.trim();
+  afisUpdateImgDirect(url);
+}
+
+function afisUpdateImgDirect(src) {
+  const wrap = document.getElementById('afis-img-wrap');
+  if (src) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      wrap.innerHTML = '';
+      img.style.cssText = 'max-width:200px;max-height:200px;object-fit:contain;border-radius:6px;display:block';
+      wrap.appendChild(img);
+    };
+    img.onerror = () => {
+      // CORS hatası - base64'e çevirmeyi dene
+      if (src.startsWith('data:')) {
+        wrap.innerHTML = `<img src="${src}" style="max-width:200px;max-height:200px;object-fit:contain;border-radius:6px">`;
+      } else {
+        wrap.innerHTML = '<div style="width:120px;height:120px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#999;text-align:center;padding:8px">Görsel<br>yüklenemedi</div>';
+      }
+    };
+    img.src = src;
+  } else {
+    wrap.innerHTML = '<div style="width:180px;height:180px;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#aaa">Görsel</div>';
+  }
+}
+
+function afisSetClr(clr, btn) {
+  _afisClr = clr;
+  document.getElementById('afis-fiyat-box').style.background = clr;
+  document.querySelectorAll('.afis-color-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+async function afisIndir(r) {
+  const canvas = document.getElementById('afisCanvas');
+  const btn = document.querySelector('.afis-modal .btn-primary');
+  if (btn) { btn.textContent = '⏳ Hazırlanıyor...'; btn.disabled = true; }
+  const cvs = await html2canvas(canvas, { 
+    scale:3, useCORS:true, allowTaint:true,
+    backgroundColor:'#ffffff', logging:false
+  });
+  if (btn) { btn.textContent = '⬇ PNG İndir'; btn.disabled = false; }
+  const marka = (r ? r.marka : document.getElementById('afis-i-marka').value) || 'afis';
+  const urun = (r ? r.urun : document.getElementById('afis-i-urun').value) || '';
+  const fname = (marka + '-' + urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-') + '.png';
+  const a = document.createElement('a');
+  a.href = cvs.toDataURL('image/png');
+  a.download = fname;
+  a.click();
+}
+
+async function afisTopluIndir() {
+  if (!selectedRows.size) return;
+  const zip = new JSZip();
+  const folder = zip.folder('afisler');
+  const btn = document.getElementById('afis-toplu-btn');
+  btn.textContent = '⏳ Hazırlanıyor...';
+  btn.disabled = true;
+
+  const idxArr = Array.from(selectedRows).sort((a,b)=>a-b);
+  for (let i = 0; i < idxArr.length; i++) {
+    const r = rows[idxArr[i]];
+    document.getElementById('afis-i-marka').value = r.marka;
+    document.getElementById('afis-i-urun').value = r.urun;
+    document.getElementById('afis-i-fiyat').value = r.fiyat;
+    const imgSrc = r.imgPreview || r.imgUrl || '';
+    document.getElementById('afis-i-gorsel').value = imgSrc;
+    afisUpdate();
+    afisUpdateImgDirect(imgSrc);
+    btn.textContent = `⏳ ${i+1}/${idxArr.length} hazırlanıyor...`;
+    await new Promise(res => setTimeout(res, 400));
+    const canvas = document.getElementById('afisCanvas');
+    const cvs = await html2canvas(canvas, { scale:2, useCORS:true, backgroundColor:'#ffffff' });
+    const fname = (r.marka + '-' + r.urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-') + '.png';
+    const dataUrl = cvs.toDataURL('image/png');
+    folder.file(fname, dataUrl.split(',')[1], { base64:true });
+  }
+
+  const blob = await zip.generateAsync({ type:'blob' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'afisler_' + new Date().toISOString().slice(0,10) + '.zip';
+  a.click();
+
+  btn.textContent = `📦 ${idxArr.length} Ürünü ZIP İndir`;
+  btn.disabled = false;
+}
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
