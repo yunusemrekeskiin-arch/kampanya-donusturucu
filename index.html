@@ -978,78 +978,81 @@ function processFile(file) {
     selectedRows.clear();
 
     // Başlık satırını normalize et
-    const header = json[0].map(h => String(h||'').toUpperCase().trim()
+    const norm = h => String(h||'').toUpperCase().trim()
       .replace(/İ/g,'I').replace(/Ğ/g,'G').replace(/Ş/g,'S')
-      .replace(/Ç/g,'C').replace(/Ö/g,'O').replace(/Ü/g,'U'));
+      .replace(/Ç/g,'C').replace(/Ö/g,'O').replace(/Ü/g,'U');
+    const header = json[0].map(norm);
 
-    // Sütun indexlerini bul
-    const colMarka   = header.findIndex(h => h.includes('MARKA'));
-    const colUrun    = header.findIndex(h => h.includes('URUN') || h.includes('STOK') || h.includes('ISMI') || h.includes('ISIM') || h.includes('STOK ISMI'));
-    const colFiyat   = header.findIndex(h => h.includes('FIYAT') || h.includes('PRICE') || h.includes('FIYATI'));
-    const colKod     = header.findIndex(h => h.includes('KOD') || h.includes('CODE'));
-    const colTarih   = header.findIndex(h => h.includes('TARIH') || h.includes('DATE'));
-    const colArasinda= header.findIndex(h => h.includes('ARASINDA') || h.includes('GECERLI'));
-    const colGorsel  = header.findIndex(h => h.includes('GORSEL') || h.includes('URL') || h.includes('IMAGE'));
+    // Sütun bul
+    const find = (...keys) => header.findIndex(h => keys.some(k => h.includes(k)));
+    const colMarka    = find('MARKA');
+    const colUrun     = find('URUN','ISMI','ISIM','STOK ISM','ADI');
+    const colFiyat    = find('FIYAT','PRICE','YENI');
+    const colKod      = find('KOD','CODE');
+    const colTarih    = find('TARIH','DATE');
+    const colArasinda = find('ARASINDA','GECERLI');
+    const colGorsel   = find('GORSEL','URL','IMAGE');
 
-    // Format tespiti
-    const isHazirFormat = colMarka >= 0 && colUrun >= 0; // MARKA ve ÜRÜN sütunu var
-    const isStokFormat  = !isHazirFormat; // Hazır format değilse stok formatı
-
+    // Format: MARKA sütunu varsa hazır, yoksa stok
+    const isHazir = colMarka >= 0;
     const seen = new Set();
 
     for (let i = 1; i < json.length; i++) {
       const r = json[i];
-      const isEmpty = r.every(c => String(c||'').trim() === '');
-      if (isEmpty) continue;
+      if (r.every(c => String(c||'').trim() === '')) continue;
 
       let marka = '', urun = '', fiyat = '', gorselUrl = '';
 
-      if (isHazirFormat) {
-        // Hazır format: MARKA, ÜRÜN, FİYAT sütunları mevcut
+      if (isHazir) {
+        // Hazır format: MARKA + ÜRÜN + FİYAT sütunları var
         marka = String(r[colMarka]||'').trim().toUpperCase();
-        urun  = String(r[colUrun] ||'').trim();
-        const fiyatRaw = colFiyat >= 0 ? r[colFiyat] : '';
-        if (fiyatRaw !== '' && !isNaN(Number(String(fiyatRaw).replace(',','.')))) {
-          fiyat = String(fiyatRaw).includes(',') ? String(fiyatRaw) : Number(fiyatRaw).toFixed(2).replace('.',',');
+        urun  = colUrun >= 0 ? String(r[colUrun]||'').trim() : '';
+        if (!marka && !urun) continue;
+
+        // Fiyat bul
+        if (colFiyat >= 0) {
+          const raw = String(r[colFiyat]||'').replace(',','.');
+          if (!isNaN(Number(raw)) && Number(raw) > 0)
+            fiyat = Number(raw).toFixed(2).replace('.',',');
         }
         if (colGorsel >= 0) gorselUrl = String(r[colGorsel]||'').trim();
-        if (colTarih >= 0 && r[colTarih]) {
-          // Tarih sütunu varsa override etme
-        }
-        if (!marka || !urun) continue;
 
-      } else if (isStokFormat) {
-        // Stok format: Stok kodu + Stok ismi
-        const kod  = String(r[colKod >= 0 ? colKod : 0]||'').trim();
-        const isim = String(r[colUrun >= 0 ? colUrun : 1]||'').trim();
-        if (!kod || !isim || seen.has(kod)) continue;
-        seen.add(kod);
-        // Fiyat: farklı sütunlarda ara
-        for (const idx of [3,4,2,5]) {
-          if (r[idx] !== undefined && r[idx] !== '' && !isNaN(Number(r[idx])) && Number(r[idx]) > 0) {
-            fiyat = Number(r[idx]).toFixed(2).replace('.',','); break;
+      } else {
+        // Ham stok format: Stok Kodu + Stok İsmi + Yeni Fiyat
+        const kodIdx  = colKod  >= 0 ? colKod  : 0;
+        const isimIdx = colUrun >= 0 ? colUrun : 1;
+        const kod  = String(r[kodIdx] ||'').trim();
+        const isim = String(r[isimIdx]||'').trim();
+
+        if (!isim) continue;
+        if (kod && seen.has(kod)) continue;
+        if (kod) seen.add(kod);
+
+        // Fiyat: colFiyat varsa oradan, yoksa tüm sayısal sütunları tara
+        if (colFiyat >= 0) {
+          const raw = String(r[colFiyat]||'').replace(',','.');
+          if (!isNaN(Number(raw)) && Number(raw) > 0)
+            fiyat = Number(raw).toFixed(2).replace('.',',');
+        }
+        if (!fiyat) {
+          for (let ci = 2; ci < r.length; ci++) {
+            const v = Number(String(r[ci]||'').replace(',','.'));
+            if (!isNaN(v) && v > 0 && v < 100000) {
+              fiyat = v.toFixed(2).replace('.',','); break;
+            }
           }
         }
+
+        // parseName ile MARKA + ÜRÜN ayır
         const p = parseName(isim);
         marka = p.marka;
         urun  = p.urun;
-
-      } else {
-        // Bilinmeyen format: ilk iki sütunu marka+ürün say, üçüncüyü fiyat
-        const col0 = String(r[0]||'').trim();
-        const col1 = String(r[1]||'').trim();
-        const col2 = r[2];
-        if (!col0 && !col1) continue;
-        if (col1) { marka = col0.toUpperCase(); urun = col1; }
-        else { const p = parseName(col0); marka = p.marka; urun = p.urun; }
-        if (col2 !== '' && !isNaN(Number(col2)) && Number(col2) > 0) {
-          fiyat = Number(col2).toFixed(2).replace('.',',');
-        }
       }
 
-      const rowTarih = (colTarih >= 0 && r[colTarih]) ? String(r[colTarih]) : tarih;
-      const rowArasinda = (colArasinda >= 0 && r[colArasinda]) ? String(r[colArasinda]) : arasinda;
+      if (!marka && !urun) continue;
 
+      const rowTarih    = (colTarih    >= 0 && r[colTarih])    ? String(r[colTarih])    : tarih;
+      const rowArasinda = (colArasinda >= 0 && r[colArasinda]) ? String(r[colArasinda]) : arasinda;
       rows.push({ marka, urun, fiyat, tarih: rowTarih, arasinda: rowArasinda, imgUrl: gorselUrl, id: Date.now()+i });
     }
     showTable();
