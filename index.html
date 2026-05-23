@@ -1635,12 +1635,20 @@ function normalizeName(str) {
 // Kısmi eşleşme skoru hesapla
 function matchScore(fileKey, productKey) {
   if (fileKey === productKey) return 100;
-  if (fileKey.includes(productKey) || productKey.includes(fileKey)) return 80;
-  // Kelime bazlı eşleşme
-  const fileWords = fileKey.split('-').filter(w => w.length > 2);
-  const prodWords = productKey.split('-').filter(w => w.length > 2);
+  // Tam içerme - her ikisi de yeterince uzunsa
+  if (fileKey.length > 5 && productKey.length > 5) {
+    if (fileKey.includes(productKey) && productKey.length > 8) return 85;
+    if (productKey.includes(fileKey) && fileKey.length > 8) return 85;
+  }
+  // Kelime bazlı eşleşme - minimum 3 karakter kelimeler
+  const fileWords = fileKey.split('-').filter(w => w.length > 3);
+  const prodWords = productKey.split('-').filter(w => w.length > 3);
+  if (fileWords.length === 0 || prodWords.length === 0) return 0;
   const matches = prodWords.filter(w => fileWords.includes(w)).length;
-  return Math.round((matches / Math.max(fileWords.length, prodWords.length)) * 60);
+  const ratio = matches / Math.max(fileWords.length, prodWords.length);
+  // En az 2 kelime eşleşmeli
+  if (matches < 2) return Math.round(ratio * 40);
+  return Math.round(ratio * 75);
 }
 
 async function matchImagesToRows() {
@@ -1659,7 +1667,7 @@ async function matchImagesToRows() {
       const s1 = matchScore(key, urunKey);
       const s2 = matchScore(key, urunOnly);
       const score = Math.max(s1, s2);
-      if (score > bestScore && score >= 40) {
+      if (score > bestScore && score >= 70) {
         bestScore = score;
         file = folderFiles[key];
       }
@@ -1671,6 +1679,11 @@ async function matchImagesToRows() {
       rows[i].imgPreview = base64;
       rows[i].imgFile = file;
       matched++;
+    } else {
+      // Eşleşme yoksa önceki görseli temizle
+      rows[i].imgPreview = null;
+      rows[i].imgFile = null;
+      rows[i].imgUrl = '';
     }
   }
 
@@ -1998,7 +2011,7 @@ _aiFolderInput.addEventListener('change', async (e) => {
     let bestScore = 0;
     for (const key of Object.keys(aiFiles)) {
       const score = Math.max(matchScore(key, urunKey), matchScore(key, urunOnly));
-      if (score > bestScore && score >= 40) { bestScore = score; file = aiFiles[key]; }
+      if (score > bestScore && score >= 70) { bestScore = score; file = aiFiles[key]; }
     }
     if (file) {
       const base64 = await fileToBase64(file);
