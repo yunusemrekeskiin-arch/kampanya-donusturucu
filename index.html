@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kampanya Dönüştürücü</title>
+<title>Kampix</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -11,6 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 
@@ -748,10 +749,27 @@ input[type="checkbox"] {
     <div class="ob-float ob-float-2"></div>
     <div class="ob-float ob-float-3"></div>
     <div class="onboarding-left-content">
-      <div class="ob-logo">
-        <div class="ob-logo-icon">📋</div>
-        <div class="ob-logo-text">Kampanya Dönüştürücü</div>
-      </div>
+      <div class="ob-logo" style="margin-bottom:3rem"><svg height="38" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="kg" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#6366f1"/>
+<stop offset="100%" stop-color="#a78bfa"/>
+</linearGradient>
+</defs>
+<!-- K mark -->
+<rect x="2" y="6" width="7" height="48" fill="url(#kg)" rx="3"/>
+<polygon points="9,27 38,6 48,6 48,15 20,32" fill="url(#kg)"/>
+<polygon points="9,33 20,28 48,45 48,54 38,54" fill="url(#kg)"/>
+<circle cx="20" cy="30" r="4" fill="#f97316"/>
+<!-- kampix text -->
+<text x="56" y="50"
+  font-family="'Barlow Condensed', 'Arial Black', sans-serif"
+  font-weight="900"
+  font-style="italic"
+  font-size="52"
+  letter-spacing="-1"
+  fill="white">kampix</text>
+</svg></div>
       <h1 class="ob-title">Kampanyalarını<br><span>Otomatikleştir</span></h1>
       <p class="ob-desc">Excel'den Google Sheets'e, görsel analizden afişe — tüm kampanya sürecini tek platformda yönet.</p>
       <div class="ob-features">
@@ -790,12 +808,26 @@ input[type="checkbox"] {
 </div>
 
 <div class="hdr">
-  <div class="hdr-brand">
-    <div class="hdr-icon">📋</div>
-    <div>
-      <div class="hdr-title" data-i18n="app_title">Kampanya Dönüştürücü</div>
-      <div class="hdr-sub" data-i18n="app_sub">Stok verilerini kampanya formatına çevir</div>
-    </div>
+  <div class="hdr-brand" style="gap:0">
+    <div style="display:flex;align-items:center;"><svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs><rect x="8" y="8" width="10" height="84" fill="url(#lg1)" rx="4"/><polygon points="18,44 66,8 80,8 80,22 32,52" fill="url(#lg1)"/><polygon points="18,56 32,48 80,78 80,92 66,92" fill="url(#lg1)"/><circle cx="32" cy="50" r="5" fill="#f97316"/></svg></div><svg height="28" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="kgs" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" stop-color="#6366f1"/>
+<stop offset="100%" stop-color="#a78bfa"/>
+</linearGradient>
+</defs>
+<rect x="2" y="6" width="7" height="48" fill="url(#kgs)" rx="3"/>
+<polygon points="9,27 38,6 48,6 48,15 20,32" fill="url(#kgs)"/>
+<polygon points="9,33 20,28 48,45 48,54 38,54" fill="url(#kgs)"/>
+<circle cx="20" cy="30" r="4" fill="#f97316"/>
+<text x="56" y="50"
+  font-family="'Barlow Condensed', 'Arial Black', sans-serif"
+  font-weight="900"
+  font-style="italic"
+  font-size="52"
+  letter-spacing="-1"
+  fill="white">kampix</text>
+</svg></div>
   </div>
   <div style="display:flex;align-items:center;gap:12px;">
     <div style="display:flex;gap:2px;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px;">
@@ -2339,11 +2371,11 @@ const DIL_PAKETLERI = {
     placeholder_gecerlilik: 'Tarihleri arasında geçerlidir.',
     placeholder_marka: 'MARKA',
     placeholder_urun: 'Ürün adı',
-    hdr_sub: 'Stok verilerini kampanya formatına çevir',
+    hdr_sub: 'Akıllı Kampanya & Afiş Yönetimi',
     connect: 'Bağlan',
     update: 'Güncelle',
-    app_title: 'Kampanya Dönüştürücü',
-    app_sub: 'Stok verilerini kampanya formatına çevir',
+    app_title: 'Kampix',
+    app_sub: 'Akıllı Kampanya & Afiş Yönetimi',
     ai_sub: 'claude-haiku-4-5 modeli · Görsel okuma aktif',
     img_upload_desc: 'Fotoğraf, ekran görüntüsü veya el yazısı liste — Claude analiz edip tabloya aktarır',
     btn_connect: 'Bağlan',
@@ -2357,8 +2389,8 @@ const DIL_PAKETLERI = {
   },
   en: {
     active: 'Active',
-    app_title: 'Campaign Converter',
-    app_sub: 'Convert stock data to campaign format',
+    app_title: 'Kampix',
+    app_sub: 'Smart Campaign & Poster Management',
     tab_excel: 'Upload Excel',
     tab_gorsel: 'Image Analysis',
     upload_title: 'Upload Excel File',
@@ -2387,7 +2419,7 @@ const DIL_PAKETLERI = {
     placeholder_gecerlilik: 'Valid between these dates.',
     placeholder_marka: 'BRAND',
     placeholder_urun: 'Product name',
-    hdr_sub: 'Convert stock data to campaign format',
+    hdr_sub: 'Smart Campaign & Poster Management',
   }
 };
 
@@ -2419,7 +2451,7 @@ function setLang(lang) {
   if (sub) sub.textContent = pack.hdr_sub;
 
   // App title
-  document.title = lang === 'en' ? 'Campaign Converter' : 'Kampanya Dönüştürücü';
+  document.title = lang === 'en' ? 'Kampix' : 'Kampix';
 
   // Dil butonlarını güncelle
   document.getElementById('btn-tr').style.background = lang === 'tr' ? 'rgba(99,102,241,0.8)' : 'transparent';
