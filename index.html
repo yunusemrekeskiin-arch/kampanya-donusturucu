@@ -8,6 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -1274,7 +1275,7 @@ function renderTable() {
   tbody.innerHTML = '';
   rows.forEach((r, idx) => {
     const tr = document.createElement('tr');
-    const imgSrc = r.imgUrl || r.imgPreview || null;
+    const imgSrc = r.imgPreview || r.imgUrl || null;
     const imgCell = imgSrc
       ? `<img src="${imgSrc}" style="width:52px;height:40px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.1);">`
       : `<div style="width:52px;height:40px;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#334155;">📷</div>`;
@@ -1670,7 +1671,7 @@ async function matchImagesToRows() {
       const s1 = matchScore(key, urunKey);
       const s2 = matchScore(key, urunOnly);
       const score = Math.max(s1, s2);
-      if (score > bestScore && score >= 70) {
+      if (score > bestScore && score >= 50) {
         bestScore = score;
         file = folderFiles[key];
       }
@@ -1707,19 +1708,19 @@ function fileToBase64(file) {
 }
 
 async function ensureImagesUploaded(token) {
-  const hasAny = rows.some(r => r.imgPreview || (r.imgUrl && !r.imgUrl.startsWith('http')));
+  const hasAny = rows.some(r => r.imgPreview);
   if (!hasAny) return;
+  let uploaded = 0;
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i];
-    const src = r.imgPreview || r.imgUrl;
-    if (src && (!r.imgUrl || !r.imgUrl.startsWith('http'))) {
+    if (r.imgPreview && (!r.imgUrl || !r.imgUrl.startsWith('http'))) {
       const fname = normalizeName(r.marka + '-' + r.urun) + '.jpg';
-      showSheetsStatus('Görsel yükleniyor ' + (i+1) + '/' + rows.length + ': ' + r.urun, 'loading');
-      const url = await uploadRowImageToDrive(token, src, fname);
-      if (url) rows[i].imgUrl = url;
+      showSheetsStatus('⏳ Görsel yükleniyor ' + (i+1) + '/' + rows.length + ': ' + r.urun, 'loading');
+      const url = await uploadRowImageToDrive(token, r.imgPreview, fname);
+      if (url) { rows[i].imgUrl = url; uploaded++; }
     }
   }
-  renderTable();
+  if (uploaded > 0) renderTable();
 }
 
 // Drive klasör cache - hiyerarşik
@@ -2319,6 +2320,66 @@ async function afisTopluIndir() {
   btn.textContent = `📦 ${idxArr.length} Ürünü ZIP İndir`;
   btn.disabled = false;
 }
+
+// ── SUPABASE AUTH ──────────────────────────────────────────────
+const SUPABASE_URL = 'https://qjouilkvtqnmptgeawoj.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqb3VpbGt2dHFubXB0Z2Vhd29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MzcyMTUsImV4cCI6MjA5NTIxMzIxNX0.4gYcpcLu8t9HwcWzFQlqWMzgJBIKaW38bbpuU4uB108';
+const _supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+async function signInWithGoogle() {
+  const { error } = await _supa.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.href
+    }
+  });
+  if (error) console.error('Giriş hatası:', error);
+}
+
+async function signOut() {
+  await _supa.auth.signOut();
+  document.getElementById('loginBtn').style.display = 'flex';
+  document.getElementById('userMenu').style.display = 'none';
+  document.getElementById('userDropdown').style.display = 'none';
+}
+
+function toggleUserMenu() {
+  const dd = document.getElementById('userDropdown');
+  dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('userMenu')?.contains(e.target)) {
+    const dd = document.getElementById('userDropdown');
+    if (dd) dd.style.display = 'none';
+  }
+});
+
+async function initAuth() {
+  const { data: { session } } = await _supa.auth.getSession();
+  if (session) updateUI(session.user);
+
+  _supa.auth.onAuthStateChange((event, session) => {
+    if (session) updateUI(session.user);
+    else {
+      document.getElementById('loginBtn').style.display = 'flex';
+      document.getElementById('userMenu').style.display = 'none';
+    }
+  });
+}
+
+function updateUI(user) {
+  document.getElementById('loginBtn').style.display = 'none';
+  document.getElementById('userMenu').style.display = 'block';
+  document.getElementById('userAvatar').src = user.user_metadata?.avatar_url || '';
+  document.getElementById('userName').textContent = user.user_metadata?.full_name || user.email;
+  document.getElementById('userEmail').textContent = user.email;
+  // Kredi sistemi - localStorage'dan oku
+  const credits = localStorage.getItem('afisKredisi') || '500';
+  document.getElementById('userCredits').textContent = credits + ' / 500';
+}
+
+window.addEventListener('load', initAuth);
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
