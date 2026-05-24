@@ -131,6 +131,96 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;color:
 /* LAYOUT */
 .wrap{max-width:1280px;margin:0 auto;padding:2rem}
 
+/* Onboarding */
+.onboarding {
+  position:fixed; inset:0; z-index:10000;
+  display:flex; min-height:100vh;
+  background:#0F1117;
+}
+.onboarding.hidden { display:none; }
+
+.onboarding-left {
+  flex:1; background:linear-gradient(135deg,#1a1f2e 0%,#0f1117 50%,#1a1020 100%);
+  display:flex; flex-direction:column; justify-content:center; padding:3rem 4rem;
+  position:relative; overflow:hidden;
+}
+.onboarding-left::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 30% 50%, rgba(99,102,241,0.15) 0%, transparent 60%),
+             radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.1) 0%, transparent 50%);
+}
+.onboarding-left-content { position:relative; z-index:1; }
+.ob-logo { display:flex; align-items:center; gap:12px; margin-bottom:3rem; }
+.ob-logo-icon { width:48px; height:48px; background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 8px 24px rgba(99,102,241,0.4); }
+.ob-logo-text { font-size:20px; font-weight:700; color:#fff; }
+.ob-title { font-size:42px; font-weight:700; color:#fff; line-height:1.2; margin-bottom:1rem; letter-spacing:-0.02em; }
+.ob-title span { background:linear-gradient(135deg,#6366f1,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.ob-desc { font-size:16px; color:#64748B; line-height:1.7; margin-bottom:2.5rem; max-width:400px; }
+.ob-features { display:flex; flex-direction:column; gap:12px; }
+.ob-feature { display:flex; align-items:center; gap:12px; }
+.ob-feature-icon { width:36px; height:36px; background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.ob-feature-text { font-size:14px; color:#94A3B8; }
+.ob-feature-text strong { color:#CBD5E1; font-weight:600; }
+
+.onboarding-right {
+  width:480px; flex-shrink:0;
+  background:rgba(255,255,255,0.02);
+  border-left:1px solid rgba(255,255,255,0.06);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:3rem;
+}
+.ob-card { width:100%; max-width:360px; }
+.ob-card h2 { font-size:24px; font-weight:700; color:#F1F5F9; margin-bottom:0.5rem; }
+.ob-card p { font-size:14px; color:#64748B; margin-bottom:2rem; line-height:1.6; }
+.ob-google-btn {
+  width:100%; padding:14px; border-radius:12px;
+  background:white; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:12px;
+  font-size:15px; font-weight:600; color:#1a1a1a;
+  transition:all 0.2s; box-shadow:0 4px 16px rgba(0,0,0,0.3);
+  font-family:inherit;
+}
+.ob-google-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.4); }
+.ob-google-btn:active { transform:translateY(0); }
+.ob-divider { display:flex; align-items:center; gap:12px; margin:1.5rem 0; }
+.ob-divider::before, .ob-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.08); }
+.ob-divider span { font-size:12px; color:#334155; }
+.ob-terms { font-size:11px; color:#334155; text-align:center; line-height:1.6; margin-top:1.5rem; }
+.ob-terms a { color:#6366f1; text-decoration:none; }
+
+/* Floating elements */
+.ob-float { position:absolute; border-radius:16px; opacity:0.06; }
+.ob-float-1 { width:200px; height:200px; background:linear-gradient(135deg,#6366f1,#8b5cf6); top:-60px; right:-60px; transform:rotate(20deg); }
+.ob-float-2 { width:150px; height:150px; background:linear-gradient(135deg,#8b5cf6,#ec4899); bottom:60px; right:-40px; transform:rotate(-15deg); border-radius:50%; }
+.ob-float-3 { width:80px; height:80px; background:#6366f1; bottom:200px; left:40px; border-radius:50%; opacity:0.04; }
+
+/* Mobil responsive */
+@media(max-width:768px) {
+  .onboarding { flex-direction:column; }
+  .onboarding-left { padding:2rem 1.5rem; flex:none; min-height:auto; }
+  .ob-title { font-size:28px; }
+  .ob-features { display:none; }
+  .onboarding-right { width:100%; flex:1; padding:2rem 1.5rem; border-left:none; border-top:1px solid rgba(255,255,255,0.06); }
+  .hdr { padding:0 1rem; }
+  .hdr-title { font-size:14px; }
+  .hdr-sub { display:none; }
+  .wrap { padding:1rem; }
+  .tabs { width:100%; }
+  .tab { flex:1; justify-content:center; padding:8px 12px; font-size:12px; }
+  .settings-row { grid-template-columns:1fr; }
+  table { font-size:12px; }
+  th, td { padding:8px 6px; }
+  .export-bar { flex-direction:column; }
+  .export-bar .btn { width:100%; justify-content:center; }
+  .help-btn, .company-btn { bottom:16px; }
+  .help-btn { right:16px; }
+  .company-btn { bottom:64px; right:16px; }
+  .afis-overlay.visible { flex-direction:column; padding:1rem; overflow-y:auto; align-items:center; }
+  .afis-preview-wrap { width:100%; }
+  #afisCanvas { width:240px; height:339px; }
+  .afis-modal { width:100%; }
+}
+
 /* TABS */
 .tabs{display:flex;gap:2px;background:var(--tab-bg);border:1px solid var(--tab-border);border-radius:12px;padding:4px;width:fit-content;margin-bottom:1.75rem}
 .tab{padding:8px 20px;border-radius:9px;border:none;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--text3);transition:all 0.2s;font-family:inherit;display:flex;align-items:center;gap:7px}
@@ -535,6 +625,45 @@ input[type="checkbox"] {
 }
 
 /* Yardım butonu & modal */
+/* Şirket profili modal */
+.company-modal {
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:16px; padding:1.75rem; width:480px; max-width:95vw;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5); animation:fadeUp 0.25s ease;
+  max-height:90vh; overflow-y:auto;
+}
+.company-modal h2 { font-size:15px; font-weight:700; color:var(--text); margin:0 0 1.25rem; display:flex; align-items:center; gap:8px; }
+.company-field { margin-bottom:1rem; }
+.company-field label { font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em; display:block; margin-bottom:5px; }
+.company-field input, .company-field textarea {
+  width:100%; background:var(--input-bg); border:1px solid var(--input-border);
+  border-radius:8px; padding:9px 12px; font-size:13px; color:var(--text);
+  font-family:inherit; outline:none; transition:all 0.2s;
+}
+.company-field input:focus, .company-field textarea:focus { border-color:rgba(99,102,241,0.6); }
+.company-field textarea { resize:vertical; min-height:80px; }
+.company-logo-preview {
+  width:80px; height:80px; border-radius:10px; object-fit:contain;
+  border:1px solid var(--border); background:var(--input-bg);
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; cursor:pointer; overflow:hidden;
+}
+.company-colors { display:flex; gap:8px; flex-wrap:wrap; }
+.color-swatch { width:32px; height:32px; border-radius:8px; border:2px solid transparent; cursor:pointer; transition:all 0.15s; }
+.color-swatch:hover { transform:scale(1.1); }
+.color-swatch.active { border-color:white; box-shadow:0 0 0 2px rgba(99,102,241,0.5); }
+
+/* Şirket profili butonu */
+.company-btn {
+  position:fixed; bottom:72px; right:24px; z-index:999;
+  width:40px; height:40px; border-radius:50%;
+  background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);
+  cursor:pointer; font-size:18px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s; box-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+.company-btn:hover { background:rgba(99,102,241,0.2); transform:scale(1.1); }
+
 .help-btn {
   position:fixed; bottom:24px; right:24px; z-index:999;
   width:40px; height:40px; border-radius:50%;
@@ -611,6 +740,54 @@ input[type="checkbox"] {
 </style>
 </head>
 <body>
+
+<!-- Onboarding Ekranı -->
+<div class="onboarding" id="onboarding">
+  <div class="onboarding-left">
+    <div class="ob-float ob-float-1"></div>
+    <div class="ob-float ob-float-2"></div>
+    <div class="ob-float ob-float-3"></div>
+    <div class="onboarding-left-content">
+      <div class="ob-logo">
+        <div class="ob-logo-icon">📋</div>
+        <div class="ob-logo-text">Kampanya Dönüştürücü</div>
+      </div>
+      <h1 class="ob-title">Kampanyalarını<br><span>Otomatikleştir</span></h1>
+      <p class="ob-desc">Excel'den Google Sheets'e, görsel analizden afişe — tüm kampanya sürecini tek platformda yönet.</p>
+      <div class="ob-features">
+        <div class="ob-feature">
+          <div class="ob-feature-icon">📂</div>
+          <div class="ob-feature-text"><strong>Excel Yükleme</strong> — Stok verilerini saniyeler içinde dönüştür</div>
+        </div>
+        <div class="ob-feature">
+          <div class="ob-feature-icon">🤖</div>
+          <div class="ob-feature-text"><strong>AI Görsel Analiz</strong> — Fiyat listelerini otomatik oku</div>
+        </div>
+        <div class="ob-feature">
+          <div class="ob-feature-icon">🖼️</div>
+          <div class="ob-feature-text"><strong>Afiş Oluştur</strong> — Tek tıkla PNG afiş indir</div>
+        </div>
+        <div class="ob-feature">
+          <div class="ob-feature-icon">📊</div>
+          <div class="ob-feature-text"><strong>Google Sheets</strong> — Figma entegrasyonu ile canlı sync</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="onboarding-right">
+    <div class="ob-card">
+      <h2>Hoş geldin 👋</h2>
+      <p>Devam etmek için Google hesabınla giriş yap. Ücretsiz, kurulum yok.</p>
+      <button class="ob-google-btn" onclick="signInWithGoogle()">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google ile Giriş Yap
+      </button>
+      <div class="ob-divider"><span>güvenli giriş</span></div>
+      <p class="ob-terms">Giriş yaparak <a href="#">Kullanım Koşulları</a>'nı ve <a href="#">Gizlilik Politikası</a>'nı kabul etmiş olursunuz.</p>
+    </div>
+  </div>
+</div>
 
 <div class="hdr">
   <div class="hdr-brand">
@@ -899,6 +1076,77 @@ input[type="checkbox"] {
 
 <!-- Yardım Butonu -->
 <button class="help-btn" onclick="toggleHelp()" title="Klavye kısayolları">?</button>
+<button class="company-btn" onclick="toggleCompany()" title="Şirket Profili">🏪</button>
+
+<!-- Şirket Profili Modal -->
+<div class="help-overlay" id="companyOverlay" onclick="if(event.target===this)toggleCompany()">
+  <div class="company-modal">
+    <h2>🏪 Şirket Profili</h2>
+
+    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:1rem;">
+      <div>
+        <div class="company-logo-preview" id="logoPreview" onclick="document.getElementById('logoInput').click()">
+          <img id="logoImg" src="" style="width:100%;height:100%;object-fit:contain;display:none">
+          <span id="logoPlaceholder">🏪</span>
+        </div>
+        <input type="file" id="logoInput" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
+        <p style="font-size:10px;color:var(--text3);text-align:center;margin-top:4px;">Logo yükle</p>
+      </div>
+      <div style="flex:1">
+        <div class="company-field">
+          <label>Şirket Adı</label>
+          <input type="text" id="companyName" placeholder="Kesmar Market">
+        </div>
+        <div class="company-field">
+          <label>Slogan</label>
+          <input type="text" id="companySlogan" placeholder="Her evin ihtiyacı">
+        </div>
+      </div>
+    </div>
+
+    <div class="company-field">
+      <label>Adres</label>
+      <input type="text" id="companyAddress" placeholder="İstanbul, Türkiye">
+    </div>
+
+    <div class="company-field">
+      <label>Telefon</label>
+      <input type="text" id="companyPhone" placeholder="0212 000 00 00">
+    </div>
+
+    <div class="company-field">
+      <label>Website</label>
+      <input type="text" id="companyWebsite" placeholder="www.kesmar.com">
+    </div>
+
+    <div class="company-field">
+      <label>Marka Rengi (Afiş etiketi varsayılanı)</label>
+      <div class="company-colors">
+        <div class="color-swatch active" style="background:#e63030" onclick="setCompanyColor('#e63030',this)"></div>
+        <div class="color-swatch" style="background:#1a1a2e" onclick="setCompanyColor('#1a1a2e',this)"></div>
+        <div class="color-swatch" style="background:#0f9d58" onclick="setCompanyColor('#0f9d58',this)"></div>
+        <div class="color-swatch" style="background:#f59e0b" onclick="setCompanyColor('#f59e0b',this)"></div>
+        <div class="color-swatch" style="background:#6366f1" onclick="setCompanyColor('#6366f1',this)"></div>
+        <div class="color-swatch" style="background:#0ea5e9" onclick="setCompanyColor('#0ea5e9',this)"></div>
+        <input type="color" value="#e63030" oninput="setCompanyColor(this.value,null)" style="width:32px;height:32px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:none">
+      </div>
+    </div>
+
+    <div class="company-field">
+      <label>Kampanya Alt Yazısı</label>
+      <input type="text" id="companyCampaignText" placeholder="Tarihleri arasında geçerlidir.">
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:1.25rem;">
+      <button class="btn btn-primary" style="flex:1" onclick="saveCompanyProfile()">💾 Kaydet</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="toggleCompany()">İptal</button>
+    </div>
+
+    <div id="companySaveStatus" style="display:none;margin-top:10px;padding:8px 12px;border-radius:8px;font-size:12px;text-align:center;background:rgba(34,197,94,0.1);color:#4ade80;">
+      ✅ Kaydedildi!
+    </div>
+  </div>
+</div>
 
 <!-- Yardım Modal -->
 <div class="help-overlay" id="helpOverlay" onclick="if(event.target===this)toggleHelp()">
@@ -2384,15 +2632,27 @@ document.addEventListener('click', (e) => {
 
 async function initAuth() {
   const { data: { session } } = await _supa.auth.getSession();
-  if (session) updateUI(session.user);
+  if (session) {
+    showApp(session.user);
+  } else {
+    showOnboarding();
+  }
 
   _supa.auth.onAuthStateChange((event, session) => {
-    if (session) updateUI(session.user);
-    else {
-      document.getElementById('loginBtn').style.display = 'flex';
-      document.getElementById('userMenu').style.display = 'none';
-    }
+    if (session) showApp(session.user);
+    else showOnboarding();
   });
+}
+
+function showOnboarding() {
+  document.getElementById('onboarding').classList.remove('hidden');
+  document.getElementById('loginBtn').style.display = 'flex';
+  document.getElementById('userMenu').style.display = 'none';
+}
+
+function showApp(user) {
+  document.getElementById('onboarding').classList.add('hidden');
+  updateUI(user);
 }
 
 function updateUI(user) {
@@ -2407,6 +2667,94 @@ function updateUI(user) {
 }
 
 window.addEventListener('load', initAuth);
+
+// ── ŞİRKET PROFİLİ ────────────────────────────────────────────
+let companyProfile = JSON.parse(localStorage.getItem('companyProfile') || '{}');
+
+function toggleCompany() {
+  const overlay = document.getElementById('companyOverlay');
+  overlay.classList.toggle('visible');
+  if (overlay.classList.contains('visible')) loadCompanyForm();
+}
+
+function loadCompanyForm() {
+  const p = companyProfile;
+  document.getElementById('companyName').value = p.name || '';
+  document.getElementById('companySlogan').value = p.slogan || '';
+  document.getElementById('companyAddress').value = p.address || '';
+  document.getElementById('companyPhone').value = p.phone || '';
+  document.getElementById('companyWebsite').value = p.website || '';
+  document.getElementById('companyCampaignText').value = p.campaignText || '';
+  if (p.logo) {
+    document.getElementById('logoImg').src = p.logo;
+    document.getElementById('logoImg').style.display = 'block';
+    document.getElementById('logoPlaceholder').style.display = 'none';
+  }
+  if (p.color) {
+    document.getElementById('afis-fiyat-box') && (document.getElementById('afis-fiyat-box').style.background = p.color);
+  }
+}
+
+function handleLogoUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    companyProfile.logo = e.target.result;
+    document.getElementById('logoImg').src = e.target.result;
+    document.getElementById('logoImg').style.display = 'block';
+    document.getElementById('logoPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function setCompanyColor(color, btn) {
+  companyProfile.color = color;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  // Afiş varsayılan rengini güncelle
+  _afisClr = color;
+}
+
+function saveCompanyProfile() {
+  companyProfile.name = document.getElementById('companyName').value.trim();
+  companyProfile.slogan = document.getElementById('companySlogan').value.trim();
+  companyProfile.address = document.getElementById('companyAddress').value.trim();
+  companyProfile.phone = document.getElementById('companyPhone').value.trim();
+  companyProfile.website = document.getElementById('companyWebsite').value.trim();
+  companyProfile.campaignText = document.getElementById('companyCampaignText').value.trim();
+
+  localStorage.setItem('companyProfile', JSON.stringify(companyProfile));
+
+  // Kampanya alt yazısını güncelle
+  if (companyProfile.campaignText) {
+    document.getElementById('arasindaText').value = companyProfile.campaignText;
+  }
+
+  // Header'da şirket adını göster
+  updateCompanyHeader();
+
+  const status = document.getElementById('companySaveStatus');
+  status.style.display = 'block';
+  setTimeout(() => { status.style.display = 'none'; toggleCompany(); }, 1500);
+}
+
+function updateCompanyHeader() {
+  if (companyProfile.name) {
+    document.querySelector('.hdr-title').textContent = companyProfile.name;
+  }
+  if (companyProfile.slogan) {
+    document.querySelector('.hdr-sub').textContent = companyProfile.slogan;
+  }
+}
+
+// Sayfa açılınca şirket profilini yükle
+window.addEventListener('DOMContentLoaded', () => {
+  companyProfile = JSON.parse(localStorage.getItem('companyProfile') || '{}');
+  updateCompanyHeader();
+  // Renk varsa afiş varsayılanı güncelle
+  if (companyProfile.color) _afisClr = companyProfile.color;
+});
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
