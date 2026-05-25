@@ -2968,21 +2968,54 @@ function openAfisTab() {
   win.document.write('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:ital,wght@1,900&display=swap" rel="stylesheet">');
   win.document.write('<scr'+'ipt src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/scr'+'ipt>');
   win.document.write('<scr'+'ipt src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/scr'+'ipt>');
-  win.document.write('<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:\'Inter\',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;}.page-hdr{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}.page-hdr h1{font-size:16px;font-weight:600;color:#f1f5f9;}.page-hdr span{font-size:13px;color:#64748b;}.actions{display:flex;gap:8px;}.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;}.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;}.grid{display:flex;flex-wrap:wrap;gap:24px;padding:2rem;justify-content:center;}.afis-wrap{display:flex;flex-direction:column;align-items:center;gap:0;}.afis-card{background:#fff;border-radius:12px;padding:20px 16px;width:260px;height:367px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(0,0,0,0.4);}.afis-texts{text-align:center;width:100%;}.afis-marka{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;}.afis-urun{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;margin-top:4px;}.afis-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;}.afis-img-wrap img{max-width:160px;max-height:160px;object-fit:contain;}.afis-price-box{width:100%;border-radius:8px;padding:12px 0;text-align:center;}.afis-price{font-weight:700;color:#fff;letter-spacing:-2px;line-height:1;}</style>');
+  win.document.write('<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:\'Inter\',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;}.page-hdr{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}.page-hdr h1{font-size:16px;font-weight:600;color:#f1f5f9;}.page-hdr span{font-size:13px;color:#64748b;}.actions{display:flex;gap:8px;}.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;}.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;}.grid{display:flex;flex-wrap:wrap;gap:24px;padding:2rem;justify-content:center;}.afis-wrap{display:flex;flex-direction:column;align-items:center;gap:0;}.afis-card{background:#fff;border-radius:12px;padding:20px 16px;width:260px;height:367px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(0,0,0,0.4);}.afis-texts{text-align:center;width:100%;}.afis-marka{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;}.afis-urun{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;margin-top:4px;}.afis-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;}.afis-img-wrap img{max-width:160px;max-height:160px;object-fit:contain;}.afis-price-box{width:100%;border-radius:8px;padding:12px 0;text-align:center;}.afis-price{font-weight:700;color:#fff;letter-spacing:-2px;line-height:1;}.font-sel{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;font-size:12px;color:#e2e8f0;font-family:inherit;outline:none;width:100%;cursor:pointer;}</style>');
   win.document.write('</head><body>');
   win.document.write('<div class="page-hdr"><div><h1>Afis Olustur</h1><span>' + selected.length + ' urun secili' + (companyName ? ' - ' + companyName : '') + '</span></div><div class="actions"><button class="btn btn-ghost" onclick="window.close()">Geri</button><button class="btn btn-primary" onclick="downloadAll()">Tumu Indir (ZIP)</button></div></div>');
   win.document.write('<div class="grid" id="grid"></div>');
   const scriptContent = `const products = ${JSON.stringify(selected)};
 const defaultColor = '${afisColor}';
 
-// Her kart icin ayri state
+const FONTS = [
+  {name:'Bebas Neue', label:'Bebas Neue'},
+  {name:'Barlow Condensed', label:'Barlow Condensed'},
+  {name:'Anton', label:'Anton'},
+  {name:'Black Han Sans', label:'Black Han Sans'},
+  {name:'Oswald', label:'Oswald'},
+  {name:'Montserrat', label:'Montserrat'},
+  {name:'Poppins', label:'Poppins'},
+  {name:'Raleway', label:'Raleway'},
+  {name:'Nunito', label:'Nunito'},
+  {name:'Rubik', label:'Rubik'},
+  {name:'Inter', label:'Inter'},
+  {name:'Roboto', label:'Roboto'},
+  {name:'Lato', label:'Lato'},
+  {name:'Ubuntu', label:'Ubuntu'},
+  {name:'Playfair Display', label:'Playfair Display'},
+  {name:'Merriweather', label:'Merriweather'},
+  {name:'Pacifico', label:'Pacifico'},
+  {name:'Righteous', label:'Righteous'},
+  {name:'Alfa Slab One', label:'Alfa Slab One'},
+  {name:'Fjalla One', label:'Fjalla One'},
+];
+
+// Google Fonts yukle
+const fontQuery = FONTS.map(f => f.name.replace(/ /g,'+')+':wght@400;700;900').join('|');
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.href = 'https://fonts.googleapis.com/css2?'+FONTS.map(f=>'family='+f.name.replace(/ /g,'+')+(f.name==='Bebas Neue'||f.name==='Anton'||f.name==='Black Han Sans'||f.name==='Pacifico'||f.name==='Righteous'||f.name==='Alfa Slab One'||f.name==='Fjalla One'?'':'&display=swap:wght@400;700;900')).join('&')+'&display=swap';
+link.href = 'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@700;900&family=Anton&family=Black+Han+Sans&family=Oswald:wght@700&family=Montserrat:wght@700;900&family=Poppins:wght@700;900&family=Raleway:wght@700;900&family=Nunito:wght@700;900&family=Rubik:wght@700;900&family=Inter:wght@700;900&family=Roboto:wght@700;900&family=Lato:wght@700;900&family=Ubuntu:wght@700&family=Playfair+Display:wght@700;900&family=Merriweather:wght@700;900&family=Pacifico&family=Righteous&family=Alfa+Slab+One&family=Fjalla+One&display=swap';
+document.head.appendChild(link);
+
+const fontOptions = FONTS.map(f => '<option value="'+f.name+'" style="font-family:'+f.name+'">'+f.label+'</option>').join('');
+
 const state = products.map(p => ({
   marka: p.marka || '',
   urun: p.urun || '',
   fiyat: p.fiyat || '',
   gorsel: p.imgPreview || p.imgUrl || '',
   ms: 20, us: 15, fs: 48, gs: 140,
-  clr: defaultColor
+  clr: defaultColor,
+  font: 'Barlow Condensed'
 }));
 
 function updateCard(i) {
@@ -2991,10 +3024,13 @@ function updateCard(i) {
   if (!card) return;
   card.querySelector('.afis-marka').textContent = s.marka || 'MARKA';
   card.querySelector('.afis-marka').style.fontSize = s.ms + 'px';
+  card.querySelector('.afis-marka').style.fontFamily = s.font;
   card.querySelector('.afis-urun').textContent = s.urun || 'URUN';
   card.querySelector('.afis-urun').style.fontSize = s.us + 'px';
+  card.querySelector('.afis-urun').style.fontFamily = s.font;
   card.querySelector('.afis-price').textContent = s.fiyat || '0,00';
   card.querySelector('.afis-price').style.fontSize = s.fs + 'px';
+  card.querySelector('.afis-price').style.fontFamily = s.font;
   card.querySelector('.afis-price-box').style.background = s.clr;
   const imgWrap = card.querySelector('.afis-img-wrap');
   if (s.gorsel) {
@@ -3014,28 +3050,28 @@ function buildCard(p, i) {
     '<div style="font-size:11px;color:#475569;margin-bottom:4px">'+(i+1)+'. '+p.marka+'</div>'+
     '<div class="afis-card" id="card-'+i+'">'+
       '<div class="afis-texts">'+
-        '<div class="afis-marka" style="font-size:'+s.ms+'px;font-weight:700;color:#111;text-transform:uppercase;line-height:1.2">'+s.marka+'</div>'+
-        '<div class="afis-urun" style="font-size:'+s.us+'px;font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;margin-top:4px">'+s.urun+'</div>'+
+        '<div class="afis-marka" style="font-size:'+s.ms+'px;font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;font-family:'+s.font+'">'+s.marka+'</div>'+
+        '<div class="afis-urun" style="font-size:'+s.us+'px;font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;margin-top:4px;font-family:'+s.font+'">'+s.urun+'</div>'+
       '</div>'+
       '<div class="afis-img-wrap" style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0">'+
         (s.gorsel ? '<img src="'+s.gorsel+'" style="max-width:'+s.gs+'px;max-height:'+s.gs+'px;object-fit:contain" crossorigin="anonymous">' : '<div style="width:'+s.gs+'px;height:'+s.gs+'px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px">Gorsel</div>')+
       '</div>'+
       '<div class="afis-price-box" style="background:'+s.clr+';width:100%;border-radius:8px;padding:12px 0;text-align:center">'+
-        '<div class="afis-price" style="font-weight:700;color:#fff;letter-spacing:-2px;line-height:1;font-size:'+s.fs+'px">'+s.fiyat+'</div>'+
+        '<div class="afis-price" style="font-weight:700;color:#fff;letter-spacing:-2px;line-height:1;font-size:'+s.fs+'px;font-family:'+s.font+'">'+s.fiyat+'</div>'+
       '</div>'+
     '</div>'+
-    // Ayar paneli
     '<div class="settings-panel" style="background:#1a1f2e;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;width:260px;margin-top:4px">'+
       '<div style="display:flex;flex-direction:column;gap:6px">'+
         '<input type="text" value="'+s.marka+'" placeholder="Marka" oninput="state['+i+'].marka=this.value;updateCard('+i+')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;font-size:12px;color:#e2e8f0;font-family:inherit;outline:none;width:100%">'+
         '<input type="text" value="'+s.urun+'" placeholder="Urun adi" oninput="state['+i+'].urun=this.value;updateCard('+i+')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;font-size:12px;color:#e2e8f0;font-family:inherit;outline:none;width:100%">'+
         '<input type="text" value="'+s.fiyat+'" placeholder="Fiyat" oninput="state['+i+'].fiyat=this.value;updateCard('+i+')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;font-size:12px;color:#818cf8;font-family:inherit;outline:none;width:100%;font-weight:700">'+
         '<input type="text" value="'+s.gorsel+'" placeholder="Gorsel URL" oninput="state['+i+'].gorsel=this.value;updateCard('+i+')" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;font-size:11px;color:#64748b;font-family:inherit;outline:none;width:100%">'+
+        '<select class="font-sel" onchange="state['+i+'].font=this.value;updateCard('+i+')">'+fontOptions+'</select>'+
         '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:2px">'+
           '<span style="font-size:10px;color:#475569;width:100%">Punto: Marka / Urun / Fiyat / Gorsel</span>'+
-          '<input type="range" min="10" max="36" value="'+s.ms+'" oninput="state['+i+'].ms=+this.value;updateCard('+i+')" style="flex:1;accent-color:#6366f1" title="Marka">'+
-          '<input type="range" min="8" max="28" value="'+s.us+'" oninput="state['+i+'].us=+this.value;updateCard('+i+')" style="flex:1;accent-color:#6366f1" title="Urun">'+
-          '<input type="range" min="20" max="72" value="'+s.fs+'" oninput="state['+i+'].fs=+this.value;updateCard('+i+')" style="flex:1;accent-color:#6366f1" title="Fiyat">'+
+          '<input type="range" min="10" max="48" value="'+s.ms+'" oninput="state['+i+'].ms=+this.value;updateCard('+i+')" style="flex:1;accent-color:#6366f1" title="Marka">'+
+          '<input type="range" min="8" max="36" value="'+s.us+'" oninput="state['+i+'].us=+this.value;updateCard('+i+')" style="flex:1;accent-color:#6366f1" title="Urun">'+
+          '<input type="range" min="20" max="80" value="'+s.fs+'" oninput="state['+i+'].fs=+this.value;updateCard('+i+')" style="flex:1;accent-color:#6366f1" title="Fiyat">'+
           '<input type="range" min="60" max="200" value="'+s.gs+'" oninput="state['+i+'].gs=+this.value;updateCard('+i+')" style="flex:1;accent-color:#6366f1" title="Gorsel">'+
         '</div>'+
         '<div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">'+
@@ -3045,6 +3081,13 @@ function buildCard(p, i) {
       '</div>'+
     '</div>'+
     '<button onclick="downloadOne('+i+')" style="margin-top:6px;padding:6px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:#94a3b8;font-size:12px;cursor:pointer;font-family:inherit">PNG Indir</button>';
+
+  // Font seciciyi dogru degere set et
+  setTimeout(() => {
+    const sel = wrap.querySelectorAll('select')[0];
+    if (sel) sel.value = s.font;
+  }, 0);
+
   return wrap;
 }
 
@@ -3083,7 +3126,7 @@ async function downloadAll() {
 }
 
 renderGrid();`;
-  const scriptEl = win.document.createElement('script');
+    const scriptEl = win.document.createElement('script');
   scriptEl.textContent = scriptContent;
   win.document.body.appendChild(scriptEl);
   win.document.write('</body></html>');
