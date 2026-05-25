@@ -2655,13 +2655,21 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const _supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 async function signInWithGoogle() {
+  const redirectTo = window.location.origin + window.location.pathname;
   const { error } = await _supa.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.href
+      redirectTo: redirectTo,
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent',
+      }
     }
   });
-  if (error) console.error('Giriş hatası:', error);
+  if (error) {
+    console.error('Giriş hatası:', error);
+    alert('Giriş hatası: ' + error.message);
+  }
 }
 
 async function signOut() {
