@@ -737,54 +737,6 @@ input[type="checkbox"] {
 }
 
 @media(max-width:768px){.wrap{padding:1rem}.settings-row{grid-template-columns:1fr}}
-
-/* ── AFİŞ YAN PANEL ── */
-.afis-backdrop {
-  display:none; position:fixed; inset:0; z-index:1000;
-  background:rgba(0,0,0,0.45); backdrop-filter:blur(3px);
-}
-.afis-backdrop.visible { display:block; }
-.afis-panel {
-  position:fixed; top:0; right:-540px; bottom:0; z-index:1001;
-  width:540px; max-width:100vw;
-  background:var(--bg); border-left:1px solid var(--border);
-  box-shadow:-8px 0 40px rgba(0,0,0,0.5);
-  display:flex; flex-direction:column;
-  transition:right 0.32s cubic-bezier(0.4,0,0.2,1);
-}
-.afis-panel.visible { right:0; }
-.afis-panel-hdr {
-  padding:1rem 1.25rem; border-bottom:1px solid var(--border);
-  display:flex; align-items:center; justify-content:space-between;
-  flex-shrink:0; background:var(--card-bg);
-}
-.afis-panel-hdr h2 { font-size:14px; font-weight:700; color:var(--text); margin:0; display:flex; align-items:center; gap:8px; }
-.afis-panel-close {
-  width:30px; height:30px; border-radius:7px; border:1px solid var(--border);
-  background:transparent; cursor:pointer; color:var(--text3); font-size:15px;
-  display:flex; align-items:center; justify-content:center; transition:all 0.15s;
-}
-.afis-panel-close:hover { background:rgba(239,68,68,0.1); color:#f87171; border-color:rgba(239,68,68,0.3); }
-.afis-panel-body { display:flex; flex:1; overflow:hidden; }
-.afis-panel-preview {
-  width:196px; flex-shrink:0;
-  background:#e2e5ea; border-right:1px solid var(--border);
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:16px; gap:10px;
-}
-.afis-panel-preview-label { font-size:10px; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
-.afis-panel-controls { flex:1; overflow-y:auto; padding:1rem 1.25rem; display:flex; flex-direction:column; gap:10px; }
-.afis-panel-footer {
-  padding:1rem 1.25rem; border-top:1px solid var(--border);
-  display:flex; gap:8px; flex-shrink:0; background:var(--card-bg);
-}
-.afis-divider { height:1px; background:var(--border); margin:2px 0; }
-@media(max-width:600px){
-  .afis-panel{width:100vw;}
-  .afis-panel-body{flex-direction:column;}
-  .afis-panel-preview{width:100%;height:auto;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;padding:12px;}
-}
-
 @media print{.hdr,.tabs,.upload,.card-hdr .btn,.export-bar,.inp-row,.ai-badge,#sheetsStatus{display:none!important}body{background:#fff;color:#000}.card{border:none;box-shadow:none;transform:none}.price{color:#000!important}.marka{color:#000!important}}
 </style>
 </head>
@@ -1086,93 +1038,8 @@ input[type="checkbox"] {
   <div class="ctx-item" onclick="deleteRow(_ctxIdx); hideCtx()">🗑 Satırı Sil</div>
 </div>
 
-<!-- Afiş Yan Panel -->
-<div class="afis-backdrop" id="afisBackdrop" onclick="closeAfis()"></div>
-<div class="afis-panel" id="afisPanel">
-  <div class="afis-panel-hdr">
-    <h2>🖼️ Afiş Oluştur</h2>
-    <button class="afis-panel-close" onclick="closeAfis()">✕</button>
-  </div>
-  <div class="afis-panel-body">
-    <div class="afis-panel-preview">
-      <span class="afis-panel-preview-label">Önizleme</span>
-      <div id="afisCanvas" style="background:#fff;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:14px 10px;width:164px;height:232px;box-sizing:border-box;gap:6px;box-shadow:0 4px 16px rgba(0,0,0,0.2);">
-        <div style="text-align:center;width:100%">
-          <p id="afis-marka" style="font-size:16px;font-weight:700;color:#111;margin:0;line-height:1.15;text-transform:uppercase">MARKA</p>
-          <p id="afis-urun" style="font-size:11px;font-weight:700;color:#111;margin:3px 0 0;line-height:1.15;text-transform:uppercase">ÜRÜN ADI</p>
-        </div>
-        <div id="afis-img-wrap" style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0;">
-          <div style="width:80px;height:80px;background:#f0f0f0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa">Görsel</div>
-        </div>
-        <div id="afis-fiyat-box" style="background:#e63030;width:100%;border-radius:6px;padding:7px 0;text-align:center">
-          <p id="afis-fiyat" style="font-size:28px;font-weight:700;color:#fff;margin:0;letter-spacing:-1px;line-height:1">0,00</p>
-        </div>
-      </div>
-    </div>
-    <div class="afis-panel-controls">
-      <div class="afis-field">
-        <label>Marka</label>
-        <input type="text" id="afis-i-marka" oninput="afisUpdate()">
-      </div>
-      <div class="afis-field">
-        <label>Ürün Adı</label>
-        <input type="text" id="afis-i-urun" oninput="afisUpdate()">
-      </div>
-      <div class="afis-field">
-        <label>Fiyat</label>
-        <input type="text" id="afis-i-fiyat" oninput="afisUpdate()">
-      </div>
-      <div class="afis-field">
-        <label>Görsel URL</label>
-        <input type="text" id="afis-i-gorsel" placeholder="https://..." oninput="afisUpdateImg()">
-      </div>
-      <div class="afis-divider"></div>
-      <div class="afis-field">
-        <label>Punto Ayarları</label>
-        <div class="afis-slider-row">
-          <span>Marka</span>
-          <input type="range" id="afis-s-marka" min="10" max="36" value="16" oninput="afisUpdate()">
-          <span id="afis-v-marka">16px</span>
-        </div>
-        <div class="afis-slider-row">
-          <span>Ürün</span>
-          <input type="range" id="afis-s-urun" min="8" max="28" value="11" oninput="afisUpdate()">
-          <span id="afis-v-urun">11px</span>
-        </div>
-        <div class="afis-slider-row">
-          <span>Fiyat</span>
-          <input type="range" id="afis-s-fiyat" min="16" max="52" value="28" oninput="afisUpdate()">
-          <span id="afis-v-fiyat">28px</span>
-        </div>
-        <div class="afis-slider-row">
-          <span>Görsel</span>
-          <input type="range" id="afis-s-gorsel" min="40" max="140" value="80" oninput="afisUpdate()">
-          <span id="afis-v-gorsel">80px</span>
-        </div>
-      </div>
-      <div class="afis-divider"></div>
-      <div class="afis-field">
-        <label>Etiket Rengi</label>
-        <div class="afis-colors">
-          <button class="afis-color-btn active" style="background:#e63030" onclick="afisSetClr('#e63030',this)"></button>
-          <button class="afis-color-btn" style="background:#1a1a2e" onclick="afisSetClr('#1a1a2e',this)"></button>
-          <button class="afis-color-btn" style="background:#0f9d58" onclick="afisSetClr('#0f9d58',this)"></button>
-          <button class="afis-color-btn" style="background:#f59e0b" onclick="afisSetClr('#f59e0b',this)"></button>
-          <button class="afis-color-btn" style="background:#6366f1" onclick="afisSetClr('#6366f1',this)"></button>
-          <input type="color" value="#e63030" oninput="afisSetClr(this.value,null)" style="width:24px;height:24px;border:none;border-radius:50%;cursor:pointer;padding:0;background:none">
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="afis-panel-footer">
-    <button class="btn btn-primary" style="flex:1" onclick="afisIndir()">⬇ PNG İndir</button>
-    <button class="btn btn-green" id="afis-toplu-btn" style="display:none;flex:1" onclick="afisTopluIndir()">📦 ZIP İndir</button>
-    <button class="btn btn-ghost" onclick="closeAfis()">İptal</button>
-  </div>
-</div>
-
 <!-- Afiş Modal -->
-<div class="afis-overlay" id="afisOverlay" onclick="if(event.target===this)closeAfis()" style="display:none!important">
+<div class="afis-overlay" id="afisOverlay" onclick="if(event.target===this)closeAfis()">
   <div class="afis-preview-wrap">
     <div id="afisCanvas">
       <div style="text-align:center;width:100%">
@@ -1751,7 +1618,7 @@ function renderTable() {
            oninput="updateField(${idx},'fiyat',this.value)"></td>
       <td class="tarih-c">${esc(r.tarih)}</td>
       <td class="arasinda-c">${esc(r.arasinda)}</td>
-      <td style="text-align:center;white-space:nowrap"><button class="btn-del" title="Afiş" onclick="openAfis(${idx})" style="margin-right:3px">🖼️</button><button class="btn-del" onclick="deleteRow(${idx})">✕</button></td>
+      <td style="text-align:center"><button class="btn-del" onclick="deleteRow(${idx})">✕</button></td>
     `;
     tbody.appendChild(tr);
   });
@@ -2653,20 +2520,22 @@ function openAfis(idx) {
   document.getElementById('afis-i-marka').value = r ? r.marka : '';
   document.getElementById('afis-i-urun').value = r ? r.urun : '';
   document.getElementById('afis-i-fiyat').value = r ? r.fiyat : '';
+  // imgPreview (base64) varsa onu kullan, yoksa URL
   const imgSrcForAfis = r ? (r.imgPreview || r.imgUrl || '') : '';
   document.getElementById('afis-i-gorsel').value = imgSrcForAfis;
   afisUpdate();
   afisUpdateImgDirect(imgSrcForAfis);
+
+  // Toplu buton
   const toplu = document.getElementById('afis-toplu-btn');
-  toplu.style.display = selectedRows.size > 1 ? 'flex' : 'none';
-  if (selectedRows.size > 1) toplu.textContent = `📦 ${selectedRows.size} Ürün ZIP`;
-  document.getElementById('afisBackdrop').classList.add('visible');
-  document.getElementById('afisPanel').classList.add('visible');
+  toplu.style.display = selectedRows.size > 1 ? 'block' : 'none';
+  if (selectedRows.size > 1) toplu.textContent = `📦 ${selectedRows.size} Ürünü ZIP İndir`;
+
+  document.getElementById('afisOverlay').classList.add('visible');
 }
 
 function closeAfis() {
-  document.getElementById('afisBackdrop').classList.remove('visible');
-  document.getElementById('afisPanel').classList.remove('visible');
+  document.getElementById('afisOverlay').classList.remove('visible');
 }
 
 function afisUpdate() {
@@ -2728,7 +2597,7 @@ function afisSetClr(clr, btn) {
 
 async function afisIndir(r) {
   const canvas = document.getElementById('afisCanvas');
-  const btn = document.querySelector('.afis-panel-footer .btn-primary');
+  const btn = document.querySelector('.afis-modal .btn-primary');
   if (btn) { btn.textContent = '⏳ Hazırlanıyor...'; btn.disabled = true; }
   const cvs = await html2canvas(canvas, { 
     scale:3, useCORS:true, allowTaint:true,
@@ -3032,49 +2901,21 @@ function openAfisTab() {
   win.document.write('<!DOCTYPE html><html lang="tr"><head>');
   win.document.write('<meta charset="UTF-8">');
   win.document.write('<meta name="viewport" content="width=device-width,initial-scale=1">');
-  win.document.write('<title>Kampix — Afiş Oluştur<\/title>');
+  win.document.write('<title>Kampix<\/title>');
   win.document.write('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:ital,wght@1,900&display=swap" rel="stylesheet">');
   win.document.write('<scr'+'ipt src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/scr'+'ipt>');
   win.document.write('<scr'+'ipt src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/scr'+'ipt>');
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Inter',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;}
-.page-hdr{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
-.page-hdr h1{font-size:16px;font-weight:600;color:#f1f5f9;}
-.page-hdr span{font-size:13px;color:#64748b;}
-.actions{display:flex;gap:8px;}
-.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}
-.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;}
-.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;}
-.controls{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-.ctrl-group{display:flex;align-items:center;gap:8px;font-size:12px;color:#64748b;}
-.ctrl-group input[type=range]{width:100px;accent-color:#6366f1;}
-.ctrl-group input[type=color]{width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:2px;}
-.grid{display:flex;flex-wrap:wrap;gap:20px;padding:2rem;justify-content:center;}
-.afis-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
-.afis-num{font-size:11px;color:#475569;}
-.afis-card{background:#fff;border-radius:12px;padding:20px 16px;width:260px;height:367px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(0,0,0,0.4);cursor:pointer;transition:transform 0.2s;}
-.afis-card:hover{transform:scale(1.02);}
-.afis-texts{text-align:center;width:100%;}
-.afis-marka{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;}
-.afis-urun{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;margin-top:4px;}
-.afis-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;}
-.afis-img-wrap img{max-width:160px;max-height:160px;object-fit:contain;}
-.afis-price-box{width:100%;border-radius:8px;padding:12px 0;text-align:center;}
-.afis-price{font-weight:700;color:#fff;letter-spacing:-2px;line-height:1;}
-
   win.document.write('<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:\'Inter\',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;}.page-hdr{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}.page-hdr h1{font-size:16px;font-weight:600;color:#f1f5f9;}.page-hdr span{font-size:13px;color:#64748b;}.actions{display:flex;gap:8px;}.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;}.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;}.controls{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}.ctrl-group{display:flex;align-items:center;gap:8px;font-size:12px;color:#64748b;}.ctrl-group input[type=range]{width:100px;accent-color:#6366f1;}.ctrl-group input[type=color]{width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:2px;}.grid{display:flex;flex-wrap:wrap;gap:20px;padding:2rem;justify-content:center;}.afis-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}.afis-num{font-size:11px;color:#475569;}.afis-card{background:#fff;border-radius:12px;padding:20px 16px;width:260px;height:367px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(0,0,0,0.4);cursor:pointer;transition:transform 0.2s;}.afis-card:hover{transform:scale(1.02);}.afis-texts{text-align:center;width:100%;}.afis-marka{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;}.afis-urun{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;margin-top:4px;}.afis-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;}.afis-img-wrap img{max-width:160px;max-height:160px;object-fit:contain;}.afis-price-box{width:100%;border-radius:8px;padding:12px 0;text-align:center;}.afis-price{font-weight:700;color:#fff;letter-spacing:-2px;line-height:1;}</style>');
   win.document.write('</head><body>');
-  win.document.write('<div class="page-hdr"><div><h1>🖼️ Afiş Oluştur</h1><span>' + selected.length + ' ürün seçili' + (companyName ? ' — ' + companyName : '') + '</span></div><div class="actions"><button class="btn btn-ghost" onclick="window.close()">← Geri</button><button class="btn btn-primary" onclick="downloadAll()">📦 Tümünü İndir (ZIP)</button></div></div>');
-  win.document.write('<div class="controls"><div class="ctrl-group">Marka Punto: <input type="range" id="cs-marka" min="12" max="36" value="20" oninput="updateAll()"><span id="cv-marka">20px</span></div><div class="ctrl-group">Ürün Punto: <input type="range" id="cs-urun" min="10" max="28" value="15" oninput="updateAll()"><span id="cv-urun">15px</span></div><div class="ctrl-group">Fiyat Punto: <input type="range" id="cs-fiyat" min="24" max="72" value="48" oninput="updateAll()"><span id="cv-fiyat">48px</span></div><div class="ctrl-group">Görsel: <input type="range" id="cs-gorsel" min="60" max="180" value="140" oninput="updateAll()"><span id="cv-gorsel">140px</span></div><div class="ctrl-group">Renk: <input type="color" id="cs-renk" value="' + afisColor + '" oninput="updateAll()"></div></div>');
+  win.document.write('<div class="page-hdr"><div><h1>Afis Olustur</h1><span>' + selected.length + ' urun secili' + (companyName ? ' - ' + companyName : '') + '</span></div><div class="actions"><button class="btn btn-ghost" onclick="window.close()">Geri</button><button class="btn btn-primary" onclick="downloadAll()">Tumu Indir (ZIP)</button></div></div>');
+  win.document.write('<div class="controls"><div class="ctrl-group">Marka Punto: <input type="range" id="cs-marka" min="12" max="36" value="20" oninput="updateAll()"><span id="cv-marka">20px</span></div><div class="ctrl-group">Urun Punto: <input type="range" id="cs-urun" min="10" max="28" value="15" oninput="updateAll()"><span id="cv-urun">15px</span></div><div class="ctrl-group">Fiyat Punto: <input type="range" id="cs-fiyat" min="24" max="72" value="48" oninput="updateAll()"><span id="cv-fiyat">48px</span></div><div class="ctrl-group">Gorsel: <input type="range" id="cs-gorsel" min="60" max="180" value="140" oninput="updateAll()"><span id="cv-gorsel">140px</span></div><div class="ctrl-group">Renk: <input type="color" id="cs-renk" value="' + afisColor + '" oninput="updateAll()"></div></div>');
   win.document.write('<div class="grid" id="grid"></div>');
   const scriptContent = `const products = ${JSON.stringify(selected)};
-function buildCard(p,i){const ms=+document.getElementById('cs-marka').value,us=+document.getElementById('cs-urun').value,fs=+document.getElementById('cs-fiyat').value,gs=+document.getElementById('cs-gorsel').value,clr=document.getElementById('cs-renk').value;const wrap=document.createElement('div');wrap.className='afis-wrap';wrap.innerHTML='<div class="afis-num">'+(i+1)+'. '+p.marka+'</div><div class="afis-card" id="card-'+i+'"><div class="afis-texts"><div class="afis-marka" style="font-size:'+ms+'px">'+p.marka+'</div><div class="afis-urun" style="font-size:'+us+'px">'+p.urun+'</div></div><div class="afis-img-wrap">'+(p.imgPreview||p.imgUrl?'<img src="'+(p.imgPreview||p.imgUrl)+'" style="max-width:'+gs+'px;max-height:'+gs+'px;object-fit:contain">':'<div style="width:'+gs+'px;height:'+gs+'px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px">Görsel</div>')+'</div><div class="afis-price-box" style="background:'+clr+'"><div class="afis-price" style="font-size:'+fs+'px">'+p.fiyat+' ₺</div></div></div><button class="btn btn-ghost" style="font-size:12px;padding:5px 12px" onclick="downloadOne('+i+')">⬇ PNG İndir</button>';return wrap;}
+function buildCard(p,i){const ms=+document.getElementById('cs-marka').value,us=+document.getElementById('cs-urun').value,fs=+document.getElementById('cs-fiyat').value,gs=+document.getElementById('cs-gorsel').value,clr=document.getElementById('cs-renk').value;const wrap=document.createElement('div');wrap.className='afis-wrap';wrap.innerHTML='<div class="afis-num">'+(i+1)+'. '+p.marka+'</div><div class="afis-card" id="card-'+i+'"><div class="afis-texts"><div class="afis-marka" style="font-size:'+ms+'px">'+p.marka+'</div><div class="afis-urun" style="font-size:'+us+'px">'+p.urun+'</div></div><div class="afis-img-wrap">'+(p.imgPreview||p.imgUrl?'<img src="'+(p.imgPreview||p.imgUrl)+'" style="max-width:'+gs+'px;max-height:'+gs+'px;object-fit:contain">':'<div style="width:'+gs+'px;height:'+gs+'px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px">Gorsel</div>')+'</div><div class="afis-price-box" style="background:'+clr+'"><div class="afis-price" style="font-size:'+fs+'px">'+p.fiyat+' TL</div></div></div><button class="btn btn-ghost" style="font-size:12px;padding:5px 12px" onclick="downloadOne('+i+')">PNG Indir</button>';return wrap;}
 function renderGrid(){const g=document.getElementById('grid');g.innerHTML='';products.forEach((p,i)=>g.appendChild(buildCard(p,i)));}
 function updateAll(){['marka','urun','fiyat','gorsel'].forEach(k=>{document.getElementById('cv-'+k).textContent=document.getElementById('cs-'+k).value+'px';});renderGrid();}
 async function downloadOne(i){const card=document.getElementById('card-'+i);const cvs=await html2canvas(card,{scale:3,useCORS:true,allowTaint:true,backgroundColor:'#ffffff'});const a=document.createElement('a');const p=products[i];a.href=cvs.toDataURL('image/png');a.download=(p.marka+'-'+p.urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-')+'.png';a.click();}
-async function downloadAll(){const zip=new JSZip();const folder=zip.folder('afisler');for(let i=0;i<products.length;i++){const btn=document.querySelector('.actions .btn-primary');btn.textContent='⏳ '+(i+1)+'/'+products.length+' hazırlanıyor...';const card=document.getElementById('card-'+i);const cvs=await html2canvas(card,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#ffffff'});const p=products[i];const fname=(p.marka+'-'+p.urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-')+'.png';folder.file(fname,cvs.toDataURL('image/png').split(',')[1],{base64:true});}const blob=await zip.generateAsync({type:'blob'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='afisler.zip';a.click();document.querySelector('.actions .btn-primary').textContent='📦 Tümünü İndir (ZIP)';}
+async function downloadAll(){const zip=new JSZip();const folder=zip.folder('afisler');for(let i=0;i<products.length;i++){const btn=document.querySelector('.actions .btn-primary');btn.textContent='Hazirlaniyor '+(i+1)+'/'+products.length;const card=document.getElementById('card-'+i);const cvs=await html2canvas(card,{scale:2,useCORS:true,allowTaint:true,backgroundColor:'#ffffff'});const p=products[i];const fname=(p.marka+'-'+p.urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-')+'.png';folder.file(fname,cvs.toDataURL('image/png').split(',')[1],{base64:true});}const blob=await zip.generateAsync({type:'blob'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='afisler.zip';a.click();document.querySelector('.actions .btn-primary').textContent='Tumu Indir (ZIP)';}
 renderGrid();`;
   const scriptEl = win.document.createElement('script');
   scriptEl.textContent = scriptContent;
