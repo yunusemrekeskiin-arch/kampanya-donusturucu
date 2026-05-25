@@ -2980,7 +2980,7 @@ function openAfisTab() {
 
   win.document.write('<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:\'Inter\',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;}.page-hdr{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}.page-hdr h1{font-size:16px;font-weight:600;color:#f1f5f9;}.page-hdr span{font-size:13px;color:#64748b;}.actions{display:flex;gap:8px;}.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;}.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;}.grid{display:flex;flex-wrap:wrap;gap:24px;padding:2rem;justify-content:center;}.afis-wrap{display:flex;flex-direction:column;align-items:center;gap:0;}.afis-card{background:#fff;border-radius:12px;padding:20px 16px;width:260px;height:367px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(0,0,0,0.4);}.afis-texts{text-align:center;width:100%;}.afis-marka{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;}.afis-urun{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;margin-top:4px;}.afis-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;}.afis-img-wrap img{max-width:160px;max-height:160px;object-fit:contain;}.afis-price-box{width:100%;border-radius:8px;padding:12px 0;text-align:center;}.afis-price{font-weight:700;color:#fff;letter-spacing:-2px;line-height:1;}.font-sel{background:#1e2538;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 8px;font-size:12px;color:#f1f5f9;font-family:inherit;outline:none;width:100%;cursor:pointer;}.font-sel option{background:#1e2538;color:#f1f5f9;}</style>');
   win.document.write('</head><body>');
-  win.document.write('<div class="page-hdr"><div><h1>Afis Olustur</h1><span>' + selectedClean.length + ' urun secili' + (companyName ? ' - ' + companyName : '') + '</span></div><div class="actions"><button class="btn btn-ghost" onclick="window.close()">Geri</button><button class="btn btn-primary" onclick="downloadAll()">Tumu Indir (ZIP)</button></div></div>');
+  win.document.write('<div class="page-hdr"><div><h1>Afis Olustur</h1><span>' + selectedClean.length + ' urun secili' + (companyName ? ' - ' + companyName : '') + '</span></div><div class="actions"><select id="bulk-fmt" style="background:#1e2538;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:6px 10px;font-size:12px;color:#f1f5f9;cursor:pointer;outline:none;"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="pdf">PDF</option></select><select id="bulk-size" style="background:#1e2538;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:6px 10px;font-size:12px;color:#f1f5f9;cursor:pointer;outline:none;"><option value="card">Kart (260x367)</option><option value="a4">A4 (210x297mm)</option><option value="a3">A3 (297x420mm)</option><option value="a2">A2 (420x594mm)</option><option value="a1">A1 (594x841mm)</option><option value="a0">A0 (841x1189mm)</option></select><button class="btn btn-ghost" onclick="window.close()">Geri</button><button class="btn btn-primary" onclick="downloadAll()">Tumu Indir (ZIP)</button></div></div>');
   win.document.write('<div id="loading" style="text-align:center;padding:3rem;color:#64748b;font-size:14px">Yukleniyor...</div>');
   win.document.write('<div class="grid" id="grid" style="display:none"></div>');
   win.document.write('</body></html>');
@@ -3143,22 +3143,57 @@ async function downloadOne(i, fmt) {
 }
 
 async function downloadAll() {
+  const fmt = document.getElementById('bulk-fmt').value;
+  const size = document.getElementById('bulk-size').value;
   const zip = new JSZip();
   const folder = zip.folder('afisler');
   const btn = document.querySelector('.actions .btn-primary');
-  for (let i=0;i<products.length;i++) {
-    btn.textContent = 'Hazirlaniyor '+(i+1)+'/'+products.length;
+  const origText = btn.textContent;
+
+  // Boyut hesapla (mm -> px @ 96dpi, sonra scale ile)
+  const SIZES = {
+    card: null, // kart boyutu - scale 5x
+    a4:  {w:210,  h:297},
+    a3:  {w:297,  h:420},
+    a2:  {w:420,  h:594},
+    a1:  {w:594,  h:841},
+    a0:  {w:841,  h:1189},
+  };
+  const mmToPx = mm => Math.round(mm * 3.7795275591); // 96dpi
+  const paperSize = SIZES[size];
+
+  for (let i = 0; i < products.length; i++) {
+    btn.textContent = 'Hazirlaniyor ' + (i+1) + '/' + products.length;
     const card = document.getElementById('card-'+i);
-    const cvs = await html2canvas(card,{scale:5,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',logging:false});
-    const fname = (state[i].marka+'-'+state[i].urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-')+'.png';
-    folder.file(fname,cvs.toDataURL('image/png').split(',')[1],{base64:true});
+    const fname = (state[i].marka + '-' + state[i].urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');
+
+    const cvs = await html2canvas(card, {scale:5, useCORS:true, allowTaint:true, backgroundColor:'#ffffff', logging:false});
+
+    if (fmt === 'png') {
+      folder.file(fname + '.png', cvs.toDataURL('image/png').split(',')[1], {base64:true});
+    } else if (fmt === 'jpeg') {
+      folder.file(fname + '.jpg', cvs.toDataURL('image/jpeg', 1.0).split(',')[1], {base64:true});
+    } else if (fmt === 'pdf') {
+      const { jsPDF } = window.jspdf;
+      let wMm, hMm;
+      if (paperSize) {
+        wMm = paperSize.w; hMm = paperSize.h;
+      } else {
+        wMm = 260 * 25.4 / 96; hMm = 367 * 25.4 / 96;
+      }
+      const pdf = new jsPDF({orientation: wMm > hMm ? 'landscape' : 'portrait', unit:'mm', format:[wMm, hMm]});
+      pdf.addImage(cvs.toDataURL('image/jpeg',1.0), 'JPEG', 0, 0, wMm, hMm, undefined, 'FAST');
+      const pdfData = pdf.output('datauristring').split(',')[1];
+      folder.file(fname + '.pdf', pdfData, {base64:true});
+    }
   }
+
   const blob = await zip.generateAsync({type:'blob'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'afisler.zip';
+  a.download = 'afisler-' + fmt + (size !== 'card' ? '-' + size : '') + '.zip';
   a.click();
-  btn.textContent = 'Tumu Indir (ZIP)';
+  btn.textContent = origText;
 }
 
 renderGrid();`;
