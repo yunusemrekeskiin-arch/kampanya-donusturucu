@@ -962,6 +962,7 @@ input[type="checkbox"] {
   <!-- Aksiyon Çubuğu -->
   <div class="action-bar" id="actionBar">
     <span class="action-bar-info" id="actionInfo">0 satır seçildi</span>
+    <button class="btn btn-primary" onclick="openAfisTab()">🖼️ Afiş Oluştur</button>
     <button class="btn btn-ghost" data-i18n="btn_bulk_date" onclick="bulkChangeTarih()" title="Seçilenlerin tarihini değiştir">📅 Tarih Değiştir</button>
     <button class="btn btn-ghost" data-i18n="btn_bulk_excel" onclick="bulkExcel()" title="Seçilenleri Excel olarak indir">⬇ Excel Yap</button>
     <button class="btn btn-danger" data-i18n="btn_bulk_delete" onclick="bulkDelete()" title="Seçilenleri sil">🗑 Toplu Sil</button>
@@ -971,7 +972,18 @@ input[type="checkbox"] {
   <div class="card" id="productTable" style="display:none">
     <div class="card-hdr">
       <h3><span>📋</span><span data-i18n="table_title">Kampanya Ürünleri</span></h3>
-      <span class="badge" id="rowCount">0 ürün</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div style="position:relative;">
+          <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;">🔍</span>
+          <input type="text" id="searchInput" placeholder="Ürün veya marka ara..." oninput="filterTable()"
+            style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:6px 12px 6px 32px;font-size:12px;color:var(--text);font-family:inherit;outline:none;width:200px;transition:all 0.2s;">
+        </div>
+        <select id="markaFilter" onchange="filterTable()"
+          style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:6px 10px;font-size:12px;color:var(--text);font-family:inherit;outline:none;cursor:pointer;">
+          <option value="">Tüm Markalar</option>
+        </select>
+        <span class="badge" id="rowCount">0 ürün</span>
+      </div>
     </div>
     <div class="tbl-wrap">
       <table>
@@ -1580,7 +1592,12 @@ function parseName(fullName) {
 function renderTable() {
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = '';
-  rows.forEach((r, idx) => {
+  updateMarkaFilter();
+  const filtered = getFilteredRows();
+  const filteredIdxMap = filtered.map(r => rows.indexOf(r));
+
+  filtered.forEach((r, fi) => {
+    const idx = filteredIdxMap[fi];
     const tr = document.createElement('tr');
     const imgSrc = r.imgPreview || r.imgUrl || null;
     const imgCell = imgSrc
@@ -1604,7 +1621,11 @@ function renderTable() {
     `;
     tbody.appendChild(tr);
   });
-  document.getElementById('rowCount').textContent = rows.length + ' ürün';
+  const filtered2 = getFilteredRows();
+  document.getElementById('rowCount').textContent = 
+    filterText || filterMarka 
+      ? `${filtered2.length} / ${rows.length} ürün` 
+      : rows.length + ' ürün';
 
   // SortableJS başlat
   if (window.Sortable) {
@@ -2788,7 +2809,198 @@ window.addEventListener('DOMContentLoaded', () => {
   if (companyProfile.color) _afisClr = companyProfile.color;
 });
 
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── ARAMA & FİLTRE ────────────────────────────────────────────
+let filterText = '';
+let filterMarka = '';
+
+function filterTable() {
+  filterText = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+  filterMarka = document.getElementById('markaFilter')?.value || '';
+  renderTable();
+}
+
+function updateMarkaFilter() {
+  const select = document.getElementById('markaFilter');
+  if (!select) return;
+  const markalar = [...new Set(rows.map(r => r.marka).filter(Boolean))].sort();
+  const current = select.value;
+  select.innerHTML = '<option value="">Tüm Markalar</option>';
+  markalar.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m;
+    opt.textContent = m;
+    if (m === current) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
+function getFilteredRows() {
+  return rows.filter((r, i) => {
+    const matchText = !filterText || 
+      r.marka.toLowerCase().includes(filterText) || 
+      r.urun.toLowerCase().includes(filterText) ||
+      r.fiyat.toLowerCase().includes(filterText);
+    const matchMarka = !filterMarka || r.marka === filterMarka;
+    return matchText && matchMarka;
+  });
+}
+
+
+// ── AFİŞ SEKME ────────────────────────────────────────────────
+function openAfisTab() {
+  if (!selectedRows.size) return;
+  const selected = Array.from(selectedRows).sort((a,b)=>a-b).map(i => rows[i]);
+  const afisColor = companyProfile?.color || '#e63030';
+  const companyName = companyProfile?.name || '';
+
+  const html = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kampix — Afiş Oluştur</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:ital,wght@1,900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;}
+.page-hdr{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.08);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.page-hdr h1{font-size:16px;font-weight:600;color:#f1f5f9;}
+.page-hdr span{font-size:13px;color:#64748b;}
+.actions{display:flex;gap:8px;}
+.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;}
+.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#94a3b8;}
+.controls{background:#1a1f2e;border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.ctrl-group{display:flex;align-items:center;gap:8px;font-size:12px;color:#64748b;}
+.ctrl-group input[type=range]{width:100px;accent-color:#6366f1;}
+.ctrl-group input[type=color]{width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:2px;}
+.grid{display:flex;flex-wrap:wrap;gap:20px;padding:2rem;justify-content:center;}
+.afis-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.afis-num{font-size:11px;color:#475569;}
+.afis-card{background:#fff;border-radius:12px;padding:20px 16px;width:260px;height:367px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(0,0,0,0.4);cursor:pointer;transition:transform 0.2s;}
+.afis-card:hover{transform:scale(1.02);}
+.afis-texts{text-align:center;width:100%;}
+.afis-marka{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;}
+.afis-urun{font-weight:700;color:#111;text-transform:uppercase;line-height:1.2;margin-top:4px;}
+.afis-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;}
+.afis-img-wrap img{max-width:160px;max-height:160px;object-fit:contain;}
+.afis-price-box{width:100%;border-radius:8px;padding:12px 0;text-align:center;}
+.afis-price{font-weight:700;color:#fff;letter-spacing:-2px;line-height:1;}
+</style>
+</head>
+<body>
+<div class="page-hdr">
+  <div>
+    <h1>🖼️ Afiş Oluştur</h1>
+    <span>${selected.length} ürün seçili${companyName ? ' — ' + companyName : ''}</span>
+  </div>
+  <div class="actions">
+    <button class="btn btn-ghost" onclick="window.close()">← Geri</button>
+    <button class="btn btn-primary" onclick="downloadAll()">📦 Tümünü İndir (ZIP)</button>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="ctrl-group">Marka Punto: <input type="range" id="cs-marka" min="12" max="36" value="20" oninput="updateAll()"><span id="cv-marka">20px</span></div>
+  <div class="ctrl-group">Ürün Punto: <input type="range" id="cs-urun" min="10" max="28" value="15" oninput="updateAll()"><span id="cv-urun">15px</span></div>
+  <div class="ctrl-group">Fiyat Punto: <input type="range" id="cs-fiyat" min="24" max="72" value="48" oninput="updateAll()"><span id="cv-fiyat">48px</span></div>
+  <div class="ctrl-group">Görsel: <input type="range" id="cs-gorsel" min="60" max="180" value="140" oninput="updateAll()"><span id="cv-gorsel">140px</span></div>
+  <div class="ctrl-group">Renk: <input type="color" id="cs-renk" value="${afisColor}" oninput="updateAll()"></div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const products = ${JSON.stringify(selected)};
+
+function buildCard(p, i) {
+  const ms = +document.getElementById('cs-marka').value;
+  const us = +document.getElementById('cs-urun').value;
+  const fs = +document.getElementById('cs-fiyat').value;
+  const gs = +document.getElementById('cs-gorsel').value;
+  const clr = document.getElementById('cs-renk').value;
+  
+  const wrap = document.createElement('div');
+  wrap.className = 'afis-wrap';
+  wrap.innerHTML = \`
+    <div class="afis-num">\${i+1}. \${p.marka}</div>
+    <div class="afis-card" id="card-\${i}">
+      <div class="afis-texts">
+        <div class="afis-marka" style="font-size:\${ms}px">\${p.marka}</div>
+        <div class="afis-urun" style="font-size:\${us}px">\${p.urun}</div>
+      </div>
+      <div class="afis-img-wrap">
+        \${p.imgPreview || p.imgUrl 
+          ? \`<img src="\${p.imgPreview || p.imgUrl}" style="max-width:\${gs}px;max-height:\${gs}px;object-fit:contain">\`
+          : \`<div style="width:\${gs}px;height:\${gs}px;background:#f5f5f5;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px">Görsel</div>\`}
+      </div>
+      <div class="afis-price-box" style="background:\${clr}">
+        <div class="afis-price" style="font-size:\${fs}px">\${p.fiyat} ₺</div>
+      </div>
+    </div>
+    <button class="btn btn-ghost" style="font-size:12px;padding:5px 12px" onclick="downloadOne(\${i})">⬇ PNG İndir</button>
+  \`;
+  return wrap;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  products.forEach((p, i) => grid.appendChild(buildCard(p, i)));
+}
+
+function updateAll() {
+  ['marka','urun','fiyat','gorsel'].forEach(k => {
+    document.getElementById('cv-'+k).textContent = document.getElementById('cs-'+k).value + 'px';
+  });
+  renderGrid();
+}
+
+async function downloadOne(i) {
+  const card = document.getElementById('card-'+i);
+  const cvs = await html2canvas(card, {scale:3, useCORS:true, allowTaint:true, backgroundColor:'#ffffff'});
+  const a = document.createElement('a');
+  const p = products[i];
+  a.href = cvs.toDataURL('image/png');
+  a.download = (p.marka+'-'+p.urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-')+'.png';
+  a.click();
+}
+
+async function downloadAll() {
+  const zip = new JSZip();
+  const folder = zip.folder('afisler');
+  for (let i = 0; i < products.length; i++) {
+    const btn = document.querySelector('.actions .btn-primary');
+    btn.textContent = \`⏳ \${i+1}/\${products.length} hazırlanıyor...\`;
+    const card = document.getElementById('card-'+i);
+    const cvs = await html2canvas(card, {scale:2, useCORS:true, allowTaint:true, backgroundColor:'#ffffff'});
+    const p = products[i];
+    const fname = (p.marka+'-'+p.urun).toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-')+'.png';
+    folder.file(fname, cvs.toDataURL('image/png').split(',')[1], {base64:true});
+  }
+  const blob = await zip.generateAsync({type:'blob'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'afisler.zip';
+  a.click();
+  document.querySelector('.actions .btn-primary').textContent = '📦 Tümünü İndir (ZIP)';
+}
+
+renderGrid();
+</script>
+</body>
+</html>`;
+
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+function esc2(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
 </body>
 </html>
