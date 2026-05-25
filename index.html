@@ -1088,6 +1088,7 @@ input[type="checkbox"] {
   <div class="export-bar" id="exportBar">
     <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
     <button class="btn btn-primary" onclick="selectImageFolder()" id="folderBtn">📁 Görsel Klasörü Seç</button>
+    <button class="btn" onclick="aiZenginlestir()" id="aiEnrichBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 2px 12px rgba(124,58,237,0.3)">🤖 AI ile Zenginleştir</button>
     <button class="btn btn-green" onclick="exportToSheets()">
       <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Google Sheets
     </button>
@@ -1770,7 +1771,85 @@ function downloadAiExcel() {
   XLSX.writeFile(wb,'kampanya_gorsel_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 
-// ── GOOGLE SHEETS ─────────────────────────────────────────────
+// ── AI ZENGİNLEŞTİRME ────────────────────────────────────────
+async function aiZenginlestir() {
+  const key = localStorage.getItem('claude_api_key') || '';
+  if (!key) {
+    showSheetsStatus('❌ Claude API anahtarı gerekli. Görsel Analiz sekmesinden ekle.', 'error');
+    return;
+  }
+  if (!rows.length) {
+    showSheetsStatus('❌ Önce tablo doldur.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('aiEnrichBtn');
+  btn.textContent = '⏳ Zenginleştiriliyor...';
+  btn.disabled = true;
+
+  let done = 0;
+  const total = rows.length;
+
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    // Zaten zenginleştirilmişse atla
+    if (r.slogan && r.etiket) { done++; continue; }
+
+    try {
+      const prompt = `Sen bir Türk market kampanya metin yazarısın. Aşağıdaki ürün için kısa ve vurucu metinler yaz.
+
+Ürün: ${r.marka} ${r.urun}
+Fiyat: ${r.fiyat} TL
+
+Sadece JSON formatında yanıt ver, başka hiçbir şey yazma:
+{
+  "slogan": "Afişin üstüne yazılacak vurucu 3-5 kelimelik başlık (örn: 'Bu Fiyata Kaçmaz!')",
+  "aciklama": "1 cümlelik kısa pazarlama metni",
+  "etiket": "Tek kelime badge: İndirim / Fırsat / Yeni / Taze / Özel / Son Stok",
+  "renk_oneri": "Markaya uygun hex renk kodu (örn: #e63030)"
+}`;
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 200,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await res.json();
+      const text = data.content?.[0]?.text || '';
+      const clean = text.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+
+      rows[i].slogan = parsed.slogan || '';
+      rows[i].aciklama = parsed.aciklama || '';
+      rows[i].etiket = parsed.etiket || '';
+      rows[i].renkOneri = parsed.renk_oneri || '';
+
+    } catch(e) {
+      console.warn('Zenginleştirme hatası satır', i, e);
+    }
+
+    done++;
+    btn.textContent = `⏳ ${done}/${total} işleniyor...`;
+  }
+
+  renderTable();
+  btn.textContent = '✅ Zenginleştirildi';
+  btn.disabled = false;
+  setTimeout(() => { btn.textContent = '🤖 AI ile Zenginleştir'; }, 3000);
+  showSheetsStatus(`✅ ${done} ürün için slogan, açıklama ve etiket oluşturuldu! Artık Sheets'e aktarabilirsin.`, 'success');
+}
+
+
 const CLIENT_ID = '111094885963-ds42tuagtdbv8p3j22g2gp756tngrvb4.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file';
 let accessToken = null;
@@ -1816,7 +1895,13 @@ async function createSheet(token) {
   const sheet = await createRes.json();
   if (!sheet.spreadsheetId) { showSheetsStatus('❌ Sheets oluşturulamadı.','error'); return; }
   const sid = sheet.spreadsheetId;
-  const values = [['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'], ...rows.map(r=>[r.imgUrl||'',r.marka,r.urun,r.fiyat,r.tarih,r.arasinda])];
+  const values = [
+    ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA','SLOGAN','AÇIKLAMA','ETİKET','RENK_ÖNERİ'],
+    ...rows.map(r=>[
+      r.imgUrl||'', r.marka, r.urun, r.fiyat, r.tarih, r.arasinda,
+      r.slogan||'', r.aciklama||'', r.etiket||'', r.renkOneri||''
+    ])
+  ];
   await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:F${values.length}?valueInputOption=RAW`, {
     method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ values })
@@ -1827,7 +1912,7 @@ async function createSheet(token) {
       { repeatCell: { range:{sheetId:0,startRowIndex:0,endRowIndex:1},
         cell:{ userEnteredFormat:{ backgroundColor:{red:0.110,green:0.169,blue:0.227}, textFormat:{foregroundColor:{red:1,green:1,blue:1},bold:true,fontSize:11}, horizontalAlignment:'CENTER' } },
         fields:'userEnteredFormat' } },
-      { autoResizeDimensions: { dimensions:{sheetId:0,dimension:'COLUMNS',startIndex:0,endIndex:5} } }
+      { autoResizeDimensions: { dimensions:{sheetId:0,dimension:'COLUMNS',startIndex:0,endIndex:10} } }
     ]})
   });
   const url = `https://docs.google.com/spreadsheets/d/${sid}/edit`;
