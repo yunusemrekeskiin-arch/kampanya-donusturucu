@@ -737,6 +737,71 @@ input[type="checkbox"] {
 }
 
 @media(max-width:768px){.wrap{padding:1rem}.settings-row{grid-template-columns:1fr}}
+
+/* ── AFIS YAN PANEL ── */
+.afis-backdrop {
+  display:none; position:fixed; inset:0; z-index:1000;
+  background:rgba(0,0,0,0.45); backdrop-filter:blur(3px);
+}
+.afis-backdrop.visible { display:block; }
+.afis-panel {
+  position:fixed; top:0; right:-540px; bottom:0; z-index:1001;
+  width:540px; max-width:100vw;
+  background:var(--bg); border-left:1px solid var(--border);
+  box-shadow:-8px 0 40px rgba(0,0,0,0.5);
+  display:flex; flex-direction:column;
+  transition:right 0.32s cubic-bezier(0.4,0,0.2,1);
+}
+.afis-panel.visible { right:0; }
+.afis-panel-hdr {
+  padding:1rem 1.25rem; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  flex-shrink:0; background:var(--card-bg);
+}
+.afis-panel-hdr h2 { font-size:14px; font-weight:700; color:var(--text); margin:0; display:flex; align-items:center; gap:8px; }
+.afis-panel-close {
+  width:30px; height:30px; border-radius:7px; border:1px solid var(--border);
+  background:transparent; cursor:pointer; color:var(--text3); font-size:15px;
+  display:flex; align-items:center; justify-content:center; transition:all 0.15s;
+}
+.afis-panel-close:hover { background:rgba(239,68,68,0.1); color:#f87171; border-color:rgba(239,68,68,0.3); }
+.afis-panel-body { display:flex; flex:1; overflow:hidden; }
+.afis-panel-preview {
+  width:196px; flex-shrink:0;
+  background:#e2e5ea; border-right:1px solid var(--border);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:16px; gap:10px;
+}
+.afis-panel-preview-label { font-size:10px; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
+.afis-panel-canvas {
+  background:#fff; border-radius:8px;
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:space-between; padding:14px 10px;
+  width:164px; height:232px; box-sizing:border-box; gap:6px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.2);
+}
+.afis-panel-controls { flex:1; overflow-y:auto; padding:1rem 1.25rem; display:flex; flex-direction:column; gap:10px; }
+.afis-panel-footer {
+  padding:1rem 1.25rem; border-top:1px solid var(--border);
+  display:flex; gap:8px; flex-shrink:0; background:var(--card-bg);
+}
+.afis-divider { height:1px; background:var(--border); margin:2px 0; }
+.afis-panel .afis-field { display:flex; flex-direction:column; gap:4px; }
+.afis-panel .afis-field label { font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.05em; }
+.afis-panel .afis-field input { background:var(--input-bg); border:1px solid var(--input-border); border-radius:7px; padding:7px 10px; font-size:13px; color:var(--text); font-family:inherit; outline:none; }
+.afis-panel .afis-field input:focus { border-color:rgba(99,102,241,0.6); }
+.afis-panel .afis-slider-row { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.afis-panel .afis-slider-row span:first-child { font-size:11px; color:var(--text3); width:44px; }
+.afis-panel .afis-slider-row input[type=range] { flex:1; accent-color:#6366f1; }
+.afis-panel .afis-slider-row span:last-child { font-size:11px; color:var(--text2); width:28px; text-align:right; }
+.afis-panel .afis-colors { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+@media(max-width:600px){
+  .afis-panel{width:100vw;}
+  .afis-panel-body{flex-direction:column;}
+  .afis-panel-preview{width:100%;height:auto;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;padding:12px;}
+  .afis-panel-canvas{width:130px;height:184px;}
+}
+
 @media print{.hdr,.tabs,.upload,.card-hdr .btn,.export-bar,.inp-row,.ai-badge,#sheetsStatus{display:none!important}body{background:#fff;color:#000}.card{border:none;box-shadow:none;transform:none}.price{color:#000!important}.marka{color:#000!important}}
 </style>
 </head>
@@ -1039,7 +1104,7 @@ input[type="checkbox"] {
 </div>
 
 <!-- Afiş Modal -->
-<div class="afis-overlay" id="afisOverlay" onclick="if(event.target===this)closeAfis()">
+<div class="afis-overlay" id="afisOverlay" onclick="if(event.target===this)closeAfis()" style="display:none!important">
   <div class="afis-preview-wrap">
     <div id="afisCanvas">
       <div style="text-align:center;width:100%">
@@ -1618,7 +1683,7 @@ function renderTable() {
            oninput="updateField(${idx},'fiyat',this.value)"></td>
       <td class="tarih-c">${esc(r.tarih)}</td>
       <td class="arasinda-c">${esc(r.arasinda)}</td>
-      <td style="text-align:center"><button class="btn-del" onclick="deleteRow(${idx})">✕</button></td>
+      <td style="text-align:center;white-space:nowrap"><button class="btn-del" title="Afis" onclick="openAfis(${idx})" style="margin-right:3px">&#x1F5BC;&#xFE0F;</button><button class="btn-del" onclick="deleteRow(${idx})">&#x2715;</button></td>
     `;
     tbody.appendChild(tr);
   });
@@ -2520,22 +2585,20 @@ function openAfis(idx) {
   document.getElementById('afis-i-marka').value = r ? r.marka : '';
   document.getElementById('afis-i-urun').value = r ? r.urun : '';
   document.getElementById('afis-i-fiyat').value = r ? r.fiyat : '';
-  // imgPreview (base64) varsa onu kullan, yoksa URL
   const imgSrcForAfis = r ? (r.imgPreview || r.imgUrl || '') : '';
   document.getElementById('afis-i-gorsel').value = imgSrcForAfis;
   afisUpdate();
   afisUpdateImgDirect(imgSrcForAfis);
-
-  // Toplu buton
   const toplu = document.getElementById('afis-toplu-btn');
-  toplu.style.display = selectedRows.size > 1 ? 'block' : 'none';
-  if (selectedRows.size > 1) toplu.textContent = `📦 ${selectedRows.size} Ürünü ZIP İndir`;
-
-  document.getElementById('afisOverlay').classList.add('visible');
+  toplu.style.display = selectedRows.size > 1 ? 'flex' : 'none';
+  if (selectedRows.size > 1) toplu.textContent = selectedRows.size + ' Urun ZIP';
+  document.getElementById('afisBackdrop').classList.add('visible');
+  document.getElementById('afisPanel').classList.add('visible');
 }
 
 function closeAfis() {
-  document.getElementById('afisOverlay').classList.remove('visible');
+  document.getElementById('afisBackdrop').classList.remove('visible');
+  document.getElementById('afisPanel').classList.remove('visible');
 }
 
 function afisUpdate() {
@@ -2597,7 +2660,7 @@ function afisSetClr(clr, btn) {
 
 async function afisIndir(r) {
   const canvas = document.getElementById('afisCanvas');
-  const btn = document.querySelector('.afis-modal .btn-primary');
+  const btn = document.querySelector('.afis-panel-footer .btn-primary');
   if (btn) { btn.textContent = '⏳ Hazırlanıyor...'; btn.disabled = true; }
   const cvs = await html2canvas(canvas, { 
     scale:3, useCORS:true, allowTaint:true,
