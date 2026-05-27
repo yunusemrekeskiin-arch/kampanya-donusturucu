@@ -945,9 +945,65 @@ input[type="checkbox"] {
   <div class="tabs">
     <button class="tab active" onclick="switchTab('excel')">📂 <span data-i18n="tab_excel">Excel ile Yükle</span></button>
     <button class="tab" onclick="switchTab('gorsel')">🖼️ <span data-i18n="tab_gorsel">Görsel Analiz</span></button>
+    <button class="tab" onclick="switchTab('onizleme')">🎨 Kampanya Önizleme</button>
   </div>
 
-  <div class="tab-panel active" id="tab-excel">
+  <div class="tab-panel" id="tab-onizleme">
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-hdr">
+        <h3><span>🎨</span>Kampanya Önizleme</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-primary" onclick="kampanyaUret()" id="kampanyaUretBtn">✨ AI ile Üret</button>
+          <button class="btn btn-green" onclick="kampanyaSheetsExport()" id="kampanyaExportBtn" style="display:none">
+            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <!-- AI Üretilen Başlık Alanı -->
+        <div id="kampanyaForm" style="display:none;margin-bottom:1.5rem">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div class="field">
+              <label>Ana Başlık</label>
+              <input type="text" id="kamp-baslik" placeholder="MARKA ÖZEL" style="font-size:16px;font-weight:700;text-transform:uppercase">
+            </div>
+            <div class="field">
+              <label>Alt Başlık</label>
+              <input type="text" id="kamp-alt" placeholder="indirim" style="font-size:16px">
+            </div>
+            <div class="field">
+              <label>Kampanya Etiketi</label>
+              <input type="text" id="kamp-etiket" placeholder="Marka Özel İndirim">
+            </div>
+            <div class="field">
+              <label>Tarih</label>
+              <input type="text" id="kamp-tarih" placeholder="22 - 01 Haziran 2026">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:12px">
+            <label>Kampanya Sloganı</label>
+            <input type="text" id="kamp-slogan" placeholder="Bu hafta büyük fırsatlar sizi bekliyor!">
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="slogan-alternatifler"></div>
+        </div>
+        <div id="kampanyaStatusMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;text-align:center"></div>
+
+        <!-- Önizleme -->
+        <div id="kampanyaOnizleme" style="display:none">
+          <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Önizleme</div>
+          <div id="kampanyaKart" style="background:#fff;border-radius:16px;padding:28px;max-width:680px;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:'Inter',sans-serif;">
+            <!-- Dinamik içerik JS ile doldurulacak -->
+          </div>
+        </div>
+
+        <div id="kampanyaEmpty" style="text-align:center;padding:3rem;color:var(--text3)">
+          <div style="font-size:3rem;margin-bottom:1rem">🎨</div>
+          <p style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:6px">Kampanya Önizleme</p>
+          <p style="font-size:13px">Önce Excel sekmesinden ürünleri yükle, sonra "AI ile Üret" butonuna bas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="card">
       <div class="card-body">
         <div class="upload" id="uploadZone">
@@ -1330,14 +1386,17 @@ let aiPendingRows = [];
 let selectedRows = new Set();
 
 function switchTab(tab) {
-  document.querySelectorAll('.tabs .tab').forEach((b,i) => b.classList.toggle('active', i === (tab==='excel'?0:1)));
-  document.getElementById('tab-excel').classList.toggle('active', tab==='excel');
-  document.getElementById('tab-gorsel').classList.toggle('active', tab==='gorsel');
-  // Excel içeriğini sadece excel sekmesinde göster
+  const tabs = ['excel','gorsel','onizleme'];
+  document.querySelectorAll('.tabs .tab').forEach((b,i) => b.classList.toggle('active', i === tabs.indexOf(tab)));
+  tabs.forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.classList.toggle('active', t === tab);
+  });
   const ec = document.getElementById('excelContent');
   if (ec) {
     ec.style.display = (tab === 'excel' && ec.dataset.loaded === 'true') ? 'block' : 'none';
   }
+  if (tab === 'onizleme') renderKampanyaOnizleme();
 }
 
 // ── EXCEL ────────────────────────────────────────────────────
@@ -1771,7 +1830,180 @@ function downloadAiExcel() {
   XLSX.writeFile(wb,'kampanya_gorsel_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 
-// ── AI ZENGİNLEŞTİRME ────────────────────────────────────────
+// ── KAMPANYA ÖNİZLEME ────────────────────────────────────────
+function renderKampanyaOnizleme() {
+  const empty = document.getElementById('kampanyaEmpty');
+  const onizleme = document.getElementById('kampanyaOnizleme');
+  if (!rows.length) {
+    if (empty) empty.style.display = 'block';
+    if (onizleme) onizleme.style.display = 'none';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  _renderKampanyaKart();
+}
+
+function _renderKampanyaKart() {
+  const baslik = document.getElementById('kamp-baslik')?.value || 'KAMPANYA';
+  const alt = document.getElementById('kamp-alt')?.value || 'İndirim';
+  const etiket = document.getElementById('kamp-etiket')?.value || '';
+  const tarih = document.getElementById('kamp-tarih')?.value || document.getElementById('tarihText')?.value || '';
+  const slogan = document.getElementById('kamp-slogan')?.value || '';
+  const clr = companyProfile?.color || '#e63030';
+  const logo = companyProfile?.logo || '';
+  const sirket = companyProfile?.name || '';
+
+  // Ürünleri göster (max 8)
+  const urunler = rows.slice(0, 8);
+
+  const kartHTML = `
+    <div style="text-align:center;margin-bottom:20px">
+      ${logo ? `<img src="${logo}" style="height:48px;object-fit:contain;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto">` : ''}
+      ${sirket ? `<div style="font-size:13px;font-weight:600;color:#64748b;margin-bottom:8px">${sirket}</div>` : ''}
+      <div style="display:inline-block;background:${clr};color:#fff;padding:6px 20px;border-radius:6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">${etiket || 'Kampanya'}</div>
+      <div style="font-size:36px;font-weight:900;color:#111;text-transform:uppercase;line-height:1;letter-spacing:-0.02em">${baslik}</div>
+      <div style="font-size:32px;font-weight:700;color:${clr};line-height:1.1;font-style:italic">${alt}</div>
+      ${slogan ? `<div style="font-size:13px;color:#64748b;margin-top:10px;font-style:italic">${slogan}</div>` : ''}
+      ${tarih ? `<div style="font-size:13px;font-weight:600;color:#374151;margin-top:8px;border-top:1px solid #e5e7eb;padding-top:8px">${tarih}</div>` : ''}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(${urunler.length <= 4 ? urunler.length : 4},1fr);gap:12px">
+      ${urunler.map(r => `
+        <div style="background:#f9fafb;border-radius:10px;padding:10px 8px;text-align:center;border:1px solid #e5e7eb">
+          ${r.imgPreview || r.imgUrl ? `<img src="${r.imgPreview || r.imgUrl}" style="width:60px;height:60px;object-fit:contain;display:block;margin:0 auto 6px">` : `<div style="width:60px;height:60px;background:#e5e7eb;border-radius:6px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:20px">📦</div>`}
+          <div style="font-size:9px;font-weight:700;color:#374151;text-transform:uppercase;line-height:1.2;margin-bottom:4px">${r.marka}</div>
+          <div style="font-size:8px;color:#6b7280;line-height:1.3;margin-bottom:6px">${r.urun}</div>
+          <div style="background:${clr};color:#fff;border-radius:5px;padding:4px 6px;font-size:14px;font-weight:800;letter-spacing:-0.5px">${r.fiyat}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  const kart = document.getElementById('kampanyaKart');
+  if (kart) kart.innerHTML = kartHTML;
+  const onizleme = document.getElementById('kampanyaOnizleme');
+  if (onizleme) onizleme.style.display = 'block';
+  const exportBtn = document.getElementById('kampanyaExportBtn');
+  if (exportBtn) exportBtn.style.display = 'flex';
+}
+
+// Input değişince önizlemeyi güncelle
+document.addEventListener('input', (e) => {
+  if (['kamp-baslik','kamp-alt','kamp-etiket','kamp-tarih','kamp-slogan'].includes(e.target.id)) {
+    _renderKampanyaKart();
+  }
+});
+
+async function kampanyaUret() {
+  if (!rows.length) {
+    showKampanyaStatus('❌ Önce Excel sekmesinden ürünleri yükle.', 'error');
+    return;
+  }
+  const key = localStorage.getItem('claude_api_key') || '';
+  if (!key) {
+    showKampanyaStatus('❌ Claude API anahtarı gerekli. Görsel Analiz sekmesinden ekle.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('kampanyaUretBtn');
+  btn.textContent = '⏳ Üretiliyor...';
+  btn.disabled = true;
+
+  // Ürün listesini hazırla
+  const urunListesi = rows.slice(0, 20).map(r => `${r.marka} - ${r.urun} (${r.fiyat} TL)`).join('\n');
+  const tarih = document.getElementById('tarihText')?.value || '';
+
+  const prompt = `Sen bir Türk market kampanya metin yazarısın. Aşağıdaki ürün listesine bakarak bu kampanya için metinler üret.
+
+Ürünler:
+${urunListesi}
+
+Tarih: ${tarih}
+
+Sadece JSON formatında yanıt ver:
+{
+  "ana_baslik": "Büyük harflerle 2-3 kelimelik ana başlık (örn: MARKA ÖZEL, HAFTA SONU, DEV İNDİRİM)",
+  "alt_baslik": "Küçük veya büyük harfle 1-2 kelimelik alt başlık (örn: indirim, fırsatları, kampanyası)",
+  "etiket": "Kısa badge metni (örn: Marka Özel İndirim, Haftanın Fırsatı)",
+  "slogan": "Müşteriyi çekecek 1 cümlelik slogan",
+  "slogan_alternatifleri": ["alternatif 1", "alternatif 2", "alternatif 3"]
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    // Formu doldur
+    document.getElementById('kamp-baslik').value = parsed.ana_baslik || '';
+    document.getElementById('kamp-alt').value = parsed.alt_baslik || '';
+    document.getElementById('kamp-etiket').value = parsed.etiket || '';
+    document.getElementById('kamp-slogan').value = parsed.slogan || '';
+    document.getElementById('kamp-tarih').value = tarih;
+
+    // Alternatif sloganları göster
+    const altDiv = document.getElementById('slogan-alternatifler');
+    if (altDiv && parsed.slogan_alternatifleri) {
+      altDiv.innerHTML = '<span style="font-size:11px;color:var(--text3);margin-right:6px;align-self:center">Alternatifler:</span>' +
+        parsed.slogan_alternatifleri.map(s =>
+          `<button onclick="document.getElementById('kamp-slogan').value='${s.replace(/'/g,"\\'")}';_renderKampanyaKart()" style="padding:4px 10px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:20px;font-size:11px;color:#a5b4fc;cursor:pointer;font-family:inherit;transition:all 0.2s">${s}</button>`
+        ).join('');
+    }
+
+    document.getElementById('kampanyaForm').style.display = 'block';
+    _renderKampanyaKart();
+    showKampanyaStatus('', '');
+
+  } catch(e) {
+    showKampanyaStatus('❌ Hata: ' + e.message, 'error');
+  }
+
+  btn.textContent = '✨ AI ile Üret';
+  btn.disabled = false;
+}
+
+function showKampanyaStatus(msg, type) {
+  const el = document.getElementById('kampanyaStatusMsg');
+  if (!el) return;
+  if (!msg) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.style.background = type === 'error' ? 'rgba(239,68,68,0.1)' : 'rgba(34,197,94,0.1)';
+  el.style.color = type === 'error' ? '#f87171' : '#4ade80';
+  el.textContent = msg;
+}
+
+async function kampanyaSheetsExport() {
+  // Kampanya bilgilerini rows'a ekle (tek satır olarak)
+  const kampanya = {
+    tip: 'KAMPANYA_BASLIGI',
+    ana_baslik: document.getElementById('kamp-baslik')?.value || '',
+    alt_baslik: document.getElementById('kamp-alt')?.value || '',
+    etiket: document.getElementById('kamp-etiket')?.value || '',
+    slogan: document.getElementById('kamp-slogan')?.value || '',
+    tarih: document.getElementById('kamp-tarih')?.value || '',
+  };
+  // Sheets'e aktar — mevcut exportToSheets fonksiyonunu kullan ama kampanya header satırıyla
+  _kampanyaData = kampanya;
+  exportToSheets();
+}
+
+let _kampanyaData = null;
+
+
 async function aiZenginlestir() {
   const key = localStorage.getItem('claude_api_key') || '';
   if (!key) {
@@ -1895,11 +2127,14 @@ async function createSheet(token) {
   const sheet = await createRes.json();
   if (!sheet.spreadsheetId) { showSheetsStatus('❌ Sheets oluşturulamadı.','error'); return; }
   const sid = sheet.spreadsheetId;
+  const kampanya = _kampanyaData;
   const values = [
-    ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA','SLOGAN','AÇIKLAMA','ETİKET','RENK_ÖNERİ'],
+    ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA','SLOGAN','AÇIKLAMA','ETİKET','RENK_ÖNERİ',
+     'KAMP_ANA_BASLIK','KAMP_ALT_BASLIK','KAMP_ETIKET','KAMP_SLOGAN'],
     ...rows.map(r=>[
       r.imgUrl||'', r.marka, r.urun, r.fiyat, r.tarih, r.arasinda,
-      r.slogan||'', r.aciklama||'', r.etiket||'', r.renkOneri||''
+      r.slogan||'', r.aciklama||'', r.etiket||'', r.renkOneri||'',
+      kampanya?.ana_baslik||'', kampanya?.alt_baslik||'', kampanya?.etiket||'', kampanya?.slogan||''
     ])
   ];
   await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:F${values.length}?valueInputOption=RAW`, {
