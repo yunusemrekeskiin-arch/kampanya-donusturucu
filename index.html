@@ -243,14 +243,14 @@ body, .card, .field input, table, td, th, .inp-row input, .hdr, .tabs, .tab, .up
 .card-body{padding:1.5rem}
 
 /* UPLOAD ZONE */
-.upload{border:2px dashed var(--upload-border);border-radius:12px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all 0.25s;background:var(--upload-bg);position:relative;overflow:hidden}
+.upload{border:2px dashed var(--upload-border);border-radius:16px;padding:4rem 2rem;text-align:center;cursor:pointer;transition:all 0.3s;background:var(--upload-bg);position:relative;overflow:hidden;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .upload::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(99,102,241,0.08) 0%,transparent 70%);opacity:0;transition:opacity 0.3s}
 .upload:hover{border-color:rgba(99,102,241,0.5);background:rgba(99,102,241,0.06)}
 .upload:hover::before{opacity:1}
 .upload.drag-over{border-color:#6366f1;background:rgba(99,102,241,0.1)}
-.upload-ico{font-size:3rem;margin-bottom:1rem;filter:drop-shadow(0 4px 12px rgba(99,102,241,0.3))}
-.upload h2{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
-.upload p{font-size:13px;color:var(--text3)}
+.upload-ico{font-size:4rem;margin-bottom:1.25rem;filter:drop-shadow(0 4px 16px rgba(99,102,241,0.4))}
+.upload h2{font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;letter-spacing:-0.02em}
+.upload p{font-size:14px;color:var(--text3);line-height:1.6}
 
 /* AI BADGE */
 .ai-badge{background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(16,185,129,0.08));border:1px solid rgba(34,197,94,0.2);border-radius:12px;padding:12px 16px;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px}
@@ -944,91 +944,25 @@ input[type="checkbox"] {
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('excel')">📂 <span data-i18n="tab_excel">Excel ile Yükle</span></button>
-    <button class="tab" onclick="switchTab('gorsel')">🖼️ <span data-i18n="tab_gorsel">Görsel Analiz</span></button>
-    <button class="tab" onclick="switchTab('onizleme')">🎨 Kampanya Önizleme</button>
+    <button class="tab" onclick="switchTab('gorsel')">🤖 <span data-i18n="tab_gorsel">Görsel Analiz</span></button>
   </div>
 
   <div class="tab-panel active" id="tab-excel">
     <div class="card">
       <div class="card-body">
         <div class="upload" id="uploadZone">
-          <div class="upload-ico">📂</div>
-          <h2 data-i18n="upload_title">Excel Dosyasını Yükle</h2>
-          <p data-i18n="upload_desc">Stok kodlu Excel dosyasını buraya sürükle veya tıkla (.xlsx, .xls)</p>
+          <div class="upload-ico">📊</div>
+          <h2 data-i18n="upload_title">Excel Dosyanı Yükle</h2>
+          <p data-i18n="upload_desc">Stok listeni buraya sürükle veya tıklayarak seç</p>
+          <p style="font-size:12px;color:var(--text4);margin-top:8px">.xlsx veya .xls formatı desteklenir</p>
+          <div style="margin-top:1.5rem;display:inline-flex;align-items:center;gap:8px;padding:10px 24px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:10px;color:#fff;font-size:14px;font-weight:600;box-shadow:0 4px 16px rgba(99,102,241,0.3)">
+            <span>📂</span> Dosya Seç
+          </div>
           <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
         </div>
       </div>
     </div>
   </div>
-
-  <div class="tab-panel" id="tab-onizleme">
-    <div class="card" style="margin-bottom:1.25rem">
-      <div class="card-hdr">
-        <h3><span>🎨</span>Kampanya Önizleme</h3>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn btn-primary" onclick="kampanyaUret()" id="kampanyaUretBtn">✨ AI ile Üret</button>
-          <button class="btn btn-green" onclick="kampanyaSheetsExport()" id="kampanyaExportBtn">
-            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
-          </button>
-        </div>
-      </div>
-      <div class="card-body">
-        <!-- AI Üretilen Başlık Alanı -->
-        <div id="kampanyaForm" style="margin-bottom:1.5rem">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div class="field">
-              <label>Ana Başlık</label>
-              <input type="text" id="kamp-baslik" placeholder="MARKA ÖZEL" style="font-size:16px;font-weight:700;text-transform:uppercase">
-            </div>
-            <div class="field">
-              <label>Alt Başlık</label>
-              <input type="text" id="kamp-alt" placeholder="indirim" style="font-size:16px">
-            </div>
-            <div class="field">
-              <label>Kampanya Etiketi</label>
-              <input type="text" id="kamp-etiket" placeholder="Marka Özel İndirim">
-            </div>
-            <div class="field">
-              <label>Tarih</label>
-              <input type="text" id="kamp-tarih" placeholder="22 - 01 Haziran 2026">
-            </div>
-          </div>
-          <div class="field" style="margin-bottom:12px">
-            <label>Kampanya Sloganı</label>
-            <input type="text" id="kamp-slogan" placeholder="Bu hafta büyük fırsatlar sizi bekliyor!">
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap" id="slogan-alternatifler"></div>
-        </div>
-        <div id="kampanyaStatusMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;text-align:center"></div>
-
-        <!-- Önizleme -->
-        <div id="kampanyaOnizleme" style="display:none">
-          <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Önizleme</div>
-          <div id="kampanyaKart" style="background:#fff;border-radius:16px;padding:28px;max-width:680px;box-shadow:0 8px 32px rgba(0,0,0,0.2);font-family:'Inter',sans-serif;">
-            <!-- Dinamik içerik JS ile doldurulacak -->
-          </div>
-        </div>
-
-        <div id="kampanyaEmpty" style="text-align:center;padding:3rem;color:var(--text3)">
-          <div style="font-size:3rem;margin-bottom:1rem">🎨</div>
-          <p style="font-size:14px;font-weight:600;color:var(--text2);margin-bottom:6px">Kampanya Önizleme</p>
-          <p style="font-size:13px">Önce Excel sekmesinden ürünleri yükle, sonra "AI ile Üret" butonuna bas.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-    <div class="card">
-      <div class="card-body">
-        <div class="upload" id="uploadZone">
-          <div class="upload-ico">📂</div>
-          <h2 data-i18n="upload_title">Excel Dosyasını Yükle</h2>
-          <p data-i18n="upload_desc">Stok kodlu Excel dosyasını buraya sürükle veya tıkla (.xlsx, .xls)</p>
-          <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="tab-panel" id="tab-gorsel">
     <div class="card" style="margin-bottom:1.25rem">
       <div class="card-body" style="padding:1.25rem 1.5rem">
@@ -1083,6 +1017,7 @@ input[type="checkbox"] {
       </div>
     </div>
   </div>
+
 
   <div class="card" id="controlsPanel" style="display:none">
     <div class="card-hdr"><h3><span>⚙️</span><span data-i18n="settings_title">Kampanya Ayarları</span></h3></div>
@@ -1154,8 +1089,68 @@ input[type="checkbox"] {
     </div>
   </div>
 
+  <!-- AI Rozet Asistanı -->
+  <div id="aiAsistanPanel" style="display:none;margin-bottom:1.25rem">
+    <div class="card" style="border:1px solid rgba(99,102,241,0.3);background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05))">
+      <div class="card-hdr" style="border-bottom:1px solid rgba(99,102,241,0.15)">
+        <h3 style="color:var(--text)"><span>✨</span>AI Kampanya Asistanı</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-primary" onclick="kampanyaUret()" id="kampanyaUretBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1)">
+            ✨ Kampanya Metni Üret
+          </button>
+          <button class="btn btn-green" onclick="kampanyaSheetsExport()" id="kampanyaExportBtn" style="display:none">
+            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div id="kampanyaStatusMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px"></div>
+
+        <!-- Üretilen içerik -->
+        <div id="kampanyaUretildi" style="display:none">
+          <!-- Rozet Alternatifleri -->
+          <div style="margin-bottom:1.5rem">
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Kampanya Rozeti — Alternatifler</div>
+            <div id="rozetAlternatifler" style="display:flex;gap:10px;flex-wrap:wrap"></div>
+          </div>
+
+          <!-- Seçili rozet düzenleme -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div class="field"><label>Ana Başlık</label><input type="text" id="kamp-baslik" placeholder="MARKA ÖZEL" oninput="_renderKampanyaKart()"></div>
+            <div class="field"><label>Alt Başlık</label><input type="text" id="kamp-alt" placeholder="indirim" oninput="_renderKampanyaKart()"></div>
+            <div class="field"><label>Rozet Etiketi</label><input type="text" id="kamp-etiket" placeholder="Marka Özel İndirim" oninput="_renderKampanyaKart()"></div>
+            <div class="field"><label>Tarih</label><input type="text" id="kamp-tarih" placeholder="22 - 01 Haziran 2026" oninput="_renderKampanyaKart()"></div>
+          </div>
+          <div class="field" style="margin-bottom:16px">
+            <label>Kampanya Sloganı</label>
+            <input type="text" id="kamp-slogan" placeholder="Bu hafta büyük fırsatlar!" oninput="_renderKampanyaKart()">
+          </div>
+
+          <!-- Mini önizleme -->
+          <div style="margin-bottom:1rem">
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Rozet Önizleme</div>
+            <div id="rozetOnizleme" style="display:inline-block;background:#fff;border-radius:12px;padding:20px 28px;box-shadow:0 4px 24px rgba(0,0,0,0.15);min-width:280px;text-align:center"></div>
+          </div>
+
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary" onclick="kampanyaSheetsExport()" style="flex:1">
+              <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
+            </button>
+            <button class="btn btn-ghost" onclick="kampanyaUret()" id="kampanyaYenidenBtn">↺ Yeniden Üret</button>
+          </div>
+        </div>
+
+        <!-- Boş durum -->
+        <div id="asistanEmpty" style="text-align:center;padding:1.5rem;color:var(--text3)">
+          <p style="font-size:13px">Ürünler yüklendi! <strong style="color:var(--badge-color)">Kampanya Metni Üret</strong> butonuna basarak AI'ın kategoriyi anlayıp rozet ve başlık üretmesini sağla.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="export-bar" id="exportBar">
     <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
+    <button class="btn" onclick="aiZenginlestir()" id="aiEnrichBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff">🤖 Satır Zenginleştir</button>
     <button class="btn btn-primary" onclick="selectImageFolder()" id="folderBtn">📁 Görsel Klasörü Seç</button>
     <button class="btn" onclick="aiZenginlestir()" id="aiEnrichBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 2px 12px rgba(124,58,237,0.3)">🤖 AI ile Zenginleştir</button>
     <button class="btn btn-green" onclick="exportToSheets()">
@@ -1680,6 +1675,9 @@ function showTable() {
   document.getElementById('controlsPanel').style.display = 'block';
   document.getElementById('productTable').style.display = 'block';
   document.getElementById('exportBar').classList.add('visible');
+  // AI Rozet Asistanı'nı göster
+  const aiAsistan = document.getElementById('aiAsistanPanel');
+  if (aiAsistan) aiAsistan.style.display = 'block';
 }
 
 function asciiToTr(str) {
@@ -1907,89 +1905,93 @@ document.addEventListener('input', (e) => {
 });
 
 async function kampanyaUret() {
-  if (!rows.length) {
-    showKampanyaStatus('❌ Önce Excel sekmesinden ürünleri yükle.', 'error');
-    return;
-  }
+  if (!rows.length) { showKampanyaStatus('❌ Önce Excel sekmesinden ürünleri yükle.','error'); return; }
   const key = localStorage.getItem('claude_api_key') || '';
-  if (!key) {
-    showKampanyaStatus('❌ Claude API anahtarı gerekli. Görsel Analiz sekmesinden ekle.', 'error');
-    return;
-  }
+  if (!key) { showKampanyaStatus('❌ Claude API anahtarı gerekli. Görsel Analiz sekmesinden ekle.','error'); return; }
 
   const btn = document.getElementById('kampanyaUretBtn');
-  btn.textContent = '⏳ Üretiliyor...';
-  btn.disabled = true;
+  const btn2 = document.getElementById('kampanyaYenidenBtn');
+  [btn,btn2].forEach(b => { if(b){b.disabled=true;} });
+  if(btn) btn.textContent = '⏳ Üretiliyor...';
 
-  // Ürün listesini hazırla
-  const urunListesi = rows.slice(0, 20).map(r => `${r.marka} - ${r.urun} (${r.fiyat} TL)`).join('\n');
+  const urunListesi = rows.slice(0,20).map(r => r.marka+' - '+r.urun+' ('+r.fiyat+' TL)').join('\n');
   const tarih = document.getElementById('tarihText')?.value || '';
 
-  const prompt = `Sen bir Türk market kampanya metin yazarısın. Aşağıdaki ürün listesine bakarak bu kampanya için metinler üret.
+  const prompt = `Sen bir Türk market kampanya uzmanısın. Aşağıdaki ürün listesine bak, kategoriyi (temizlik, gıda, kişisel bakım, vb.) otomatik algıla ve bu kampanya için 3 farklı rozet alternatifi üret.
 
 Ürünler:
 ${urunListesi}
-
 Tarih: ${tarih}
 
 Sadece JSON formatında yanıt ver:
 {
-  "ana_baslik": "Büyük harflerle 2-3 kelimelik ana başlık (örn: MARKA ÖZEL, HAFTA SONU, DEV İNDİRİM)",
-  "alt_baslik": "Küçük veya büyük harfle 1-2 kelimelik alt başlık (örn: indirim, fırsatları, kampanyası)",
-  "etiket": "Kısa badge metni (örn: Marka Özel İndirim, Haftanın Fırsatı)",
-  "slogan": "Müşteriyi çekecek 1 cümlelik slogan",
-  "slogan_alternatifleri": ["alternatif 1", "alternatif 2", "alternatif 3"]
+  "kategori": "Algılanan kategori",
+  "rozetler": [
+    {"ana_baslik":"BÜYÜK HARF 2-3 KELIME","alt_baslik":"küçük 1-2 kelime","etiket":"Kısa badge","slogan":"Vurucu 1 cümle","renk":"#hex"},
+    {"ana_baslik":"...","alt_baslik":"...","etiket":"...","slogan":"...","renk":"#hex"},
+    {"ana_baslik":"...","alt_baslik":"...","etiket":"...","slogan":"...","renk":"#hex"}
+  ]
 }`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 400,
-        messages: [{ role: 'user', content: prompt }]
-      })
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:600,messages:[{role:'user',content:prompt}]})
     });
     const data = await res.json();
     const text = data.content?.[0]?.text || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
+    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
 
-    // Formu doldur
-    document.getElementById('kamp-baslik').value = parsed.ana_baslik || '';
-    document.getElementById('kamp-alt').value = parsed.alt_baslik || '';
-    document.getElementById('kamp-etiket').value = parsed.etiket || '';
-    document.getElementById('kamp-slogan').value = parsed.slogan || '';
-    document.getElementById('kamp-tarih').value = tarih;
-
-    // Alternatif sloganları göster
-    const altDiv = document.getElementById('slogan-alternatifler');
-    if (altDiv && parsed.slogan_alternatifleri) {
-      altDiv.innerHTML = '<span style="font-size:11px;color:var(--text3);margin-right:6px;align-self:center">Alternatifler:</span>' +
-        parsed.slogan_alternatifleri.map(s =>
-          `<button onclick="document.getElementById('kamp-slogan').value='${s.replace(/'/g,"\\'")}';_renderKampanyaKart()" style="padding:4px 10px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:20px;font-size:11px;color:#a5b4fc;cursor:pointer;font-family:inherit;transition:all 0.2s">${s}</button>`
-        ).join('');
+    // Rozet alternatiflerini göster
+    const altDiv = document.getElementById('rozetAlternatifler');
+    if (altDiv && parsed.rozetler) {
+      altDiv.innerHTML = parsed.rozetler.map((r,i) => `
+        <div onclick="rozetSec(${i})" data-idx="${i}" class="rozet-alt" style="cursor:pointer;border:2px solid ${i===0?r.renk||'#6366f1':'rgba(255,255,255,0.1)'};border-radius:12px;padding:12px 16px;min-width:160px;text-align:center;background:${i===0?'rgba(99,102,241,0.08)':'var(--card-bg)'};transition:all 0.2s;">
+          <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Seçenek ${i+1}</div>
+          <div style="display:inline-block;background:${r.renk||'#e63030'};color:#fff;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;margin-bottom:6px">${r.etiket}</div>
+          <div style="font-size:16px;font-weight:900;color:var(--text);text-transform:uppercase;line-height:1.1">${r.ana_baslik}</div>
+          <div style="font-size:13px;font-weight:600;color:${r.renk||'#e63030'};font-style:italic">${r.alt_baslik}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.4">${r.slogan}</div>
+        </div>`).join('');
+      // Kategori göster
+      showKampanyaStatus('✅ ' + (parsed.kategori||'') + ' kategorisi algılandı. Aşağıdan bir rozet seç veya düzenle.','success');
+      // İlk rozeti otomatik seç
+      _rozetler = parsed.rozetler;
+      rozetSec(0);
     }
 
-    document.getElementById('kampanyaForm').style.display = 'block';
-    document.getElementById('kampanyaEmpty').style.display = 'none';
-    _renderKampanyaKart();
-    showKampanyaStatus('✅ Başlık ve slogan oluşturuldu! Aşağıda önizlemeyi görebilirsin.', 'success');
-    setTimeout(() => document.getElementById('kampanyaOnizleme')?.scrollIntoView({behavior:'smooth'}), 300);
+    document.getElementById('kampanyaUretildi').style.display = 'block';
+    document.getElementById('asistanEmpty').style.display = 'none';
+    document.getElementById('kampanyaExportBtn').style.display = 'flex';
 
   } catch(e) {
-    showKampanyaStatus('❌ Hata: ' + e.message, 'error');
+    showKampanyaStatus('❌ Hata: '+e.message,'error');
   }
 
-  btn.textContent = '✨ AI ile Üret';
-  btn.disabled = false;
+  [btn,btn2].forEach(b => { if(b){b.disabled=false;} });
+  if(btn) btn.textContent = '✨ Kampanya Metni Üret';
 }
+
+let _rozetler = [];
+
+function rozetSec(idx) {
+  const r = _rozetler[idx];
+  if (!r) return;
+  document.getElementById('kamp-baslik').value = r.ana_baslik||'';
+  document.getElementById('kamp-alt').value = r.alt_baslik||'';
+  document.getElementById('kamp-etiket').value = r.etiket||'';
+  document.getElementById('kamp-slogan').value = r.slogan||'';
+  document.getElementById('kamp-tarih').value = document.getElementById('tarihText')?.value||'';
+  // Aktif rozeti vurgula
+  document.querySelectorAll('.rozet-alt').forEach((el,i) => {
+    const clr = _rozetler[i]?.renk || '#6366f1';
+    el.style.borderColor = i===idx ? clr : 'rgba(255,255,255,0.1)';
+    el.style.background = i===idx ? 'rgba(99,102,241,0.08)' : 'var(--card-bg)';
+  });
+  _renderKampanyaKart();
+}
+
 
 function showKampanyaStatus(msg, type) {
   const el = document.getElementById('kampanyaStatusMsg');
