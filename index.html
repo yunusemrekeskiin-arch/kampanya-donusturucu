@@ -1089,78 +1089,88 @@ input[type="checkbox"] {
     </div>
   </div>
 
-  <!-- AI Rozet Asistanı -->
-  <div id="aiAsistanPanel" style="display:none;margin-bottom:1.25rem">
-    <div class="card" style="border:1px solid rgba(99,102,241,0.3);background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05))">
-      <div class="card-hdr" style="border-bottom:1px solid rgba(99,102,241,0.15)">
-        <h3 style="color:var(--text)"><span>✨</span>AI Kampanya Asistanı</h3>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="btn btn-primary" onclick="kampanyaUret()" id="kampanyaUretBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1)">
-            ✨ Kampanya Metni Üret
-          </button>
-          <button class="btn btn-green" onclick="kampanyaSheetsExport()" id="kampanyaExportBtn" style="display:none">
-            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
-          </button>
+  <!-- AI Kampanya Asistanı -->
+  <div id="aiAsistanPanel" style="display:none;margin-bottom:1.5rem">
+    <div class="card" style="border:1px solid rgba(99,102,241,0.25)">
+      <div class="card-hdr" style="background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.04));border-bottom:1px solid rgba(99,102,241,0.12);padding:1rem 1.5rem">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">2</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">AI Kampanya Asistanı</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:1px">Kategoriyi algılar, rozet ve metin üretir</div>
+          </div>
         </div>
+        <button class="btn" onclick="kampanyaUret()" id="kampanyaUretBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 2px 12px rgba(124,58,237,0.3)">
+          ✨ Kampanya Metni Üret
+        </button>
       </div>
-      <div class="card-body">
-        <div id="kampanyaStatusMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px"></div>
-
-        <!-- Üretilen içerik -->
-        <div id="kampanyaUretildi" style="display:none">
-          <!-- Rozet Alternatifleri -->
-          <div style="margin-bottom:1.5rem">
-            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Kampanya Rozeti — Alternatifler</div>
-            <div id="rozetAlternatifler" style="display:flex;gap:10px;flex-wrap:wrap"></div>
-          </div>
-
-          <!-- Seçili rozet düzenleme -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-            <div class="field"><label>Ana Başlık</label><input type="text" id="kamp-baslik" placeholder="MARKA ÖZEL" oninput="_renderKampanyaKart()"></div>
-            <div class="field"><label>Alt Başlık</label><input type="text" id="kamp-alt" placeholder="indirim" oninput="_renderKampanyaKart()"></div>
-            <div class="field"><label>Rozet Etiketi</label><input type="text" id="kamp-etiket" placeholder="Marka Özel İndirim" oninput="_renderKampanyaKart()"></div>
-            <div class="field"><label>Tarih</label><input type="text" id="kamp-tarih" placeholder="22 - 01 Haziran 2026" oninput="_renderKampanyaKart()"></div>
-          </div>
-          <div class="field" style="margin-bottom:16px">
-            <label>Kampanya Sloganı</label>
-            <input type="text" id="kamp-slogan" placeholder="Bu hafta büyük fırsatlar!" oninput="_renderKampanyaKart()">
-          </div>
-
-          <!-- Mini önizleme -->
-          <div style="margin-bottom:1rem">
-            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Rozet Önizleme</div>
-            <div id="rozetOnizleme" style="display:inline-block;background:#fff;border-radius:12px;padding:20px 28px;box-shadow:0 4px 24px rgba(0,0,0,0.15);min-width:280px;text-align:center"></div>
-          </div>
-
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-primary" onclick="kampanyaSheetsExport()" style="flex:1">
-              <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
-            </button>
-            <button class="btn btn-ghost" onclick="kampanyaUret()" id="kampanyaYenidenBtn">↺ Yeniden Üret</button>
+      <div class="card-body" style="padding:1.25rem 1.5rem">
+        <div id="kampanyaStatusMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem"></div>
+        <div id="asistanEmpty" style="display:flex;align-items:center;gap:12px;padding:4px 0">
+          <div style="width:36px;height:36px;background:rgba(99,102,241,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✨</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text2)">Kampanya rozeti oluşturmaya hazır</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Butona basınca AI ürünlerin kategorisini algılar ve 3 farklı rozet alternatifi üretir</div>
           </div>
         </div>
-
-        <!-- Boş durum -->
-        <div id="asistanEmpty" style="text-align:center;padding:1.5rem;color:var(--text3)">
-          <p style="font-size:13px">Ürünler yüklendi! <strong style="color:var(--badge-color)">Kampanya Metni Üret</strong> butonuna basarak AI'ın kategoriyi anlayıp rozet ve başlık üretmesini sağla.</p>
+        <div id="kampanyaUretildi" style="display:none">
+          <div style="margin-bottom:1.5rem">
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">3 Farklı Rozet Seçeneği</div>
+            <div id="rozetAlternatifler" style="display:flex;gap:12px;flex-wrap:wrap"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:start">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Rozet İçeriği</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+                <div class="field"><label>Ana Başlık</label><input type="text" id="kamp-baslik" placeholder="MARKA ÖZEL" oninput="_renderKampanyaKart()"></div>
+                <div class="field"><label>Alt Başlık</label><input type="text" id="kamp-alt" placeholder="indirim" oninput="_renderKampanyaKart()"></div>
+                <div class="field"><label>Rozet Etiketi</label><input type="text" id="kamp-etiket" placeholder="Marka Özel İndirim" oninput="_renderKampanyaKart()"></div>
+                <div class="field"><label>Tarih</label><input type="text" id="kamp-tarih" placeholder="22 - 01 Haziran 2026" oninput="_renderKampanyaKart()"></div>
+              </div>
+              <div class="field">
+                <label>Kampanya Sloganı</label>
+                <input type="text" id="kamp-slogan" placeholder="Bu hafta büyük fırsatlar!" oninput="_renderKampanyaKart()">
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Önizleme</div>
+              <div id="rozetOnizleme" style="background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 4px 20px rgba(0,0,0,0.12);min-width:200px;text-align:center"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="export-bar" id="exportBar">
-    <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
-    <button class="btn" onclick="aiZenginlestir()" id="aiEnrichBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff">🤖 Satır Zenginleştir</button>
-    <button class="btn btn-primary" onclick="selectImageFolder()" id="folderBtn">📁 Görsel Klasörü Seç</button>
-    <button class="btn" onclick="aiZenginlestir()" id="aiEnrichBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 2px 12px rgba(124,58,237,0.3)">🤖 AI ile Zenginleştir</button>
-    <button class="btn btn-green" onclick="exportToSheets()">
-      <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Google Sheets
-    </button>
-    <button class="btn btn-ghost" onclick="window.print()"><span data-i18n="btn_print">🖨 Yazdır</span></button>
+  <!-- Adım 3: Çıktı -->
+  <div id="ciktiPanel" style="display:none;margin-bottom:1.25rem">
+    <div class="card" style="border:1px solid rgba(16,185,129,0.2)">
+      <div class="card-hdr" style="background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(5,150,105,0.04));border-bottom:1px solid rgba(16,185,129,0.12)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:28px;height:28px;background:linear-gradient(135deg,#059669,#10b981);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">3</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">Çıktı Al</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:1px">Afiş oluştur, Sheets'e aktar veya Excel indir</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body" style="padding:1.25rem 1.5rem">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
+          <button class="btn btn-ghost" onclick="selectImageFolder()" id="folderBtn">📁 Görsel Klasörü</button>
+          <button class="btn" onclick="aiZenginlestir()" id="aiEnrichBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff">🤖 Satır Zenginleştir</button>
+          <div style="flex:1"></div>
+          <button class="btn btn-green" onclick="kampanyaSheetsExport()" style="font-weight:600">
+            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
+          </button>
+          <button class="btn btn-ghost" onclick="exportToSheets()">Veri → Sheets</button>
+          <button class="btn btn-ghost" onclick="window.print()">🖨 Yazdır</button>
+        </div>
+        <div id="folderStatus" style="display:none;margin-top:10px;padding:8px 12px;border-radius:8px;font-size:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;text-align:center"></div>
+        <div id="sheetsStatus"></div>
+      </div>
+    </div>
   </div>
-  <div id="folderStatus" style="display:none;margin-top:0.5rem;padding:8px 12px;border-radius:8px;font-size:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;text-align:center"></div>
-  <div id="sheetsStatus"></div>
-
   </div><!-- /excelContent -->
 
 </div>
@@ -1674,10 +1684,11 @@ function showTable() {
   ec.dataset.loaded = 'true';
   document.getElementById('controlsPanel').style.display = 'block';
   document.getElementById('productTable').style.display = 'block';
-  document.getElementById('exportBar').classList.add('visible');
   // AI Rozet Asistanı'nı göster
   const aiAsistan = document.getElementById('aiAsistanPanel');
   if (aiAsistan) aiAsistan.style.display = 'block';
+  const cikti = document.getElementById('ciktiPanel');
+  if (cikti) cikti.style.display = 'block';
 }
 
 function asciiToTr(str) {
@@ -2173,7 +2184,7 @@ async function createSheet(token) {
   localStorage.setItem('activeSheetsId', sid);
 
   // Sync badge göster
-  const exportBar = document.getElementById('exportBar');
+  const exportBar = document.getElementById('ciktiPanel');
   if (!document.getElementById('syncBadge')) {
     const badge = document.createElement('span');
     badge.id = 'syncBadge';
