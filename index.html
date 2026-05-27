@@ -948,20 +948,33 @@ input[type="checkbox"] {
     <button class="tab" onclick="switchTab('onizleme')">🎨 Kampanya Önizleme</button>
   </div>
 
+  <div class="tab-panel active" id="tab-excel">
+    <div class="card">
+      <div class="card-body">
+        <div class="upload" id="uploadZone">
+          <div class="upload-ico">📂</div>
+          <h2 data-i18n="upload_title">Excel Dosyasını Yükle</h2>
+          <p data-i18n="upload_desc">Stok kodlu Excel dosyasını buraya sürükle veya tıkla (.xlsx, .xls)</p>
+          <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="tab-panel" id="tab-onizleme">
     <div class="card" style="margin-bottom:1.25rem">
       <div class="card-hdr">
         <h3><span>🎨</span>Kampanya Önizleme</h3>
         <div style="display:flex;gap:8px;align-items:center">
           <button class="btn btn-primary" onclick="kampanyaUret()" id="kampanyaUretBtn">✨ AI ile Üret</button>
-          <button class="btn btn-green" onclick="kampanyaSheetsExport()" id="kampanyaExportBtn" style="display:none">
+          <button class="btn btn-green" onclick="kampanyaSheetsExport()" id="kampanyaExportBtn">
             <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
           </button>
         </div>
       </div>
       <div class="card-body">
         <!-- AI Üretilen Başlık Alanı -->
-        <div id="kampanyaForm" style="display:none;margin-bottom:1.5rem">
+        <div id="kampanyaForm" style="margin-bottom:1.5rem">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
             <div class="field">
               <label>Ana Başlık</label>
@@ -1965,8 +1978,10 @@ Sadece JSON formatında yanıt ver:
     }
 
     document.getElementById('kampanyaForm').style.display = 'block';
+    document.getElementById('kampanyaEmpty').style.display = 'none';
     _renderKampanyaKart();
-    showKampanyaStatus('', '');
+    showKampanyaStatus('✅ Başlık ve slogan oluşturuldu! Aşağıda önizlemeyi görebilirsin.', 'success');
+    setTimeout(() => document.getElementById('kampanyaOnizleme')?.scrollIntoView({behavior:'smooth'}), 300);
 
   } catch(e) {
     showKampanyaStatus('❌ Hata: ' + e.message, 'error');
@@ -2137,7 +2152,7 @@ async function createSheet(token) {
       kampanya?.ana_baslik||'', kampanya?.alt_baslik||'', kampanya?.etiket||'', kampanya?.slogan||''
     ])
   ];
-  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:F${values.length}?valueInputOption=RAW`, {
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:N${values.length}?valueInputOption=RAW`, {
     method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ values })
   });
@@ -2516,7 +2531,7 @@ async function syncToActiveSheet() {
       ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA'],
       ...rows.map(r => [r.imgUrl||'', r.marka, r.urun, r.fiyat, r.tarih, r.arasinda])
     ];
-    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${_activeSheetsId}/values/A1:F${values.length}?valueInputOption=RAW`, {
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${_activeSheetsId}/values/A1:N${values.length}?valueInputOption=RAW`, {
       method: 'PUT',
       headers: { 'Authorization': 'Bearer ' + _syncToken, 'Content-Type': 'application/json' },
       body: JSON.stringify({ values })
