@@ -4312,9 +4312,17 @@ const RozetAI = (() => {
       'SADECE SVG KODU döndür. <svg ile başla </svg> ile bit.'
     }], 2000, sistemPrompt);
 
-    const m = svgRaw.match(/<svg[\s\S]*<\/svg>/i);
-    if (!m) throw new Error('Rozet ' + no + ' üretilemedi');
-    return m[0];
+    // Tüm SVG bloklarını dene — bazen markdown içine sarılı geliyor
+    const m = svgRaw.match(/<svg[\s\S]*<\/svg>/i)
+           || svgRaw.match(/```svg\s*([\s\S]*?)```/i)
+           || svgRaw.match(/```\s*(<svg[\s\S]*<\/svg>)\s*```/i);
+
+    if (!m) {
+      // Ne döndüğünü console'a yaz, sonra hata fırlat
+      console.error('Rozet ' + no + ' ham yanıt:', svgRaw.slice(0, 500));
+      throw new Error('Rozet ' + no + ' üretilemedi — model SVG yerine metin döndürdü. Tekrar dene.');
+    }
+    return m[1] || m[0];
   }
 
   /* ── API çağrı yardımcısı ────────────────────────────────── */
