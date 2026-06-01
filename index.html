@@ -806,6 +806,100 @@ input[type="checkbox"] {
   .afis-panel-canvas{width:130px;height:184px;}
 }
 
+
+/* ── AKILLI ESLEME ── */
+@keyframes shimmerWave {
+  0%{background-position:-600px 0}
+  100%{background-position:600px 0}
+}
+@keyframes fadeInUp {
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes checkPop {
+  0%{transform:scale(0)}
+  70%{transform:scale(1.2)}
+  100%{transform:scale(1)}
+}
+.mapping-overlay {
+  display:none;
+  border-radius:16px;
+  overflow:hidden;
+  margin-top:1rem;
+  border:1px solid var(--border);
+  background:var(--card-bg);
+  animation:fadeInUp 0.3s ease;
+}
+.mapping-overlay.visible { display:block; }
+.sk-row {
+  background:linear-gradient(90deg,var(--bg2) 25%,var(--bg) 50%,var(--bg2) 75%);
+  background-size:600px 100%;
+  animation:shimmerWave 1.2s infinite;
+  border-radius:8px;
+  height:52px;
+}
+.col-chip {
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  animation:fadeInUp 0.35s ease both;
+}
+.col-chip.ok { border-color:rgba(34,197,94,0.3); }
+.col-chip.warn { border-color:rgba(251,191,36,0.4); }
+.chip-check {
+  width:20px;height:20px;
+  background:rgba(34,197,94,0.15);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  animation:checkPop 0.4s ease both;
+  font-size:10px;
+}
+.chip-warn {
+  width:20px;height:20px;
+  background:rgba(251,191,36,0.15);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  font-size:10px;
+}
+.badge-ai {
+  background:rgba(34,197,94,0.12);
+  color:#4ade80;
+  font-size:10px;
+  font-weight:600;
+  padding:2px 7px;
+  border-radius:20px;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.badge-manual {
+  background:rgba(251,191,36,0.12);
+  color:#fbbf24;
+  font-size:10px;
+  font-weight:600;
+  padding:2px 7px;
+  border-radius:20px;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.chip-select {
+  font-size:11px;
+  background:var(--input-bg);
+  border:1px solid var(--input-border);
+  border-radius:5px;
+  padding:3px 6px;
+  color:var(--text);
+  font-family:inherit;
+  outline:none;
+  width:100%;
+  margin-top:3px;
+}
+
 @media print{.hdr,.tabs,.upload,.card-hdr .btn,.export-bar,.inp-row,.ai-badge,#sheetsStatus{display:none!important}body{background:#fff;color:#000}.card{border:none;box-shadow:none;transform:none}.price{color:#000!important}.marka{color:#000!important}}
 </style>
 </head>
@@ -959,6 +1053,45 @@ input[type="checkbox"] {
             <span>📂</span> Dosya Seç
           </div>
           <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
+        </div>
+
+        <!-- Akıllı Eşleme Overlay -->
+        <div class="mapping-overlay" id="mappingOverlay">
+          <!-- Analiz aşaması -->
+          <div id="mappingAnaliz" style="padding:1.5rem">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem">
+              <div style="width:30px;height:30px;background:rgba(99,102,241,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px">🤖</div>
+              <div style="flex:1">
+                <div style="font-size:14px;font-weight:600;color:var(--text)" id="analyzingText">Sütunlar analiz ediliyor...</div>
+                <div style="font-size:12px;color:var(--text3);margin-top:1px">AI yapı tanıyor</div>
+              </div>
+              <div style="width:140px;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                <div id="analyzeProgress" style="height:100%;width:0%;background:#22c55e;border-radius:2px;transition:width 0.08s linear"></div>
+              </div>
+            </div>
+            <div id="skeletonGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+              <div class="sk-row"></div>
+              <div class="sk-row" style="animation-delay:0.1s"></div>
+              <div class="sk-row" style="animation-delay:0.2s"></div>
+              <div class="sk-row" style="animation-delay:0.15s"></div>
+              <div class="sk-row" style="animation-delay:0.25s"></div>
+              <div class="sk-row" style="animation-delay:0.05s"></div>
+            </div>
+          </div>
+          <!-- Eşleme sonucu -->
+          <div id="mappingResult" style="display:none;padding:1.5rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:30px;height:30px;background:rgba(34,197,94,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px">✅</div>
+                <div>
+                  <div style="font-size:14px;font-weight:600;color:var(--text)" id="matchSummary">Sütunlar eşlendi</div>
+                  <div style="font-size:12px;color:var(--text3);margin-top:1px" id="matchDetail"></div>
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="mappingDevamEt()" style="padding:8px 20px">Devam Et →</button>
+            </div>
+            <div id="colChipsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1426,7 +1559,147 @@ uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag
 uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); });
 fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
 
+
+// ── AKILLI EŞLEME ────────────────────────────────────────────
+let _pendingFile = null;
+let _mappingDone = false;
+
+function startMappingAnimation(file) {
+  _pendingFile = file;
+  _mappingDone = false;
+
+  // Upload zone'u gizle, overlay'i göster
+  document.getElementById('uploadZone').style.opacity = '0.3';
+  document.getElementById('uploadZone').style.pointerEvents = 'none';
+  document.getElementById('mappingOverlay').classList.add('visible');
+  document.getElementById('mappingAnaliz').style.display = 'block';
+  document.getElementById('mappingResult').style.display = 'none';
+
+  // Progress bar animasyonu
+  let prog = 0;
+  const fill = document.getElementById('analyzeProgress');
+  const interval = setInterval(() => {
+    prog += 3;
+    fill.style.width = Math.min(prog, 100) + '%';
+    if (prog >= 100) {
+      clearInterval(interval);
+      showMappingResult();
+    }
+  }, 40);
+}
+
+function showMappingResult() {
+  document.getElementById('analyzingText').textContent = 'Analiz tamamlandı!';
+
+  setTimeout(() => {
+    document.getElementById('mappingAnaliz').style.display = 'none';
+    document.getElementById('mappingResult').style.display = 'block';
+
+    // Sütun eşlemelerini oluştur
+    const colDefs = [
+      { excel: 'MARKA', mapped: 'Marka', status: 'ok' },
+      { excel: 'STOK İSMİ / ÜRÜN', mapped: 'Ürün adı', status: 'ok' },
+      { excel: 'YENİ FİYAT', mapped: 'Fiyat (₺)', status: 'ok' },
+      { excel: 'TARİH', mapped: 'Tarih aralığı', status: 'ok' },
+      { excel: 'GÖRSEL URL', mapped: 'Görsel bağlantısı', status: 'ok' },
+    ];
+
+    // Asıl dosya başlıklarına göre gerçek eşleme yap
+    if (_pendingFile) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+          const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' });
+          if (json.length > 0) {
+            const headers = json[0].map(h => String(h || '').trim());
+            const norm = h => h.toUpperCase().replace(/İ/g,'I').replace(/Ğ/g,'G').replace(/Ş/g,'S').replace(/Ç/g,'C').replace(/Ö/g,'O').replace(/Ü/g,'U');
+
+            const realCols = headers.map(h => {
+              const n = norm(h);
+              let mapped = '', status = 'warn';
+              if (n.includes('MARKA')) { mapped = 'Marka'; status = 'ok'; }
+              else if (n.includes('URUN') || n.includes('ISMI') || n.includes('ISIM') || n.includes('STOK')) { mapped = 'Ürün adı'; status = 'ok'; }
+              else if (n.includes('FIYAT') || n.includes('PRICE') || n.includes('YENI')) { mapped = 'Fiyat (₺)'; status = 'ok'; }
+              else if (n.includes('TARIH') || n.includes('DATE')) { mapped = 'Tarih'; status = 'ok'; }
+              else if (n.includes('GORSEL') || n.includes('URL') || n.includes('IMAGE')) { mapped = 'Görsel URL'; status = 'ok'; }
+              else if (n.includes('KOD') || n.includes('CODE')) { mapped = 'Stok kodu'; status = 'ok'; }
+              else { mapped = 'Tanımlanamadı'; status = 'warn'; }
+              return { excel: h || '(boş)', mapped, status };
+            });
+
+            renderColChips(realCols.slice(0, 8));
+          }
+        } catch(err) {
+          renderColChips(colDefs);
+        }
+      };
+      reader.readAsArrayBuffer(_pendingFile);
+    } else {
+      renderColChips(colDefs);
+    }
+  }, 200);
+}
+
+function renderColChips(cols) {
+  const okCount = cols.filter(c => c.status === 'ok').length;
+  const warnCount = cols.filter(c => c.status === 'warn').length;
+  document.getElementById('matchSummary').textContent = okCount + ' sütun otomatik eşlendi' + (warnCount > 0 ? ', ' + warnCount + ' manuel onay bekliyor' : '');
+  document.getElementById('matchDetail').textContent = warnCount === 0 ? '✨ Tüm sütunlar AI tarafından tanındı' : warnCount + ' sütun için alan seçin';
+
+  const grid = document.getElementById('colChipsGrid');
+  grid.innerHTML = '';
+
+  cols.forEach((col, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'col-chip ' + col.status;
+    chip.style.animationDelay = (i * 60) + 'ms';
+
+    if (col.status === 'ok') {
+      chip.innerHTML = `
+        <div class="chip-check">✓</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${col.excel}</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:1px">${col.mapped}</div>
+        </div>
+        <span class="badge-ai">AI eşledi</span>`;
+    } else {
+      chip.innerHTML = `
+        <div class="chip-warn">⚠</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${col.excel}</div>
+          <select class="chip-select">
+            <option value="">-- Eşle --</option>
+            <option>Kategori</option>
+            <option>Açıklama</option>
+            <option>Görsel URL</option>
+            <option>Yoksay</option>
+          </select>
+        </div>
+        <span class="badge-manual">Manuel</span>`;
+    }
+    grid.appendChild(chip);
+  });
+}
+
+function mappingDevamEt() {
+  // Overlay'i kapat, asıl dosyayı işle
+  document.getElementById('mappingOverlay').classList.remove('visible');
+  document.getElementById('uploadZone').style.display = 'none';
+  _mappingDone = true;
+  if (_pendingFile) {
+    _realProcessFile(_pendingFile);
+    _pendingFile = null;
+  }
+}
+
+// Orijinal processFile mantığını _realProcessFile olarak sakla
+
 function processFile(file) {
+  startMappingAnimation(file);
+}
+
+function _realProcessFile(file) {
   const fileName = file.name.replace(/\.xlsx?$/i, '');
   const dateMatch = fileName.match(/(\d{1,2})[\-_](\d{1,2})/);
   if (dateMatch) {
