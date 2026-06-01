@@ -1239,6 +1239,19 @@ input[type="checkbox"] {
       </div>
       <div class="card-body" style="padding:1.25rem 1.5rem">
         <div id="kampanyaStatusMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem"></div>
+
+        <!-- API Key inline -->
+        <div id="apiKeyInline" style="margin-bottom:1rem;padding:12px 14px;border-radius:8px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15)">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">🔑 Claude API Anahtarı</div>
+          <div style="display:flex;gap:8px">
+            <input type="password" id="claudeApiKeyInline" placeholder="sk-ant-api03-..." autocomplete="off"
+              style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:7px 10px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
+              oninput="syncApiKey(this.value)">
+            <button class="btn btn-ghost" onclick="testApiKeyInline()" style="padding:7px 12px;font-size:12px">Test</button>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:6px">🔒 Sadece tarayıcında saklanır. <a href="https://console.anthropic.com" target="_blank" style="color:#6366f1">Anahtar al →</a></div>
+          <div id="apiKeyInlineStatus" style="display:none;font-size:12px;margin-top:6px"></div>
+        </div>
         <div id="asistanEmpty" style="display:flex;align-items:center;gap:12px;padding:4px 0">
           <div style="width:36px;height:36px;background:rgba(99,102,241,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✨</div>
           <div>
@@ -1288,16 +1301,25 @@ input[type="checkbox"] {
         </div>
       </div>
       <div class="card-body" style="padding:1.25rem 1.5rem">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-          <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
-          <button class="btn btn-ghost" onclick="selectImageFolder()" id="folderBtn">📁 Görsel Klasörü</button>
-          <button class="btn" onclick="aiZenginlestir()" id="aiEnrichBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff">🤖 Satır Zenginleştir</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <!-- İçeri alma grubu -->
+          <div style="display:flex;gap:6px;align-items:center;padding-right:12px;border-right:1px solid var(--border)">
+            <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">İçeri Al</span>
+            <button class="btn btn-ghost" onclick="selectImageFolder()" id="folderBtn" style="font-size:12px;padding:7px 12px">📁 Görsel Klasörü</button>
+          </div>
+          <!-- Dışarı verme grubu -->
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Dışarı Al</span>
+            <button class="btn btn-ghost" onclick="exportExcel()" style="font-size:12px;padding:7px 12px">⬇ Excel</button>
+            <button class="btn btn-ghost" onclick="window.print()" style="font-size:12px;padding:7px 12px">🖨 Yazdır</button>
+          </div>
           <div style="flex:1"></div>
-          <button class="btn btn-green" onclick="kampanyaSheetsExport()" style="font-weight:600">
-            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Sheets'e Aktar
+          <!-- Ana aksiyon -->
+          <button class="btn btn-ghost" onclick="exportToSheets()" style="font-size:12px">Sadece Veri → Sheets</button>
+          <button class="btn btn-green" onclick="kampanyaSheetsExport()" style="font-weight:600;padding:9px 18px">
+            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Kampanya + Veri → Sheets
           </button>
-          <button class="btn btn-ghost" onclick="exportToSheets()">Veri → Sheets</button>
-          <button class="btn btn-ghost" onclick="window.print()">🖨 Yazdır</button>
+        </div>
         </div>
         <div id="folderStatus" style="display:none;margin-top:10px;padding:8px 12px;border-radius:8px;font-size:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;text-align:center"></div>
         <div id="sheetsStatus"></div>
@@ -2188,10 +2210,50 @@ document.addEventListener('input', (e) => {
   }
 });
 
+function syncApiKey(val) {
+  localStorage.setItem('claude_api_key', val.trim());
+  ANTHROPIC_API_KEY = val.trim();
+  const el = document.getElementById('claudeApiKey');
+  if (el) el.value = val;
+}
+
+async function testApiKeyInline() {
+  const key = document.getElementById('claudeApiKeyInline')?.value?.trim();
+  if (!key) return;
+  const status = document.getElementById('apiKeyInlineStatus');
+  status.style.display = 'block';
+  status.style.color = '#fbbf24';
+  status.textContent = '⏳ Kontrol ediliyor...';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:10,messages:[{role:'user',content:'hi'}]})
+    });
+    if (res.ok) {
+      status.style.color = '#4ade80';
+      status.textContent = '✅ Bağlantı başarılı!';
+      localStorage.setItem('claude_api_key', key);
+      ANTHROPIC_API_KEY = key;
+      document.getElementById('apiKeyInline').style.borderColor = 'rgba(34,197,94,0.3)';
+    } else {
+      status.style.color = '#f87171';
+      status.textContent = '❌ Geçersiz anahtar';
+    }
+  } catch(e) {
+    status.style.color = '#f87171';
+    status.textContent = '❌ Bağlantı hatası';
+  }
+}
+
 async function kampanyaUret() {
   if (!rows.length) { showKampanyaStatus('❌ Önce Excel sekmesinden ürünleri yükle.','error'); return; }
   const key = localStorage.getItem('claude_api_key') || '';
-  if (!key) { showKampanyaStatus('❌ Claude API anahtarı gerekli. Görsel Analiz sekmesinden ekle.','error'); return; }
+  if (!key) {
+    document.getElementById('claudeApiKeyInline')?.focus();
+    showKampanyaStatus('❌ Claude API anahtarı gerekli. Yukarıdaki alana gir.','error');
+    return;
+  }
 
   const btn = document.getElementById('kampanyaUretBtn');
   const btn2 = document.getElementById('kampanyaYenidenBtn');
@@ -2612,7 +2674,10 @@ function showKeyStatus(msg, type) {
 window.addEventListener('load', () => {
   const saved = localStorage.getItem('claude_api_key');
   if (saved) {
-    document.getElementById('claudeApiKey').value = saved;
+    const el = document.getElementById('claudeApiKey');
+    if (el) el.value = saved;
+    const el2 = document.getElementById('claudeApiKeyInline');
+    if (el2) el2.value = saved;
     ANTHROPIC_API_KEY = saved;
     showKeyStatus('✅ Kayıtlı anahtar yüklendi.', 'success');
   }
