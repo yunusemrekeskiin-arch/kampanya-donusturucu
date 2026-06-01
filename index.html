@@ -1274,91 +1274,8 @@ input[type="checkbox"] {
   </div>
 
   <!-- ── ROZET MODÜLÜ ── -->
-  <div class="rozet-panel" id="rozetModulu" style="display:none">
-    <div class="card">
-      <div class="card-hdr">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div class="rozet-step-badge">🎖</div>
-          <div>
-            <div style="font-size:14px;font-weight:700;color:var(--text)">AI Rozet Üretici</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:1px">Referans SS yükle → Claude analiz etsin → 3 SVG rozet üretsin → seç → Sheets'e aktar</div>
-          </div>
-        </div>
-        <button onclick="RozetManager.analizeEt()" id="rozetAnalizeBtn"
-          style="padding:8px 18px;background:linear-gradient(135deg,#7c3aed,#6366f1);border:none;border-radius:9px;
-                 color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
-                 box-shadow:0 2px 12px rgba(99,102,241,0.35);transition:all 0.2s;white-space:nowrap">
-          ✨ Claude ile Analiz Et
-        </button>
-      </div>
 
-      <div class="card-body">
-
-        <!-- ADIM 1: SS Yükleme -->
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">
-          1 — Referans Rozet SS Yükle
-        </div>
-        <div class="rozet-upload-zone" id="rozetDropZone"
-          onclick="document.getElementById('rozetFileInput').click()"
-          ondragover="RozetManager.dragOver(event)"
-          ondragleave="RozetManager.dragLeave(event)"
-          ondrop="RozetManager.drop(event)">
-          <div class="rozet-upload-icon" id="rozetUploadIcon">🖼️</div>
-          <div class="rozet-upload-info">
-            <strong id="rozetUploadLabel">Rozet örneği ekran görüntüsü yükle</strong>
-            <span>PNG · JPG · Maks 5 MB · Sürükle bırak veya tıkla</span>
-          </div>
-          <button class="rozet-upload-btn" onclick="event.stopPropagation();document.getElementById('rozetFileInput').click()">
-            Dosya Seç
-          </button>
-        </div>
-        <input type="file" id="rozetFileInput" accept="image/*" onchange="RozetManager.handleFile(this.files[0])">
-
-        <!-- Yüklenen görsel önizleme -->
-        <div id="rozetRefPreview" style="display:none;margin-top:10px;display:none;align-items:center;gap:12px">
-          <img id="rozetRefImg" style="height:80px;border-radius:8px;border:1px solid var(--border);object-fit:contain;background:#fff">
-          <div>
-            <div id="rozetRefIsim" style="font-size:12px;font-weight:600;color:var(--text2)"></div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px">Görsel yüklendi — analiz için butona bas</div>
-            <button onclick="RozetManager.gorselSil()" style="margin-top:6px;padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">✕ Kaldır</button>
-          </div>
-        </div>
-
-        <!-- Durum mesajı -->
-        <div id="rozetDurumMsg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px"></div>
-
-        <!-- ADIM 2: 3 Rozet Seçici (Claude ürettikten sonra görünür) -->
-        <div id="rozetSonucWrap" style="display:none;margin-top:1.5rem">
-          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">
-            2 — Beğendiğin Rozeti Seç
-          </div>
-          <div id="rozetKartlar" style="display:flex;gap:14px;flex-wrap:wrap"></div>
-
-          <!-- Seçili rozet büyük önizleme + Sheets butonu -->
-          <div id="rozetSeciliWrap" style="display:none;margin-top:1.5rem;display:none;align-items:flex-start;gap:2rem;flex-wrap:wrap">
-            <div>
-              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Seçilen Rozet</div>
-              <div id="rozetBuyukOnizleme" style="background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 24px rgba(0,0,0,0.18);display:inline-block"></div>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:10px;padding-top:28px">
-              <button onclick="RozetManager.sheetsExport()" id="rozetSheetsBtn"
-                style="padding:10px 22px;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:9px;
-                       color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
-                       box-shadow:0 2px 12px rgba(16,185,129,0.3);transition:all 0.2s;display:flex;align-items:center;gap:8px">
-                <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:16px;height:16px">
-                Sheets'e Aktar
-              </button>
-              <button onclick="RozetManager.indir()" class="rozet-indir-btn" style="text-align:center">⬇ PNG İndir</button>
-              <div id="rozetSheetsStatus" style="display:none;font-size:11px;color:#4ade80;text-align:center"></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- AI Kampanya Asistanı -->
+  <!-- AI Kampanya Asistanı + Rozet Üretici (Entegre) -->
   <div id="aiAsistanPanel" style="display:none;margin-bottom:1.5rem">
     <div class="card" style="border:1px solid rgba(99,102,241,0.25)">
       <div class="card-hdr" style="background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.04));border-bottom:1px solid rgba(99,102,241,0.12);padding:1rem 1.5rem">
@@ -1366,62 +1283,123 @@ input[type="checkbox"] {
           <div style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">2</div>
           <div>
             <div style="font-size:14px;font-weight:700;color:var(--text)">AI Kampanya Asistanı</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:1px">Kategoriyi algılar, rozet ve metin üretir</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:1px">Referans rozet yükle · Claude analiz etsin · 3 profesyonel rozet üretsin</div>
           </div>
         </div>
-        <button class="btn" onclick="kampanyaUret()" id="kampanyaUretBtn" style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 2px 12px rgba(124,58,237,0.3)">
-          ✨ Kampanya Metni Üret
+        <button class="btn" onclick="RozetAI.analiz()" id="rozetAnalizeBtn"
+          style="background:linear-gradient(135deg,#7c3aed,#6366f1);color:#fff;box-shadow:0 2px 12px rgba(124,58,237,0.3);display:flex;align-items:center;gap:7px">
+          <span id="rozetAnalizIkon">✨</span> <span id="rozetAnalizTxt">Rozet Üret</span>
         </button>
       </div>
+
       <div class="card-body" style="padding:1.25rem 1.5rem">
-        <!-- API Key satırı -->
+
+        <!-- API Key -->
         <div id="kampanyaApiRow" style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding:10px 14px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:10px">
-          <span style="font-size:18px;flex-shrink:0">🔑</span>
+          <span style="font-size:16px;flex-shrink:0">🔑</span>
           <input type="password" id="kampanyaApiKey" placeholder="Claude API anahtarı — sk-ant-api03-..."
             autocomplete="off"
             style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;
-                   padding:8px 12px;font-size:12px;color:var(--text);font-family:monospace;outline:none;
-                   transition:border-color 0.15s"
-            oninput="kampanyaApiKeySave(this.value)"
-            onfocus="this.style.borderColor='rgba(99,102,241,0.6)'"
-            onblur="this.style.borderColor='var(--input-border)'">
+                   padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
+            oninput="kampanyaApiKeySave(this.value)">
           <div id="kampanyaApiStatus" style="font-size:11px;white-space:nowrap;color:var(--text3)">Girilmedi</div>
           <a href="https://console.anthropic.com" target="_blank"
-            style="font-size:11px;color:#a5b4fc;text-decoration:none;white-space:nowrap;flex-shrink:0">Anahtar al ↗</a>
+            style="font-size:11px;color:#a5b4fc;text-decoration:none;white-space:nowrap">Anahtar al ↗</a>
         </div>
-        <div id="kampanyaStatusMsg" style="display:none;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem"></div>
-        <div id="asistanEmpty" style="display:flex;align-items:center;gap:12px;padding:4px 0">
-          <div style="width:36px;height:36px;background:rgba(99,102,241,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">✨</div>
+
+        <!-- Referans SS Yükleme -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">
+          Referans Rozet Görseli (İsteğe Bağlı)
+        </div>
+        <div id="rozetDropZone"
+          onclick="document.getElementById('rozetFileInput').click()"
+          ondragover="RozetAI.dragOver(event)" ondragleave="RozetAI.dragLeave(event)" ondrop="RozetAI.drop(event)"
+          style="border:1.5px dashed rgba(99,102,241,0.3);border-radius:10px;background:rgba(99,102,241,0.03);
+                 padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s">
+          <div id="rozetUploadIkon"
+            style="width:40px;height:40px;flex-shrink:0;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);
+                   border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px">🖼️</div>
+          <div style="flex:1">
+            <div id="rozetUploadLabel" style="font-size:13px;font-weight:600;color:var(--text2)">Rozet SS yükle — Claude bu stili referans alacak</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">PNG · JPG · Maks 6 MB · Sürükle bırak veya tıkla</div>
+          </div>
+          <button onclick="event.stopPropagation();document.getElementById('rozetFileInput').click()"
+            style="padding:6px 14px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:8px;
+                   color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">
+            Dosya Seç
+          </button>
+        </div>
+        <input type="file" id="rozetFileInput" accept="image/*" style="display:none" onchange="RozetAI.dosyaYukle(this.files[0])">
+
+        <!-- Yüklenen görsel küçük önizleme -->
+        <div id="rozetRefOnizleme" style="display:none;margin-top:8px;align-items:center;gap:10px">
+          <img id="rozetRefImg" style="height:64px;border-radius:8px;border:1px solid var(--border);object-fit:contain;background:#fff">
+          <div style="flex:1">
+            <div id="rozetRefIsim" style="font-size:12px;font-weight:600;color:var(--text2)"></div>
+            <div style="font-size:11px;color:#4ade80;margin-top:2px">✓ Görsel hazır</div>
+          </div>
+          <button onclick="RozetAI.gorselSil()"
+            style="padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);
+                   border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">✕</button>
+        </div>
+
+        <!-- Durum mesajı -->
+        <div id="rozetDurum" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px;border:1px solid transparent"></div>
+
+        <!-- BOŞ DURUM -->
+        <div id="rozetBos" style="display:flex;align-items:center;gap:12px;padding:16px 0 4px">
+          <div style="width:36px;height:36px;background:rgba(99,102,241,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎖</div>
           <div>
-            <div style="font-size:13px;font-weight:600;color:var(--text2)">Kampanya rozeti oluşturmaya hazır</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:2px">Butona basınca AI ürünlerin kategorisini algılar ve 3 farklı rozet alternatifi üretir</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text2)">Rozet üretmeye hazır</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Referans görsel yükle veya direkt "Rozet Üret" butonuna bas — Claude 3 tasarım üretecek</div>
           </div>
         </div>
-        <div id="kampanyaUretildi" style="display:none">
-          <div style="margin-bottom:1.5rem">
-            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">3 Farklı Rozet Seçeneği</div>
-            <div id="rozetAlternatifler" style="display:flex;gap:12px;flex-wrap:wrap"></div>
+
+        <!-- 3 ROZET KARTLARI (Claude ürettikten sonra) -->
+        <div id="rozetSonuclar" style="display:none">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;margin-top:4px">
+            Beğendiğin Rozeti Seç
           </div>
-          <div style="display:grid;grid-template-columns:1fr auto;gap:1.5rem;align-items:start">
-            <div>
-              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Rozet İçeriği</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-                <div class="field"><label>Ana Başlık</label><input type="text" id="kamp-baslik" placeholder="MARKA ÖZEL" oninput="_renderKampanyaKart()"></div>
-                <div class="field"><label>Alt Başlık</label><input type="text" id="kamp-alt" placeholder="indirim" oninput="_renderKampanyaKart()"></div>
-                <div class="field"><label>Rozet Etiketi</label><input type="text" id="kamp-etiket" placeholder="Marka Özel İndirim" oninput="_renderKampanyaKart()"></div>
-                <div class="field"><label>Tarih</label><input type="text" id="kamp-tarih" placeholder="22 - 01 Haziran 2026" oninput="_renderKampanyaKart()"></div>
+          <div id="rozetKartlar" style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:1.5rem"></div>
+
+          <!-- Seçilen rozetin büyük önizleme + aksiyon butonları -->
+          <div id="rozetSecimPanel" style="display:none;padding:20px;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.15);border-radius:14px">
+            <div style="display:flex;align-items:flex-start;gap:2rem;flex-wrap:wrap">
+              <!-- Büyük önizleme -->
+              <div>
+                <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Seçilen Rozet</div>
+                <div id="rozetBuyuk" style="background:#fff;border-radius:12px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,0.2);display:inline-block;line-height:0"></div>
               </div>
-              <div class="field">
-                <label>Kampanya Sloganı</label>
-                <input type="text" id="kamp-slogan" placeholder="Bu hafta büyük fırsatlar!" oninput="_renderKampanyaKart()">
+              <!-- Butonlar -->
+              <div style="display:flex;flex-direction:column;gap:10px;padding-top:26px;min-width:200px">
+                <!-- PNG İndir -->
+                <button onclick="RozetAI.pngIndir()"
+                  style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:9px;
+                         color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+                         box-shadow:0 2px 12px rgba(99,102,241,0.35);transition:all 0.2s;display:flex;align-items:center;gap:8px;justify-content:center">
+                  ⬇ PNG İndir (4x)
+                </button>
+                <!-- Drive'a Yükle + Sheets -->
+                <button onclick="RozetAI.driveYukleVeAktar()" id="rozetDriveBtn"
+                  style="padding:10px 20px;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:9px;
+                         color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+                         box-shadow:0 2px 12px rgba(16,185,129,0.3);transition:all 0.2s;display:flex;align-items:center;gap:8px;justify-content:center">
+                  <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:15px;height:15px">
+                  Drive'a Yükle + Sheets'e Aktar
+                </button>
+                <!-- Drive linki (yüklendikten sonra) -->
+                <div id="rozetDriveLink" style="display:none;padding:8px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px">
+                  <div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px">✅ Drive'a yüklendi</div>
+                  <a id="rozetDriveLinkHref" href="#" target="_blank"
+                    style="font-size:11px;color:#a5b4fc;word-break:break-all;text-decoration:none">Link kopyala →</a>
+                </div>
+                <div id="rozetAktarDurum" style="display:none;font-size:11px;color:var(--text3);text-align:center"></div>
               </div>
             </div>
-            <div>
-              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Önizleme</div>
-              <div id="rozetOnizleme" style="background:#fff;border-radius:12px;padding:20px 24px;box-shadow:0 4px 20px rgba(0,0,0,0.12);min-width:200px;text-align:center"></div>
-            </div>
           </div>
-        </div>
+
+        </div><!-- /rozetSonuclar -->
+
       </div>
     </div>
   </div>
@@ -2115,7 +2093,7 @@ function showTable() {
   if (cikti) cikti.style.display = 'block';
   // Rozet Modülünü göster
   const rozetMod = document.getElementById('rozetModulu');
-  if (rozetMod) { rozetMod.style.display = 'block'; RozetManager.render(); }
+  if (rozetMod) rozetMod.style.display = 'block';
   // API key input'u doldur
   document.dispatchEvent(new Event('kampanyaPanelAcildi'));
 }
@@ -2621,11 +2599,12 @@ async function createSheet(token) {
   const kampanya = _kampanyaData;
   const values = [
     ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA','SLOGAN','AÇIKLAMA','ETİKET','RENK_ÖNERİ',
-     'KAMP_ANA_BASLIK','KAMP_ALT_BASLIK','KAMP_ETIKET','KAMP_SLOGAN'],
+     'KAMP_ANA_BASLIK','KAMP_ALT_BASLIK','KAMP_ETIKET','KAMP_SLOGAN','ROZET_DRIVE_URL'],
     ...rows.map(r=>[
       r.imgUrl||'', r.marka, r.urun, r.fiyat, r.tarih, r.arasinda,
       r.slogan||'', r.aciklama||'', r.etiket||'', r.renkOneri||'',
-      kampanya?.ana_baslik||'', kampanya?.alt_baslik||'', kampanya?.etiket||'', kampanya?.slogan||''
+      kampanya?.ana_baslik||'', kampanya?.alt_baslik||'', kampanya?.etiket||'', kampanya?.slogan||'',
+      kampanya?.rozet_drive_url||''
     ])
   ];
   await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:N${values.length}?valueInputOption=RAW`, {
@@ -4081,287 +4060,351 @@ function esc2(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 /* ═══════════════════════════════════════════════════════════════
-   ROZET MANAGER v2 — AI Analiz → SVG Üret → Seç → Sheets
+   RozetAI — AI Kampanya Asistanı entegre rozet motoru
+   Akış: SS yükle → Claude vision analiz → 3 pro SVG → seç →
+         PNG indir (4x) + Drive'a yükle → Sheets kolonu
    ═══════════════════════════════════════════════════════════════ */
-const RozetManager = (() => {
+const RozetAI = (() => {
 
-  let _refBase64  = null;   // Yüklenen SS base64
-  let _refMime    = 'image/jpeg';
-  let _rozetler   = [];     // Claude'un ürettiği [{svg, baslik, aciklama}, ...]
-  let _seciliIdx  = -1;     // Seçilen rozet indexi
+  /* ── State ────────────────────────────────────────────────── */
+  let _b64   = null;   // referans görsel base64 (data: URL)
+  let _mime  = 'image/jpeg';
+  let _liste = [];     // [{svg, baslik, aciklama}, ...]
+  let _sec   = -1;     // seçili index
+  let _driveUrl = null; // Drive public URL (yüklendikten sonra)
 
-  /* ── Yardımcılar ─────────────────────────────────────────── */
-  function _apiKey() { return localStorage.getItem('claude_api_key') || localStorage.getItem('kampanyaApiKey') || ''; }
+  /* ── API key ─────────────────────────────────────────────── */
+  const _key = () => localStorage.getItem('claude_api_key') || '';
 
-  function _durum(msg, tip) {
-    const el = document.getElementById('rozetDurumMsg');
+  /* ── Durum mesajı ────────────────────────────────────────── */
+  function _durum(html, tip) {
+    const el = document.getElementById('rozetDurum');
     if (!el) return;
-    if (!msg) { el.style.display = 'none'; return; }
-    el.style.display = 'block';
-    el.style.background = tip === 'error'   ? 'rgba(239,68,68,0.1)'
-                        : tip === 'success' ? 'rgba(34,197,94,0.1)'
-                        : 'rgba(99,102,241,0.08)';
-    el.style.color = tip === 'error' ? '#f87171' : tip === 'success' ? '#4ade80' : '#a5b4fc';
-    el.style.border = '1px solid ' + (tip === 'error' ? 'rgba(239,68,68,0.2)' : tip === 'success' ? 'rgba(34,197,94,0.2)' : 'rgba(99,102,241,0.2)');
-    el.innerHTML = msg;
-  }
-
-  function _btn(txt, disabled) {
-    const b = document.getElementById('rozetAnalizeBtn');
-    if (!b) return;
-    b.textContent = txt;
-    b.disabled = disabled;
-    b.style.opacity = disabled ? '0.6' : '1';
-  }
-
-  /* ── Dosya Yükleme ──────────────────────────────────────── */
-  function handleFile(dosya) {
-    if (!dosya) return;
-    if (!dosya.type.startsWith('image/')) { _durum('⚠ Sadece görsel dosyası kabul edilir', 'error'); return; }
-    if (dosya.size > 6 * 1024 * 1024) { _durum('⚠ Dosya 6 MB\'ı geçemez', 'error'); return; }
-    _refMime = dosya.type || 'image/jpeg';
-    const reader = new FileReader();
-    reader.onload = e => {
-      _refBase64 = e.target.result; // data:image/...;base64,...
-      // Önizleme
-      const img = document.getElementById('rozetRefImg');
-      const isim = document.getElementById('rozetRefIsim');
-      const prev = document.getElementById('rozetRefPreview');
-      const lbl  = document.getElementById('rozetUploadLabel');
-      const ico  = document.getElementById('rozetUploadIcon');
-      if (img)  img.src = _refBase64;
-      if (isim) isim.textContent = dosya.name;
-      if (prev) { prev.style.display = 'flex'; }
-      if (lbl)  lbl.textContent = '✅ Görsel yüklendi — "Claude ile Analiz Et" butonuna bas';
-      if (ico)  ico.textContent = '✅';
-      _durum('Görsel hazır. "✨ Claude ile Analiz Et" butonuna bas.', 'info');
+    if (!html) { el.style.display = 'none'; return; }
+    const renkler = {
+      info:    ['rgba(99,102,241,0.08)',  'rgba(99,102,241,0.2)',  '#a5b4fc'],
+      success: ['rgba(16,185,129,0.08)',  'rgba(16,185,129,0.2)',  '#4ade80'],
+      error:   ['rgba(239,68,68,0.08)',   'rgba(239,68,68,0.2)',   '#f87171'],
     };
-    reader.readAsDataURL(dosya);
+    const [bg, br, clr] = renkler[tip] || renkler.info;
+    el.style.cssText = `display:block;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px;background:${bg};border:1px solid ${br};color:${clr}`;
+    el.innerHTML = html;
+  }
+
+  /* ── Dosya Yükleme ───────────────────────────────────────── */
+  function dosyaYukle(dosya) {
+    if (!dosya || !dosya.type.startsWith('image/')) { _durum('⚠ Sadece görsel dosyası kabul edilir.', 'error'); return; }
+    if (dosya.size > 6 * 1024 * 1024) { _durum('⚠ Dosya 6 MB\'ı geçemez.', 'error'); return; }
+    _mime = dosya.type;
+    const r = new FileReader();
+    r.onload = e => {
+      _b64 = e.target.result;
+      document.getElementById('rozetRefImg').src = _b64;
+      document.getElementById('rozetRefIsim').textContent = dosya.name;
+      document.getElementById('rozetRefOnizleme').style.display = 'flex';
+      document.getElementById('rozetUploadLabel').textContent = '✅ Görsel hazır — "Rozet Üret" butonuna bas';
+      document.getElementById('rozetUploadIkon').textContent = '✅';
+      _durum('Referans görsel yüklendi. "Rozet Üret" butonuna bas.', 'info');
+    };
+    r.readAsDataURL(dosya);
   }
 
   function gorselSil() {
-    _refBase64 = null;
-    const prev = document.getElementById('rozetRefPreview');
-    const lbl  = document.getElementById('rozetUploadLabel');
-    const ico  = document.getElementById('rozetUploadIcon');
-    const fi   = document.getElementById('rozetFileInput');
-    if (prev) prev.style.display = 'none';
-    if (lbl)  lbl.textContent = 'Rozet örneği ekran görüntüsü yükle';
-    if (ico)  ico.textContent = '🖼️';
-    if (fi)   fi.value = '';
+    _b64 = null;
+    document.getElementById('rozetRefOnizleme').style.display = 'none';
+    document.getElementById('rozetUploadLabel').textContent = 'Rozet SS yükle — Claude bu stili referans alacak';
+    document.getElementById('rozetUploadIkon').textContent = '🖼️';
+    document.getElementById('rozetFileInput').value = '';
     _durum('', '');
-    document.getElementById('rozetSonucWrap').style.display = 'none';
   }
 
-  /* ── Drag & Drop ────────────────────────────────────────── */
-  function dragOver(e) { e.preventDefault(); document.getElementById('rozetDropZone')?.classList.add('drag-over'); }
-  function dragLeave()  { document.getElementById('rozetDropZone')?.classList.remove('drag-over'); }
-  function drop(e)      { e.preventDefault(); dragLeave(); handleFile(e.dataTransfer.files[0]); }
+  function dragOver(e)  { e.preventDefault(); document.getElementById('rozetDropZone').style.borderColor = '#6366f1'; }
+  function dragLeave()  { document.getElementById('rozetDropZone').style.borderColor = 'rgba(99,102,241,0.3)'; }
+  function drop(e)      { e.preventDefault(); dragLeave(); dosyaYukle(e.dataTransfer.files[0]); }
 
-  /* ── Claude Analiz + SVG Üretim ─────────────────────────── */
-  async function analizeEt() {
-    const key = _apiKey();
-    if (!key) {
-      _durum('❌ Claude API anahtarı gerekli — AI Kampanya Asistanı bölümüne gir.', 'error');
-      return;
+  /* ── Ana Analiz + Üretim ─────────────────────────────────── */
+  async function analiz() {
+    if (!_key()) { _durum('❌ Claude API anahtarı girilmedi.', 'error'); return; }
+
+    const btn  = document.getElementById('rozetAnalizeBtn');
+    const txt  = document.getElementById('rozetAnalizTxt');
+    const ikon = document.getElementById('rozetAnalizIkon');
+    btn.disabled = true;
+    if (txt)  txt.textContent  = 'Üretiliyor...';
+    if (ikon) ikon.textContent = '⏳';
+
+    _durum(_spinner('Claude görsel analiz ediyor ve 3 profesyonel rozet üretiyor...'), 'info');
+    document.getElementById('rozetSonuclar').style.display = 'none';
+    document.getElementById('rozetBos').style.display = 'none';
+    _driveUrl = null;
+
+    const urunBilgi = (typeof rows !== 'undefined' && rows.length)
+      ? rows.slice(0, 5).map(r => `${r.marka} ${r.urun} — ${r.fiyat} TL`).join('\n')
+      : 'Market kampanyası';
+
+    const mesajIcerik = [];
+    if (_b64) {
+      mesajIcerik.push({ type: 'image', source: { type: 'base64', media_type: _mime, data: _b64.split(',')[1] } });
     }
-    if (!_refBase64) {
-      _durum('❌ Önce bir rozet SS yükle.', 'error');
-      return;
-    }
-
-    _btn('⏳ Analiz ediliyor...', true);
-    _durum('<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-block;width:12px;height:12px;border:2px solid #a5b4fc;border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite"></span> Claude görseli analiz ediyor ve 3 rozet üretiyor...</span>', 'info');
-    document.getElementById('rozetSonucWrap').style.display = 'none';
-
-    // base64 data URL → sadece data kısmı
-    const b64 = _refBase64.split(',')[1];
-    const mime = _refMime;
-
-    const prompt = `Bu görseldeki rozet/badge/etiket tasarımını analiz et. Renk paleti, geometri, tipografi stilini tam olarak kavra.
-
-AYNI ESTETIKLE ama 3 FARKLI LAYOUT'ta SVG rozet üret. Türk market kampanyası için.
-
-Ürün bilgisi: ${(typeof rows !== 'undefined' && rows.length) ? rows.slice(0,3).map(r=>r.marka+' '+r.urun+' '+r.fiyat+'TL').join(', ') : 'Market kampanyası'}
-
-KURALLAR:
-- Her SVG tam olarak width="160" height="160" viewBox="0 0 160 160" olsun (3. rozet hariç yatay olabilir)
-- Referans görseldeki renk tonlarını, şekil dilini ve tipografi ağırlığını koru
-- Türkçe büyük harf metin kullan
-- font-family="Arial Black, Impact, sans-serif" font-weight="900"
-- SVG içinde <image> veya dış kaynak kullanma, sadece shape + text
-- Her rozet farklı geometri: biri daire tabanlı, biri köşeli, biri diagonal/bayrak
-- Gerçekçi market kampanya metinleri: %İNDİRİM, ÖZEL FİYAT, KAÇIRMA vs.
-
-SADECE JSON döndür, başka hiçbir şey yazma:
-{"rozetler":[
-  {"svg":"<svg ...>...</svg>","baslik":"BAŞLIK 1","aciklama":"kısa açıklama"},
-  {"svg":"<svg ...>...</svg>","baslik":"BAŞLIK 2","aciklama":"kısa açıklama"},
-  {"svg":"<svg ...>...</svg>","baslik":"BAŞLIK 3","aciklama":"kısa açıklama"}
-]}`;
+    mesajIcerik.push({ type: 'text', text: _prompt(urunBilgi, !!_b64) });
 
     try {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': key,
+          'x-api-key': _key(),
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
           model: 'claude-opus-4-6',
-          max_tokens: 4000,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: mime, data: b64 } },
-              { type: 'text', text: prompt }
-            ]
-          }]
+          max_tokens: 8000,
+          messages: [{ role: 'user', content: mesajIcerik }]
         })
       });
 
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error?.message || `API hatası (${res.status})`);
+        const e = await res.json().catch(() => ({}));
+        throw new Error(e.error?.message || `HTTP ${res.status}`);
       }
 
       const data = await res.json();
-      const text = data.content?.[0]?.text || '';
+      const ham  = (data.content?.[0]?.text || '').replace(/```json\s*/g,'').replace(/```/g,'').trim();
+      const m    = ham.match(/\{[\s\S]*\}/);
+      if (!m) throw new Error('Yanıt parse edilemedi. Tekrar dene.');
+      const parsed = JSON.parse(m[0]);
+      if (!parsed.rozetler?.length) throw new Error('Claude rozet üretemedi.');
 
-      // JSON parse — markdown code fence varsa temizle
-      const clean = text.replace(/```json\s*/g,'').replace(/```\s*/g,'').trim();
-      const jsonMatch = clean.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('Claude yanıtı parse edilemedi. Tekrar dene.');
-      const parsed = JSON.parse(jsonMatch[0]);
-      if (!parsed.rozetler?.length) throw new Error('Rozet üretilemedi.');
+      _liste = parsed.rozetler;
+      _sec   = -1;
+      _kartlarRender();
+      _durum('✅ 3 rozet üretildi! Beğendiğini seç.', 'success');
+      document.getElementById('rozetBos').style.display = 'none';
 
-      _rozetler = parsed.rozetler;
-      _renderKartlar();
-      _durum('✅ 3 rozet üretildi! Aşağıdan beğendiğini seç.', 'success');
-
-    } catch(e) {
-      _durum('❌ ' + e.message, 'error');
+    } catch(err) {
+      _durum('❌ ' + err.message, 'error');
+      document.getElementById('rozetBos').style.display = 'flex';
     }
 
-    _btn('✨ Claude ile Analiz Et', false);
+    btn.disabled = false;
+    if (txt)  txt.textContent  = 'Rozet Üret';
+    if (ikon) ikon.textContent = '✨';
   }
 
-  /* ── 3 Kart Render ──────────────────────────────────────── */
-  function _renderKartlar() {
-    const wrap = document.getElementById('rozetKartlar');
-    const sonuc = document.getElementById('rozetSonucWrap');
-    if (!wrap || !sonuc) return;
-    sonuc.style.display = 'block';
+  /* ── Prompt ──────────────────────────────────────────────── */
+  function _prompt(urunler, refVar) {
+    return `${refVar ? 'Yüklenen görseldeki rozet/badge tasarım dilini derinlemesine analiz et:\n• Renk paleti (gradyanlar, gölgeler, kontrastlar)\n• Geometrik yapı (daire, köşe bandı, şerit, bayrak, patlama vs.)\n• Tipografi ağırlığı, hiyerarşi, boşluk kullanımı\n• Efektler (drop shadow, inner glow, bevel)\n\nBU ANALİZİ REFERANS ALARAK' : 'Aşağıdaki kampanya için'} Türk market afişi için 3 adet FARKLI profesyonel SVG rozet üret.
 
-    wrap.innerHTML = _rozetler.map((r, i) => `
-      <div onclick="RozetManager.sec(${i})" id="rz-kart-${i}"
-        style="cursor:pointer;border:2px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px 14px;
+ÜRÜNLER: ${urunler}
+
+TASARIM KALİTESİ GEREKSİNİMLERİ:
+Her rozet bir tasarım programından çıkmış gibi görünmeli:
+• <defs> içinde linearGradient, radialGradient, filter (feDropShadow, feGaussianBlur) kullan
+• Katmanlı geometri: ana şekil + vurgu şekli + metin hiyerarşisi
+• Rozet 1: Daire + çapraz dinamik şerit (badge-sticker tarzı)
+• Rozet 2: Köşeli geometrik (altıgen veya elmas) + parlak iç ışık efekti
+• Rozet 3: Modern ribbon/şerit + tipografi odaklı (büyük sayı/yüzde)
+• Her rozetin renk şeması birbirinden farklı ama tutarlı olsun
+• font-family="'Arial Black', Impact, sans-serif" font-weight="900"
+• Türkçe büyük harf: %İNDİRİM, FIRSATLAR, ÖZEL FİYAT, KAÇIRMA, SON STOK vb.
+• width="200" height="200" viewBox="0 0 200 200" (hepsi kare format)
+• SVG içinde dış kaynak/image elementi KULLANMA
+
+SADECE JSON döndür, markdown veya açıklama YOK:
+{"rozetler":[
+  {"svg":"<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"200\\" height=\\"200\\" viewBox=\\"0 0 200 200\\">...</svg>","baslik":"BAŞLIK","aciklama":"stil açıklama"},
+  {"svg":"...","baslik":"...","aciklama":"..."},
+  {"svg":"...","baslik":"...","aciklama":"..."}
+]}`;
+  }
+
+  /* ── Kartları Render ─────────────────────────────────────── */
+  function _kartlarRender() {
+    const wrap  = document.getElementById('rozetKartlar');
+    const sonuc = document.getElementById('rozetSonuclar');
+    if (!wrap) return;
+    sonuc.style.display = 'block';
+    wrap.innerHTML = _liste.map((r, i) => `
+      <div id="rz-k-${i}" onclick="RozetAI.sec(${i})"
+        style="cursor:pointer;border:2px solid rgba(255,255,255,0.07);border-radius:14px;padding:14px 12px;
                background:var(--card-bg);transition:all 0.2s;display:flex;flex-direction:column;
-               align-items:center;gap:10px;min-width:180px;max-width:240px">
-        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">
-          Seçenek ${i + 1}
-        </div>
-        <div style="background:#fff;border-radius:10px;padding:12px;display:flex;align-items:center;justify-content:center;min-height:80px">
+               align-items:center;gap:8px;min-width:160px;max-width:220px;flex:1">
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em">Seçenek ${i+1}</div>
+        <div style="background:#f8f9fc;border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:center;width:100%;box-shadow:inset 0 1px 3px rgba(0,0,0,0.06)">
           ${r.svg}
         </div>
-        <div style="font-size:11px;font-weight:600;color:var(--text2);text-align:center">${r.baslik || ''}</div>
-        <div style="font-size:10px;color:var(--text3);text-align:center;line-height:1.4">${r.aciklama || ''}</div>
-        <div id="rz-sec-badge-${i}" style="display:none;padding:4px 12px;background:rgba(99,102,241,0.2);border-radius:20px;font-size:10px;font-weight:700;color:#a5b4fc">✓ SEÇİLDİ</div>
-      </div>`
-    ).join('');
+        <div style="font-size:11px;font-weight:700;color:var(--text2);text-align:center;line-height:1.3">${r.baslik}</div>
+        <div style="font-size:10px;color:var(--text3);text-align:center;line-height:1.4">${r.aciklama}</div>
+        <div id="rz-badge-${i}" style="display:none;padding:3px 10px;background:rgba(99,102,241,0.2);border-radius:20px;font-size:10px;font-weight:700;color:#a5b4fc">✓ SEÇİLDİ</div>
+      </div>`).join('');
   }
 
-  /* ── Rozet Seç ──────────────────────────────────────────── */
+  /* ── Rozet Seç ───────────────────────────────────────────── */
   function sec(i) {
-    _seciliIdx = i;
-
-    // Kart vurgulama
-    _rozetler.forEach((_, idx) => {
-      const kart = document.getElementById(`rz-kart-${idx}`);
-      const badge = document.getElementById(`rz-sec-badge-${idx}`);
-      if (!kart) return;
-      const secili = idx === i;
-      kart.style.border = `2px solid ${secili ? '#6366f1' : 'rgba(255,255,255,0.08)'}`;
-      kart.style.background = secili ? 'rgba(99,102,241,0.08)' : 'var(--card-bg)';
-      kart.style.boxShadow = secili ? '0 0 0 4px rgba(99,102,241,0.15)' : 'none';
-      if (badge) badge.style.display = secili ? 'block' : 'none';
+    _sec = i;
+    _driveUrl = null;
+    _liste.forEach((_, idx) => {
+      const k = document.getElementById(`rz-k-${idx}`);
+      const b = document.getElementById(`rz-badge-${idx}`);
+      if (!k) return;
+      const s = idx === i;
+      k.style.border     = `2px solid ${s ? '#6366f1' : 'rgba(255,255,255,0.07)'}`;
+      k.style.background = s ? 'rgba(99,102,241,0.07)' : 'var(--card-bg)';
+      k.style.boxShadow  = s ? '0 0 0 4px rgba(99,102,241,0.12)' : 'none';
+      if (b) b.style.display = s ? 'block' : 'none';
     });
 
-    // Büyük önizleme
-    const buyuk = document.getElementById('rozetBuyukOnizleme');
-    const secWrap = document.getElementById('rozetSeciliWrap');
-    if (buyuk) buyuk.innerHTML = _rozetler[i].svg;
-    if (secWrap) secWrap.style.display = 'flex';
+    const buyuk = document.getElementById('rozetBuyuk');
+    if (buyuk) buyuk.innerHTML = _liste[i].svg;
 
-    // Mevcut kampanya rozetini de güncelle (AI Asistan paneli uyumu)
-    const rozetOnizleme = document.getElementById('rozetOnizleme');
-    if (rozetOnizleme) rozetOnizleme.innerHTML = _rozetler[i].svg;
+    const panel = document.getElementById('rozetSecimPanel');
+    if (panel) panel.style.display = 'block';
+
+    document.getElementById('rozetDriveLink').style.display = 'none';
+    document.getElementById('rozetAktarDurum').style.display = 'none';
+    const driveBtn = document.getElementById('rozetDriveBtn');
+    if (driveBtn) { driveBtn.textContent = ''; driveBtn.innerHTML = '<img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:15px;height:15px"> Drive\'a Yükle + Sheets\'e Aktar'; }
   }
 
-  /* ── Sheets'e Aktar ─────────────────────────────────────── */
-  function sheetsExport() {
-    if (_seciliIdx < 0) { _durum('❌ Önce bir rozet seç.', 'error'); return; }
-    const r = _rozetler[_seciliIdx];
-
-    // Seçili rozeti _kampanyaData'ya entegre et
-    _kampanyaData = {
-      tip: 'KAMPANYA_BASLIGI',
-      ana_baslik: r.baslik || '',
-      alt_baslik: r.aciklama || '',
-      etiket: 'ROZET',
-      slogan: r.baslik || '',
-      rozet_svg: r.svg || '',
-      rozet_idx: _seciliIdx,
-    };
-
-    const st = document.getElementById('rozetSheetsStatus');
-    if (st) { st.style.display = 'block'; st.textContent = '⏳ Sheets\'e aktarılıyor...'; }
-
-    // Mevcut exportToSheets'i kullan (createSheet _kampanyaData'yı okur)
-    exportToSheets();
-
-    setTimeout(() => {
-      if (st) st.textContent = '✅ Sheets\'e aktarıldı!';
-    }, 3000);
+  /* ── SVG → PNG base64 ────────────────────────────────────── */
+  function _svgToPng(svgEl, scale) {
+    return new Promise(res => {
+      const str = new XMLSerializer().serializeToString(svgEl);
+      const url = URL.createObjectURL(new Blob([str], { type:'image/svg+xml' }));
+      const img = new Image();
+      img.onload = () => {
+        const vb = svgEl.viewBox.baseVal;
+        const w  = (vb.width  || 200) * scale;
+        const h  = (vb.height || 200) * scale;
+        const c  = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        res(c.toDataURL('image/png'));
+      };
+      img.src = url;
+    });
   }
 
-  /* ── PNG İndir ──────────────────────────────────────────── */
-  function indir() {
-    if (_seciliIdx < 0) { _durum('❌ Önce bir rozet seç.', 'error'); return; }
-    const konteyner = document.getElementById('rozetBuyukOnizleme');
-    const svg = konteyner?.querySelector('svg');
+  /* ── PNG İndir ───────────────────────────────────────────── */
+  async function pngIndir() {
+    if (_sec < 0) { _durum('❌ Önce bir rozet seç.', 'error'); return; }
+    const svg = document.querySelector('#rozetBuyuk svg');
     if (!svg) { _durum('❌ SVG bulunamadı.', 'error'); return; }
-
-    const svgStr = new XMLSerializer().serializeToString(svg);
-    const url = URL.createObjectURL(new Blob([svgStr], { type: 'image/svg+xml' }));
-    const img = new Image();
-    img.onload = () => {
-      const scale = 4;
-      const vb = svg.viewBox.baseVal;
-      const w = (vb.width || 160) * scale, h = (vb.height || 160) * scale;
-      const cvs = document.createElement('canvas');
-      cvs.width = w; cvs.height = h;
-      const ctx = cvs.getContext('2d');
-      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
-      ctx.drawImage(img, 0, 0, w, h);
-      URL.revokeObjectURL(url);
-      const a = document.createElement('a');
-      a.href = cvs.toDataURL('image/png');
-      a.download = `rozet-${_seciliIdx + 1}.png`;
-      a.click();
-      _durum('⬇ PNG indirildi!', 'success');
-    };
-    img.src = url;
+    const dataUrl = await _svgToPng(svg, 4);
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `rozet-${_sec + 1}-kampanya.png`;
+    a.click();
+    _durum('⬇ PNG indirildi (800×800px, baskı kalitesi).', 'success');
   }
 
-  /* ── render() — geriye dönük uyumluluk ─────────────────── */
-  function render() { /* v2'de otomatik — boş tutulabilir */ }
+  /* ── Drive'a Yükle + Sheets ──────────────────────────────── */
+  async function driveYukleVeAktar() {
+    if (_sec < 0) { _durum('❌ Önce bir rozet seç.', 'error'); return; }
 
-  return { analizeEt, handleFile, gorselSil, dragOver, dragLeave, drop, sec, sheetsExport, indir, render };
+    const btn = document.getElementById('rozetDriveBtn');
+    const aktarDurum = document.getElementById('rozetAktarDurum');
+    btn.disabled = true;
+    btn.innerHTML = _spinner('Drive\'a yükleniyor...');
+    if (aktarDurum) { aktarDurum.style.display = 'block'; aktarDurum.textContent = 'Google hesabına bağlanılıyor...'; }
+
+    // 1) SVG → PNG base64
+    const svg = document.querySelector('#rozetBuyuk svg');
+    if (!svg) { _durum('❌ SVG bulunamadı.', 'error'); btn.disabled = false; return; }
+    const pngDataUrl = await _svgToPng(svg, 4);
+
+    // 2) Google OAuth token al
+    const token = await _oauthToken();
+    if (!token) {
+      _durum('❌ Google girişi başarısız.', 'error');
+      btn.disabled = false; btn.innerHTML = _sheetsIkon() + ' Drive\'a Yükle + Sheets\'e Aktar';
+      return;
+    }
+
+    // 3) Drive'a yükle (uploadImageToDrive mevcut fonksiyon)
+    if (aktarDurum) aktarDurum.textContent = 'Drive\'a yükleniyor...';
+    const zaman = new Date().toISOString().slice(0,16).replace('T','-');
+    _driveUrl = await uploadImageToDrive(token, pngDataUrl, `rozet-${_sec+1}-${zaman}.png`);
+
+    if (!_driveUrl) {
+      _durum('❌ Drive yükleme başarısız.', 'error');
+      btn.disabled = false; btn.innerHTML = _sheetsIkon() + ' Drive\'a Yükle + Sheets\'e Aktar';
+      return;
+    }
+
+    // 4) Drive linki göster
+    const linkEl = document.getElementById('rozetDriveLink');
+    const linkA  = document.getElementById('rozetDriveLinkHref');
+    linkEl.style.display = 'block';
+    linkA.href = _driveUrl;
+    linkA.textContent = _driveUrl;
+
+    // 5) _kampanyaData'ya rozet Drive URL'ini ekle
+    _kampanyaData = {
+      ..._kampanyaData,
+      tip: 'KAMPANYA_BASLIGI',
+      rozet_drive_url: _driveUrl,
+      rozet_baslik: _liste[_sec].baslik,
+      ana_baslik: _liste[_sec].baslik,
+      alt_baslik: _liste[_sec].aciklama,
+      etiket: 'ROZET',
+      slogan: _liste[_sec].baslik,
+    };
+
+    // 6) Sheets'e aktar
+    if (aktarDurum) aktarDurum.textContent = 'Sheets oluşturuluyor...';
+    await _sheetsAktar(token);
+
+    btn.disabled = false;
+    btn.innerHTML = '✅ Drive + Sheets tamamlandı';
+    if (aktarDurum) aktarDurum.style.display = 'none';
+    _durum('✅ Rozet Drive\'a yüklendi ve Sheets\'e aktarıldı! Figma\'da Drive linkini kullanabilirsin.', 'success');
+  }
+
+  /* ── Google OAuth ────────────────────────────────────────── */
+  function _oauthToken() {
+    return new Promise(res => {
+      try {
+        const client = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: r => r.error ? res(null) : res(r.access_token),
+        });
+        client.requestAccessToken();
+      } catch(e) { res(null); }
+    });
+  }
+
+  /* ── Sheets Aktar ────────────────────────────────────────── */
+  async function _sheetsAktar(token) {
+    try {
+      await createSheet(token);
+    } catch(e) {
+      console.warn('Sheets aktarım hatası:', e);
+    }
+  }
+
+  /* ── Yardımcılar ─────────────────────────────────────────── */
+  function _spinner(txt) {
+    return `<span style="display:inline-flex;align-items:center;gap:7px"><span style="display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite"></span>${txt}</span>`;
+  }
+  function _sheetsIkon() {
+    return '<img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:15px;height:15px;vertical-align:middle;margin-right:6px">';
+  }
+
+  /* ── geriye dönük uyumluluk ──────────────────────────────── */
+  const render = () => {};
+  const RozetManager = { render };
+
+  return { analiz, dosyaYukle, gorselSil, dragOver, dragLeave, drop, sec, pngIndir, driveYukleVeAktar, render };
 })();
-/* ── END ROZET MANAGER v2 ── */
-</script>
-</body>
-</html>
+
+// Geriye dönük uyumluluk — eski kodlar RozetManager'ı çağırabilir
+const RozetManager = { render: () => {} };
+/* ── END RozetAI ── */
+
