@@ -1347,6 +1347,37 @@ input[type="checkbox"] {
         <div id="rozetDurum" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px;border:1px solid transparent"></div>
 
         <!-- BOŞ DURUM -->
+        <!-- Kampanya Başlığı Girişi -->
+        <div style="margin-bottom:1rem">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">
+            Kampanya Başlığı
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="rozetKampanyaBaslik"
+              placeholder="örn: Bahar Temizlik Fırsatları, Hafta Sonu İndirimi, Yaz Kampanyası..."
+              style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:9px;
+                     padding:9px 14px;font-size:13px;color:var(--text);font-family:'Inter',sans-serif;
+                     outline:none;transition:border-color 0.15s"
+              onfocus="this.style.borderColor='rgba(99,102,241,0.6)'"
+              onblur="this.style.borderColor='var(--input-border)'"
+              onkeydown="if(event.key==='Enter') RozetAI.analiz()">
+            <!-- Öneri etiketleri -->
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px" id="rozetOneriBar">
+            <span style="font-size:11px;color:var(--text3);align-self:center">Hızlı seç:</span>
+            <button onclick="RozetAI.baslikSec(this)" data-v="Bahar Fırsatları"
+              style="padding:4px 10px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:20px;color:#a5b4fc;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s">🌸 Bahar Fırsatları</button>
+            <button onclick="RozetAI.baslikSec(this)" data-v="Hafta Sonu İndirimi"
+              style="padding:4px 10px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:20px;color:#a5b4fc;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s">🔥 Hafta Sonu İndirimi</button>
+            <button onclick="RozetAI.baslikSec(this)" data-v="Süper Fiyat"
+              style="padding:4px 10px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:20px;color:#a5b4fc;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s">💥 Süper Fiyat</button>
+            <button onclick="RozetAI.baslikSec(this)" data-v="Kaçırma!"
+              style="padding:4px 10px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:20px;color:#a5b4fc;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s">⚡ Kaçırma!</button>
+            <button onclick="RozetAI.baslikSec(this)" data-v="Özel Teklif"
+              style="padding:4px 10px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:20px;color:#a5b4fc;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s">🎯 Özel Teklif</button>
+          </div>
+        </div>
+
         <div id="rozetBos" style="display:flex;align-items:center;gap:12px;padding:16px 0 4px">
           <div style="width:36px;height:36px;background:rgba(99,102,241,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎖</div>
           <div>
@@ -4229,23 +4260,43 @@ const RozetAI = (() => {
     if (ikon) ikon.textContent = '✨';
   }
 
+  /* ── Hızlı başlık seç ───────────────────────────────────── */
+  function baslikSec(btn) {
+    const inp = document.getElementById('rozetKampanyaBaslik');
+    if (inp) inp.value = btn.dataset.v;
+    // Aktif stil
+    document.querySelectorAll('#rozetOneriBar button').forEach(b => {
+      b.style.background = 'rgba(99,102,241,0.08)';
+      b.style.borderColor = 'rgba(99,102,241,0.2)';
+      b.style.color = '#a5b4fc';
+    });
+    btn.style.background  = 'rgba(99,102,241,0.25)';
+    btn.style.borderColor = '#6366f1';
+    btn.style.color       = '#fff';
+  }
+
   /* ── Tek Rozet Üretici ───────────────────────────────────── */
   async function _rozetUret(sistemPrompt, urunBilgi, no, tip, tarif) {
+    const baslik = (document.getElementById('rozetKampanyaBaslik')?.value?.trim()) || 'Kampanya Fırsatları';
     const svgRaw = await _api([{ type: 'text', text:
-      'ÜRÜNLER: ' + urunBilgi + '\n\n' +
+      'KAMPANYA BAŞLIĞI: ' + baslik + '\n' +
+      'ÜRÜN KATEGORİSİ BİLGİSİ: ' + urunBilgi + '\n\n' +
       'ROZET TİPİ: ' + tip + '\n' +
       'TASARIM TALİMATI: ' + tarif + '\n\n' +
+      'METİN KURALI: Rozet metni olarak SADECE kampanya başlığını ve genel sloganları kullan.\n' +
+      'Ürün adı, marka adı veya fiyat BİLGİSİ YAZMA. Örnekler:\n' +
+      '✓ "' + baslik.toUpperCase() + '" · "%50\'YE VARAN" · "KAÇIRMA!" · "ÖZEL FİYAT"\n' +
+      '✗ "MR MUSCLE 69,95 TL" · "KIRÇÖZ BANYO 750ML" (bunları YAZMA)\n\n' +
       'ZORUNLU TEKNİK KURALLAR:\n' +
       '• viewBox="0 0 300 300" width="300" height="300"\n' +
       '• xmlns="http://www.w3.org/2000/svg"\n' +
       '• <defs> içinde linearGradient veya radialGradient (ZORUNLU)\n' +
-      '• <filter> içinde feDropShadow (stdDeviation 3-6, güçlü gölge) (ZORUNLU)\n' +
-      '• Renkler: canlı, yüksek kontrast, vibrant — soluk renk YASAK\n' +
-      '• font-family=\"Arial Black, Impact, sans-serif\" font-weight=\"900\"\n' +
-      '• Metin: Türkçe BÜYÜK HARF, ürüne uygun\n' +
-      '• Katmanlı yapı: en az 4 farklı şekil/katman\n' +
+      '• <filter> içinde feDropShadow stdDeviation="4" (ZORUNLU)\n' +
+      '• Renkler: canlı, yüksek kontrast, vibrant\n' +
+      '• font-family="Arial Black, Impact, sans-serif" font-weight="900"\n' +
+      '• Katmanlı yapı: en az 4 şekil/katman\n' +
       '• Dış kaynak/image/script KULLANMA\n\n' +
-      'SADECE SVG KODU döndür. <svg ile başla </svg> ile bit. Başka hiçbir şey yazma.'
+      'SADECE SVG KODU döndür. <svg ile başla </svg> ile bit.'
     }], 1500, sistemPrompt);
 
     const m = svgRaw.match(/<svg[\s\S]*?<\/svg>/i);
@@ -4413,7 +4464,7 @@ const RozetAI = (() => {
   const render = () => {};
   const RozetManager = { render };
 
-  return { analiz, dosyaYukle, gorselSil, dragOver, dragLeave, drop, sec, pngIndir, driveYukleVeAktar, render };
+  return { analiz, dosyaYukle, gorselSil, dragOver, dragLeave, drop, sec, pngIndir, driveYukleVeAktar, render, baslikSec };
 })();
 
 // Geriye dönük uyumluluk — eski kodlar RozetManager'ı çağırabilir
