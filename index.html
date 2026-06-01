@@ -4242,26 +4242,32 @@ const RozetAI = (() => {
       _durum(_spinner('Adım 2/2 — 3 rozet paralel üretiliyor...'), 'info');
 
       const sistemPrompt = analizMetni
-        ? 'Sen bir senior SVG tasarım mühendisisin. Türk market kampanyaları için Photoshop/Illustrator kalitesinde rozet üretiyorsun.\n\nREFERANS GÖRSELİN ANALİZİ:\n' + analizMetni + '\n\nBu analizi özümse ve tasarım kararlarını SVG ye tam olarak yansıt.'
-        : 'Sen bir senior SVG tasarım mühendisisin. Türk market kampanyaları için Photoshop/Illustrator kalitesinde rozet üretiyorsun. Vibrant renkler, gerçekçi gölgeler, profesyonel tipografi hiyerarşisi kullan.';
+        ? 'Sen profesyonel bir HTML/CSS rozet tasarımcısısın. Türk market kampanyaları için Photoshop kalitesinde rozet üretiyorsun.\n\nREFERANS GÖRSELİN ANALİZİ:\n' + analizMetni + '\n\nBu analizi özümse ve renk/geometri kararlarını CSS\'e yansıt.'
+        : 'Sen profesyonel bir HTML/CSS rozet tasarımcısısın. Türk market kampanyaları için Photoshop kalitesinde rozet üretiyorsun. Vibrant renkler, CSS gradient, box-shadow efektleri kullan.';
 
-      const [svg1, svg2, svg3] = await Promise.all([
+      const sonuclar = await Promise.allSettled([
         _rozetUret(sistemPrompt, urunBilgi, 1, 'DAİRE STİCKER',
-          'Klasik market badge sticker. Tam dolu daire. Merkezi parlak radialGradient. Dışında noktalı/dashed daire stroke. Çapraz diagonal şerit üstte. Büyük fiyat/yüzde metni. Küçük marka etiketi altta. Güçlü drop shadow.'),
+          'Tam dolu daire. CSS radial-gradient merkezi parlak. Dışında dashed border. Çapraz diagonal renkli şerit. Büyük kampanya metni. Güçlü box-shadow.'),
         _rozetUret(sistemPrompt, urunBilgi, 2, 'STARBURST PATLAMA',
-          '8 veya 10 köşeli starburst/patlama yıldızı. İçten dışa gradient. İç halkada ince beyaz stroke. Merkeze yakın parlama efekti. Ana metin ortada çok büyük. Alt metin küçük. Dinamik ve dikkat çekici.'),
+          'CSS clip-path polygon ile 8 köşeli yıldız/patlama formu. İçten dışa gradient. Parlak iç halo. Ana metin çok büyük ortada. Dinamik ve dikkat çekici.'),
         _rozetUret(sistemPrompt, urunBilgi, 3, 'MODERN RİBBON',
-          'Dikdörtgen kart formatı. Üstte renkli header ribbon. Ortada büyük fiyat. Altta CTA pill butonu. Katmanlı gölgeler. Temiz arka plan. Premium market afişi karakteri.'),
+          'Dikdörtgen kart. Üstte gradient renkli header şeridi. Ortada büyük kampanya başlığı. Altta pill CTA butonu. Katmanlı box-shadow. Premium görünüm.'),
       ]);
 
-      _liste = [
-        { html: svg1, baslik: 'DAİRE STİCKER' },
-        { html: svg2, baslik: 'STARBURST PATLAMA' },
-        { html: svg3, baslik: 'MODERN RİBBON' },
-      ];
+      _liste = [];
+      const isimler = ['DAİRE STİCKER', 'STARBURST PATLAMA', 'MODERN RİBBON'];
+      sonuclar.forEach(function(s, i) {
+        if (s.status === 'fulfilled') {
+          _liste.push({ html: s.value, baslik: isimler[i] });
+        } else {
+          console.warn('Rozet ' + (i+1) + ' başarısız:', s.reason);
+        }
+      });
+
+      if (_liste.length === 0) throw new Error('Hiçbir rozet üretilemedi. Tekrar dene.');
 
       _kartlarRender();
-      _durum('✅ 3 profesyonel rozet hazır! Beğendiğini seç.', 'success');
+      _durum('✅ ' + _liste.length + ' rozet hazır! Beğendiğini seç.', 'success');
 
     } catch(err) {
       _durum('❌ ' + err.message, 'error');
