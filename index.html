@@ -1905,12 +1905,12 @@ async function kampanyaUret() {
   const btn = document.getElementById('kampanyaUretBtn');
   btn.textContent = '⏳ Üretiliyor...';
   btn.disabled = true;
-  showKampanyaStatus('','');
+  showKampanyaStatus('', '');
 
   const urunler = rows.slice(0,15).map(r => r.marka + ' - ' + r.urun + ' (' + r.fiyat + ' TL)').join('\n');
   const tarih = document.getElementById('tarihText')?.value || '';
-
-  const prompt = 'Sen bir Türk market kampanya tasarımcısısın. Ürünler:\n' + urunler + '\nTarih: ' + tarih + '\n\nKategoriyi algıla, 3 farklı SVG kampanya rozeti üret. Her SVG 220x100px, kalın/cesur/Photoshop rozeti gibi - katmanlı renkler, büyük bold yazılar.\n\nSadece JSON yanıt ver:\n{"kategori":"...","rozetler":[{"svg":"<svg width=\"220\" height=\"100\">...</svg>","baslik":"ANA BASLIK","slogan":"kısa slogan"},{"svg":"...","baslik":"...","slogan":"..."},{"svg":"...","baslik":"...","slogan":"..."}]}\n\nSVG kuralları: font-family Arial Black, font-weight 900, Türkçe büyük harf, her rozet farklı renk (kırmızı/sarı, mor/turuncu, mavi/beyaz), farklı layout.';
+  const sirket = companyProfile?.name || '';
+  const clr = companyProfile?.color || '#e63030';
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1923,8 +1923,24 @@ async function kampanyaUret() {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2500,
-        messages: [{ role: 'user', content: prompt }]
+        max_tokens: 3000,
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: 'image/jpeg',
+                data:  + b64 + 
+              }
+            },
+            {
+              type: 'text',
+              text: 'Bu görseldeki rozet tasarım stilini incele: katmanlı renkler, pill şekiller, bold/impact tipografi, geometrik kesimler.\n\nAşağıdaki Türk market kampanyası için AYNI TARZDA 3 farklı SVG rozet üret.\n\nÜrünler:\n' + urunler + '\nTarih: ' + tarih + '\nMarka: ' + sirket + '\n\nSadece JSON döndür:\n{"kategori":"...","rozetler":[{"svg":"<SVG_KODU>","baslik":"ANA BASLIK","slogan":"slogan"},{"svg":"<SVG_KODU>","baslik":"...","slogan":"..."},{"svg":"<SVG_KODU>","baslik":"...","slogan":"..."}]}\n\nSVG kuralları:\n- width=\"240\" height=\"110\"\n- font-family: Impact, Arial Black\n- Referans görseldeki gibi katmanlı pill ve dikdörtgen şekiller\n- Kalın renkler: turuncu/mor, kırmızı/sarı, mavi/turuncu gibi kombinasyonlar\n- Her rozet tamamen farklı layout\n- Tüm yazılar Türkçe büyük harf\n- viewBox="0 0 240 110" ekle'
+            }
+          ]
+        }]
       })
     });
 
@@ -1937,23 +1953,34 @@ async function kampanyaUret() {
     const text = data.content?.[0]?.text || '';
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) throw new Error('Yanıt parse edilemedi. Tekrar dene.');
-    const parsed = JSON.parse(match[0]);
-    if (!parsed.rozetler?.length) throw new Error('Rozet üretilemedi. Tekrar dene.');
+    
+    let parsed;
+    try { parsed = JSON.parse(match[0]); }
+    catch(e) { throw new Error('JSON parse hatası. Tekrar dene.'); }
+    
+    if (!parsed.rozetler?.length) throw new Error('Rozet üretilemedi.');
 
     _rozetler = parsed.rozetler;
     _rozetSec = 0;
 
     const altDiv = document.getElementById('rozetAlternatifler');
     if (altDiv) {
-      altDiv.innerHTML = parsed.rozetler.map((r, i) => '<div onclick="rozetSec(' + i + ')" data-idx="' + i + '" class="rozet-alt" style="cursor:pointer;border:2px solid ' + (i===0?'#6366f1':'rgba(255,255,255,0.08)') + ';border-radius:12px;padding:12px;background:' + (i===0?'rgba(99,102,241,0.08)':'var(--card-bg)') + ';transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:6px"><div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Seçenek ' + (i+1) + '</div>' + r.svg + '<div style="font-size:11px;color:var(--text3);text-align:center;max-width:200px;line-height:1.4">' + r.slogan + '</div></div>').join('');
+      altDiv.innerHTML = parsed.rozetler.map((r, i) => {
+        const active = i === 0;
+        return '<div onclick="rozetSec(' + i + ')" data-idx="' + i + '" class="rozet-alt" style="cursor:pointer;border:2px solid ' + (active ? '#6366f1' : 'rgba(255,255,255,0.08)') + ';border-radius:12px;padding:14px;background:' + (active ? 'rgba(99,102,241,0.08)' : 'var(--card-bg)') + ';transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:200px">' +
+          '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Seçenek ' + (i+1) + '</div>' +
+          r.svg +
+          '<div style="font-size:11px;color:var(--text3);text-align:center;max-width:220px;line-height:1.4">' + r.slogan + '</div>' +
+          '</div>';
+      }).join('');
     }
 
     rozetSec(0);
-    showKampanyaStatus('✅ ' + (parsed.kategori || '') + ' kategorisi algılandı.', 'success');
+    showKampanyaStatus('✅ ' + (parsed.kategori || '') + ' kategorisi algılandı. Bir rozet seç veya düzenle.', 'success');
     document.getElementById('kampanyaUretildi').style.display = 'block';
     document.getElementById('asistanEmpty').style.display = 'none';
-    document.getElementById('kampanyaExportBtn') && (document.getElementById('kampanyaExportBtn').style.display = 'flex');
-    setTimeout(() => document.getElementById('kampanyaUretildi')?.scrollIntoView({behavior:'smooth',block:'nearest'}), 300);
+    if (document.getElementById('kampanyaExportBtn')) document.getElementById('kampanyaExportBtn').style.display = 'flex';
+    setTimeout(() => document.getElementById('kampanyaUretildi')?.scrollIntoView({behavior:'smooth', block:'nearest'}), 300);
 
   } catch(e) {
     showKampanyaStatus('❌ ' + e.message, 'error');
