@@ -2589,6 +2589,30 @@ async function createSheet(token) {
   const pad = n => String(n).padStart(2,'0');
   const zaman = pad(now.getDate())+'.'+pad(now.getMonth()+1)+'.'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes());
   const sheetTitle = 'Kampanya ' + tarih + ' - ' + zaman;
+
+  // ── Rozet PNG varsa Drive'a yükle (token zaten burada hazır) ──
+  if (_kampanyaData?.rozet_png_b64 && !_kampanyaData?.rozet_drive_url) {
+    try {
+      const rozetUrl = await uploadImageToDrive(token, _kampanyaData.rozet_png_b64, `rozet-${zaman}.png`);
+      if (rozetUrl) {
+        _kampanyaData.rozet_drive_url = rozetUrl;
+        // Rozet AI panelindeki Drive link kutusunu güncelle
+        const linkEl = document.getElementById('rozetDriveLink');
+        const linkA  = document.getElementById('rozetDriveLinkHref');
+        if (linkEl) linkEl.style.display = 'block';
+        if (linkA)  { linkA.href = rozetUrl; linkA.textContent = rozetUrl; }
+        const durumEl = document.getElementById('rozetDurum');
+        if (durumEl) {
+          durumEl.style.display = 'block';
+          durumEl.style.cssText = 'display:block;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:13px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:#4ade80';
+          durumEl.innerHTML = '✅ Rozet Drive\'a yüklendi! Figma\'da bu linki kullanabilirsin.';
+        }
+      }
+    } catch(e) { console.warn('Rozet Drive yükleme hatası:', e); }
+  }
+  // ── Rozet PNG base64'ü Sheets'e yazmıyoruz (çok büyük) ──
+  if (_kampanyaData?.rozet_png_b64) delete _kampanyaData.rozet_png_b64;
+
   const createRes = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
     method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ properties: { title: sheetTitle } })
@@ -3510,12 +3534,26 @@ async function afisTopluIndir() {
 // ── SUPABASE AUTH ──────────────────────────────────────────────
 const SUPABASE_URL = 'https://qjouilkvtqnmptgeawoj.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqb3VpbGt2dHFubXB0Z2Vhd29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MzcyMTUsImV4cCI6MjA5NTIxMzIxNX0.4gYcpcLu8t9HwcWzFQlqWMzgJBIKaW38bbpuU4uB108';
-const _supa = (window.supabase || window.Supabase).createClient(SUPABASE_URL, SUPABASE_ANON);
+let _supa = null;
+try {
+  const _supaLib = window.supabase || window.Supabase || window.supabaseJs;
+  if (_supaLib?.createClient) {
+    _supa = _supaLib.createClient(SUPABASE_URL, SUPABASE_ANON);
+  } else {
+    console.warn('Supabase global bulunamadı. window objeleri:', Object.keys(window).filter(k=>k.toLowerCase().includes('supa')));
+  }
+} catch(e) { console.warn('Supabase init hatası:', e); }
 
 async function signInWithGoogle() {
   const btn = document.getElementById('googleLoginBtn');
   const btnText = document.getElementById('googleBtnText');
   const errorDiv = document.getElementById('loginError');
+
+  // Supabase yüklenmediyse
+  if (!_supa) {
+    if (errorDiv) { errorDiv.style.display = 'block'; errorDiv.innerHTML = '⚠️ Supabase kütüphanesi yüklenemedi. Sayfayı yenileyip tekrar dene.'; }
+    return;
+  }
 
   // file:// protokol kontrolü
   if (window.location.protocol === 'file:') {
@@ -4308,85 +4346,35 @@ SADECE JSON döndür, markdown veya açıklama YOK:
     if (_sec < 0) { _durum('❌ Önce bir rozet seç.', 'error'); return; }
 
     const btn = document.getElementById('rozetDriveBtn');
-    const aktarDurum = document.getElementById('rozetAktarDurum');
     btn.disabled = true;
-    btn.innerHTML = _spinner('Drive\'a yükleniyor...');
-    if (aktarDurum) { aktarDurum.style.display = 'block'; aktarDurum.textContent = 'Google hesabına bağlanılıyor...'; }
+    btn.innerHTML = _spinner('Hazırlanıyor...');
 
     // 1) SVG → PNG base64
     const svg = document.querySelector('#rozetBuyuk svg');
     if (!svg) { _durum('❌ SVG bulunamadı.', 'error'); btn.disabled = false; return; }
     const pngDataUrl = await _svgToPng(svg, 4);
 
-    // 2) Google OAuth token al
-    const token = await _oauthToken();
-    if (!token) {
-      _durum('❌ Google girişi başarısız.', 'error');
-      btn.disabled = false; btn.innerHTML = _sheetsIkon() + ' Drive\'a Yükle + Sheets\'e Aktar';
-      return;
-    }
-
-    // 3) Drive'a yükle (uploadImageToDrive mevcut fonksiyon)
-    if (aktarDurum) aktarDurum.textContent = 'Drive\'a yükleniyor...';
-    const zaman = new Date().toISOString().slice(0,16).replace('T','-');
-    _driveUrl = await uploadImageToDrive(token, pngDataUrl, `rozet-${_sec+1}-${zaman}.png`);
-
-    if (!_driveUrl) {
-      _durum('❌ Drive yükleme başarısız.', 'error');
-      btn.disabled = false; btn.innerHTML = _sheetsIkon() + ' Drive\'a Yükle + Sheets\'e Aktar';
-      return;
-    }
-
-    // 4) Drive linki göster
-    const linkEl = document.getElementById('rozetDriveLink');
-    const linkA  = document.getElementById('rozetDriveLinkHref');
-    linkEl.style.display = 'block';
-    linkA.href = _driveUrl;
-    linkA.textContent = _driveUrl;
-
-    // 5) _kampanyaData'ya rozet Drive URL'ini ekle
+    // 2) _kampanyaData'ya rozet bilgilerini ekle
+    //    (Drive URL'i createSheet içinde accessToken hazır olunca uploadImageToDrive ile set edilecek)
     _kampanyaData = {
-      ..._kampanyaData,
+      ...(_kampanyaData || {}),
       tip: 'KAMPANYA_BASLIGI',
-      rozet_drive_url: _driveUrl,
-      rozet_baslik: _liste[_sec].baslik,
-      ana_baslik: _liste[_sec].baslik,
-      alt_baslik: _liste[_sec].aciklama,
-      etiket: 'ROZET',
-      slogan: _liste[_sec].baslik,
+      rozet_png_b64: pngDataUrl,           // createSheet okuyacak
+      rozet_baslik:  _liste[_sec].baslik,
+      ana_baslik:    _liste[_sec].baslik,
+      alt_baslik:    _liste[_sec].aciklama,
+      etiket:        'ROZET',
+      slogan:        _liste[_sec].baslik,
+      rozet_drive_url: '',                  // createSheet doldurur
     };
 
-    // 6) Sheets'e aktar
-    if (aktarDurum) aktarDurum.textContent = 'Sheets oluşturuluyor...';
-    await _sheetsAktar(token);
+    // 3) Mevcut exportToSheets'i çağır — Google auth orası halleder
+    //    createSheet içinde rozet_png_b64 varsa Drive'a yükleyecek
+    exportToSheets();
 
     btn.disabled = false;
-    btn.innerHTML = '✅ Drive + Sheets tamamlandı';
-    if (aktarDurum) aktarDurum.style.display = 'none';
-    _durum('✅ Rozet Drive\'a yüklendi ve Sheets\'e aktarıldı! Figma\'da Drive linkini kullanabilirsin.', 'success');
-  }
-
-  /* ── Google OAuth ────────────────────────────────────────── */
-  function _oauthToken() {
-    return new Promise(res => {
-      try {
-        const client = google.accounts.oauth2.initTokenClient({
-          client_id: CLIENT_ID,
-          scope: SCOPES,
-          callback: r => r.error ? res(null) : res(r.access_token),
-        });
-        client.requestAccessToken();
-      } catch(e) { res(null); }
-    });
-  }
-
-  /* ── Sheets Aktar ────────────────────────────────────────── */
-  async function _sheetsAktar(token) {
-    try {
-      await createSheet(token);
-    } catch(e) {
-      console.warn('Sheets aktarım hatası:', e);
-    }
+    btn.innerHTML = _sheetsIkon() + ' Drive\'a Yükle + Sheets\'e Aktar';
+    _durum('⏳ Google hesabına bağlanılıyor... (mevcut pencereden giriş yap)', 'info');
   }
 
   /* ── Yardımcılar ─────────────────────────────────────────── */
