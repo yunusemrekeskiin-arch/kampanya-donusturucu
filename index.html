@@ -4301,16 +4301,18 @@ const RozetAI = (() => {
       '✓ "' + baslik.toUpperCase() + '" · "%50\'YE VARAN" · "KAÇIRMA!" · "ÖZEL FİYAT"\n' +
       '✗ "MR MUSCLE 69,95 TL" · "KIRÇÖZ BANYO 750ML" (bunları YAZMA)\n\n' +
       'ZORUNLU TEKNİK KURALLAR:\n' +
-      '• viewBox="0 0 300 300" width="300" height="300"\n' +
+      '• viewBox="0 0 200 200" width="200" height="200" — KÜÇÜK CANVAS, KISA KOD\n' +
       '• xmlns="http://www.w3.org/2000/svg"\n' +
-      '• <defs> içinde linearGradient veya radialGradient (ZORUNLU)\n' +
-      '• <filter> içinde feDropShadow stdDeviation="4" (ZORUNLU)\n' +
+      '• <defs> içinde MAX 2 gradient + 1 filter — fazlası YASAK\n' +
+      '• Yorum satırı (<!-- -->) YAZMA — token israfı\n' +
+      '• feDropShadow stdDeviation="3" (ZORUNLU, tek filter yeterli)\n' +
       '• Renkler: canlı, yüksek kontrast, vibrant\n' +
       '• font-family="Arial Black, Impact, sans-serif" font-weight="900"\n' +
-      '• Katmanlı yapı: en az 4 şekil/katman\n' +
-      '• Dış kaynak/image/script KULLANMA\n\n' +
+      '• Katmanlı yapı: en az 3 şekil — fazla şekil YAZMA\n' +
+      '• Dış kaynak/image/script KULLANMA\n' +
+      '• Toplam SVG kodu 600 token\'ı geçmesin\n\n' +
       'SADECE SVG KODU döndür. <svg ile başla </svg> ile bit.'
-    }], 2000, sistemPrompt);
+    }], 1500, sistemPrompt);
 
     // Önce markdown fence'i temizle, sonra SVG'yi çıkar
     const temiz = svgRaw
@@ -4323,9 +4325,19 @@ const RozetAI = (() => {
       const onizleme = svgRaw.slice(0, 200).replace(/</g,'&lt;');
       throw new Error('Rozet ' + no + ' SVG parse hatası. Model yanıtı: "' + onizleme + '..."');
     }
-    // </svg> yoksa ekle
     let svg = m[0];
-    if (!svg.match(/<\/svg>\s*$/i)) svg = svg + '</svg>';
+    // Yarıda kesildiyse açık tag'leri kapat
+    if (!svg.match(/<\/svg>\s*$/i)) {
+      // Açık kalan <text>, <g>, <defs> gibi tag'leri kapat
+      const openTags = [];
+      const tagMatches = svg.matchAll(/<(\w+)(?:\s[^>]*)?>(?![\s\S]*<\/\1>)/g);
+      for (const t of tagMatches) {
+        if (!['circle','rect','line','path','polygon','polyline','ellipse','use','image','stop','animate'].includes(t[1])) {
+          openTags.unshift('</' + t[1] + '>');
+        }
+      }
+      svg = svg + openTags.join('') + '</svg>';
+    }
     return svg;
   }
 
@@ -4374,7 +4386,7 @@ const RozetAI = (() => {
         '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em">' + r.baslik + '</div>' +
         '<iframe id="rz-iframe-' + i + '" ' +
         'srcdoc="<!DOCTYPE html><html><head><style>*{margin:0;padding:0;overflow:hidden;background:#fff}</style></head><body>' + safeSvg + '</body></html>" ' +
-        'style="width:300px;height:300px;border:none;border-radius:10px;background:#f5f5f5;pointer-events:none" ' +
+        'style="width:200px;height:200px;border:none;border-radius:10px;background:#f5f5f5;pointer-events:none" ' +
         'sandbox="allow-same-origin" scrolling="no"></iframe>' +
         '<div id="rz-badge-' + i + '" style="display:none;padding:4px 12px;background:rgba(99,102,241,0.2);border-radius:20px;font-size:10px;font-weight:700;color:#a5b4fc">✓ SEÇİLDİ</div>' +
         '</div>';
@@ -4398,7 +4410,7 @@ const RozetAI = (() => {
     var buyuk = document.getElementById('rozetBuyuk');
     if (buyuk) {
       var safeSvg = _liste[i].svg.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-      buyuk.innerHTML = '<iframe srcdoc="<!DOCTYPE html><html><head><style>*{margin:0;padding:0;overflow:hidden;background:#fff}</style></head><body>' + safeSvg + '</body></html>" style="width:300px;height:300px;border:none;border-radius:0" sandbox="allow-same-origin" scrolling="no"></iframe>';
+      buyuk.innerHTML = '<iframe srcdoc="<!DOCTYPE html><html><head><style>*{margin:0;padding:0;overflow:hidden;background:#fff}</style></head><body>' + safeSvg + '</body></html>" style="width:200px;height:200px;border:none;border-radius:0" sandbox="allow-same-origin" scrolling="no"></iframe>';
     }
     var panel = document.getElementById('rozetSecimPanel');
     if (panel) panel.style.display = 'block';
