@@ -4318,12 +4318,15 @@ const RozetAI = (() => {
       .replace(/```xml\s*/gi, '')
       .replace(/```\s*/g, '')
       .trim();
-    const m = temiz.match(/<svg[\s\S]*<\/svg>/i);
+    const m = temiz.match(/<svg[\s\S]*/i);
     if (!m) {
       const onizleme = svgRaw.slice(0, 200).replace(/</g,'&lt;');
       throw new Error('Rozet ' + no + ' SVG parse hatası. Model yanıtı: "' + onizleme + '..."');
     }
-    return m[0];
+    // </svg> yoksa ekle
+    let svg = m[0];
+    if (!svg.match(/<\/svg>\s*$/i)) svg = svg + '</svg>';
+    return svg;
   }
 
   /* ── API çağrı yardımcısı ────────────────────────────────── */
