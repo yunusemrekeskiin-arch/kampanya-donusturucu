@@ -4318,9 +4318,8 @@ const RozetAI = (() => {
            || svgRaw.match(/```\s*(<svg[\s\S]*<\/svg>)\s*```/i);
 
     if (!m) {
-      // Ne döndüğünü console'a yaz, sonra hata fırlat
-      console.error('Rozet ' + no + ' ham yanıt:', svgRaw.slice(0, 500));
-      throw new Error('Rozet ' + no + ' üretilemedi — model SVG yerine metin döndürdü. Tekrar dene.');
+      const onizleme = svgRaw.slice(0, 200).replace(/</g,'&lt;');
+      throw new Error('Rozet ' + no + ' SVG parse hatası. Model yanıtı: "' + onizleme + '..."');
     }
     return m[1] || m[0];
   }
