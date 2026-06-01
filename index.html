@@ -4255,9 +4255,9 @@ const RozetAI = (() => {
       ]);
 
       _liste = [
-        { svg: svg1, baslik: 'DAİRE STİCKER' },
-        { svg: svg2, baslik: 'STARBURST PATLAMA' },
-        { svg: svg3, baslik: 'MODERN RİBBON' },
+        { html: svg1, baslik: 'DAİRE STİCKER' },
+        { html: svg2, baslik: 'STARBURST PATLAMA' },
+        { html: svg3, baslik: 'MODERN RİBBON' },
       ];
 
       _kartlarRender();
@@ -4288,57 +4288,31 @@ const RozetAI = (() => {
     btn.style.color       = '#fff';
   }
 
-  /* ── Tek Rozet Üretici ───────────────────────────────────── */
+  /* ── Tek Rozet Üretici (HTML+CSS) ───────────────────────── */
   async function _rozetUret(sistemPrompt, urunBilgi, no, tip, tarif) {
     const baslik = (document.getElementById('rozetKampanyaBaslik')?.value?.trim()) || 'Kampanya Fırsatları';
-    const svgRaw = await _api([{ type: 'text', text:
+    const ham = await _api([{ type: 'text', text:
       'KAMPANYA BAŞLIĞI: ' + baslik + '\n' +
-      'ÜRÜN KATEGORİSİ BİLGİSİ: ' + urunBilgi + '\n\n' +
+      'ÜRÜN KATEGORİSİ: ' + urunBilgi + '\n\n' +
       'ROZET TİPİ: ' + tip + '\n' +
-      'TASARIM TALİMATI: ' + tarif + '\n\n' +
-      'METİN KURALI: Rozet metni olarak SADECE kampanya başlığını ve genel sloganları kullan.\n' +
-      'Ürün adı, marka adı veya fiyat BİLGİSİ YAZMA. Örnekler:\n' +
-      '✓ "' + baslik.toUpperCase() + '" · "%50\'YE VARAN" · "KAÇIRMA!" · "ÖZEL FİYAT"\n' +
-      '✗ "MR MUSCLE 69,95 TL" · "KIRÇÖZ BANYO 750ML" (bunları YAZMA)\n\n' +
-      'ZORUNLU TEKNİK KURALLAR:\n' +
-      '• viewBox="0 0 200 200" width="200" height="200" — KÜÇÜK CANVAS, KISA KOD\n' +
-      '• xmlns="http://www.w3.org/2000/svg"\n' +
-      '• <defs> içinde MAX 2 gradient + 1 filter — fazlası YASAK\n' +
-      '• Yorum satırı (<!-- -->) YAZMA — token israfı\n' +
-      '• feDropShadow stdDeviation="3" (ZORUNLU, tek filter yeterli)\n' +
-      '• Renkler: canlı, yüksek kontrast, vibrant\n' +
-      '• font-family="Arial Black, Impact, sans-serif" font-weight="900"\n' +
-      '• Katmanlı yapı: en az 3 şekil — fazla şekil YAZMA\n' +
-      '• Dış kaynak/image/script KULLANMA\n' +
-      '• Toplam SVG kodu 600 token\'ı geçmesin\n\n' +
-      'SADECE SVG KODU döndür. <svg ile başla </svg> ile bit.'
-    }], 1500, sistemPrompt);
+      'TASARIM: ' + tarif + '\n\n' +
+      'KURALLAR:\n' +
+      '• Sadece kampanya başlığı metni kullan, ürün adı/fiyat YAZMA\n' +
+      '• 200×200px kare div, inline style ile\n' +
+      '• CSS gradient, box-shadow, border-radius kullan — zengin görsel efektler\n' +
+      '• font-family: Arial Black, Impact, sans-serif; font-weight: 900\n' +
+      '• Türkçe büyük harf metinler\n' +
+      '• Vibrant, yüksek kontrastlı renkler\n' +
+      '• Dış kaynak, script, image KULLANMA\n\n' +
+      'SADECE tek bir <div> döndür. Başka hiçbir şey yazma.\n' +
+      'Format: <div style="width:200px;height:200px;...">...</div>'
+    }], 1200, sistemPrompt);
 
-    // Önce markdown fence'i temizle, sonra SVG'yi çıkar
-    const temiz = svgRaw
-      .replace(/```svg\s*/gi, '')
-      .replace(/```xml\s*/gi, '')
-      .replace(/```\s*/g, '')
-      .trim();
-    const m = temiz.match(/<svg[\s\S]*/i);
-    if (!m) {
-      const onizleme = svgRaw.slice(0, 200).replace(/</g,'&lt;');
-      throw new Error('Rozet ' + no + ' SVG parse hatası. Model yanıtı: "' + onizleme + '..."');
-    }
-    let svg = m[0];
-    // Yarıda kesildiyse açık tag'leri kapat
-    if (!svg.match(/<\/svg>\s*$/i)) {
-      // Açık kalan <text>, <g>, <defs> gibi tag'leri kapat
-      const openTags = [];
-      const tagMatches = svg.matchAll(/<(\w+)(?:\s[^>]*)?>(?![\s\S]*<\/\1>)/g);
-      for (const t of tagMatches) {
-        if (!['circle','rect','line','path','polygon','polyline','ellipse','use','image','stop','animate'].includes(t[1])) {
-          openTags.unshift('</' + t[1] + '>');
-        }
-      }
-      svg = svg + openTags.join('') + '</svg>';
-    }
-    return svg;
+    // <div...>...</div> çıkar
+    const temiz = ham.replace(/```html\s*/gi,'').replace(/```\s*/g,'').trim();
+    const m = temiz.match(/<div[\s\S]*<\/div>/i);
+    if (!m) throw new Error('Rozet ' + no + ' üretilemedi');
+    return m[0];
   }
 
   /* ── API çağrı yardımcısı ────────────────────────────────── */
@@ -4370,24 +4344,20 @@ const RozetAI = (() => {
     return data.content?.[0]?.text || '';
   }
 
-  /* ── Kartları Render (iframe ile) ────────────────────────── */
+  /* ── Kartları Render (HTML div ile) ──────────────────────── */
   function _kartlarRender() {
     const wrap  = document.getElementById('rozetKartlar');
     const sonuc = document.getElementById('rozetSonuclar');
     if (!wrap) return;
     sonuc.style.display = 'block';
     wrap.innerHTML = _liste.map(function(r, i) {
-      var safeSvg = r.svg.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
       return '<div id="rz-k-' + i + '" onclick="RozetAI.sec(' + i + ')" ' +
         'style="cursor:pointer;border:2px solid rgba(255,255,255,0.07);border-radius:16px;' +
         'padding:14px 12px;background:var(--card-bg);transition:all 0.22s;' +
         'display:flex;flex-direction:column;align-items:center;gap:10px;' +
-        'flex:1;min-width:200px;max-width:280px">' +
+        'flex:1;min-width:224px;max-width:260px">' +
         '<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em">' + r.baslik + '</div>' +
-        '<iframe id="rz-iframe-' + i + '" ' +
-        'srcdoc="<!DOCTYPE html><html><head><style>*{margin:0;padding:0;overflow:hidden;background:#fff}</style></head><body>' + safeSvg + '</body></html>" ' +
-        'style="width:200px;height:200px;border:none;border-radius:10px;background:#f5f5f5;pointer-events:none" ' +
-        'sandbox="allow-same-origin" scrolling="no"></iframe>' +
+        '<div id="rz-prev-' + i + '" style="border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.2);line-height:0">' + r.html + '</div>' +
         '<div id="rz-badge-' + i + '" style="display:none;padding:4px 12px;background:rgba(99,102,241,0.2);border-radius:20px;font-size:10px;font-weight:700;color:#a5b4fc">✓ SEÇİLDİ</div>' +
         '</div>';
     }).join('');
@@ -4407,10 +4377,11 @@ const RozetAI = (() => {
       k.style.boxShadow  = s ? '0 0 0 5px rgba(99,102,241,0.15)' : 'none';
       if (b) b.style.display = s ? 'block' : 'none';
     });
+    // Büyük önizleme
     var buyuk = document.getElementById('rozetBuyuk');
     if (buyuk) {
-      var safeSvg = _liste[i].svg.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-      buyuk.innerHTML = '<iframe srcdoc="<!DOCTYPE html><html><head><style>*{margin:0;padding:0;overflow:hidden;background:#fff}</style></head><body>' + safeSvg + '</body></html>" style="width:200px;height:200px;border:none;border-radius:0" sandbox="allow-same-origin" scrolling="no"></iframe>';
+      buyuk.style.padding = '0';
+      buyuk.innerHTML = '<div id="rozetBuyukInner" style="border-radius:12px;overflow:hidden;line-height:0">' + _liste[i].html + '</div>';
     }
     var panel = document.getElementById('rozetSecimPanel');
     if (panel) panel.style.display = 'block';
@@ -4420,40 +4391,37 @@ const RozetAI = (() => {
     if (driveBtn) driveBtn.innerHTML = _sheetsIkon() + " Drive'a Yükle + Sheets'e Aktar";
   }
 
-  /* ── SVG → PNG base64 ────────────────────────────────────── */
-  function _svgToPng(svgEl, scale) {
-    return new Promise(res => {
-      const str = new XMLSerializer().serializeToString(svgEl);
-      const url = URL.createObjectURL(new Blob([str], { type:'image/svg+xml' }));
-      const img = new Image();
-      img.onload = () => {
-        const vb = svgEl.viewBox.baseVal;
-        const w  = (vb.width  || 200) * scale;
-        const h  = (vb.height || 200) * scale;
-        const c  = document.createElement('canvas');
-        c.width = w; c.height = h;
-        const ctx = c.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, w, h);
-        ctx.drawImage(img, 0, 0, w, h);
-        URL.revokeObjectURL(url);
-        res(c.toDataURL('image/png'));
-      };
-      img.src = url;
+  /* ── HTML div → PNG (html2canvas) ────────────────────────── */
+  async function _htmlToPng(el) {
+    return new Promise(function(res, rej) {
+      if (typeof html2canvas === 'undefined') { rej(new Error('html2canvas yüklenmedi')); return; }
+      html2canvas(el, {
+        scale: 4,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false
+      }).then(function(canvas) {
+        res(canvas.toDataURL('image/png'));
+      }).catch(rej);
     });
   }
 
   /* ── PNG İndir ───────────────────────────────────────────── */
   async function pngIndir() {
     if (_sec < 0) { _durum('❌ Önce bir rozet seç.', 'error'); return; }
-    const svg = document.querySelector('#rozetBuyuk svg');
-    if (!svg) { _durum('❌ SVG bulunamadı.', 'error'); return; }
-    const dataUrl = await _svgToPng(svg, 4);
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = `rozet-${_sec + 1}-kampanya.png`;
-    a.click();
-    _durum('⬇ PNG indirildi (800×800px, baskı kalitesi).', 'success');
+    const el = document.getElementById('rozetBuyukInner');
+    if (!el) { _durum('❌ Rozet elementi bulunamadı.', 'error'); return; }
+    try {
+      _durum(_spinner('PNG oluşturuluyor...'), 'info');
+      const dataUrl = await _htmlToPng(el);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = 'rozet-' + (_sec + 1) + '-kampanya.png';
+      a.click();
+      _durum('⬇ PNG indirildi (800×800px).', 'success');
+    } catch(e) {
+      _durum('❌ PNG hatası: ' + e.message, 'error');
+    }
   }
 
   /* ── Drive'a Yükle + Sheets ──────────────────────────────── */
@@ -4464,10 +4432,17 @@ const RozetAI = (() => {
     btn.disabled = true;
     btn.innerHTML = _spinner('Hazırlanıyor...');
 
-    // 1) SVG → PNG base64
-    const svg = document.querySelector('#rozetBuyuk svg');
-    if (!svg) { _durum('❌ SVG bulunamadı.', 'error'); btn.disabled = false; return; }
-    const pngDataUrl = await _svgToPng(svg, 4);
+    // 1) HTML div → PNG
+    const el = document.getElementById('rozetBuyukInner');
+    if (!el) { _durum('❌ Rozet elementi bulunamadı.', 'error'); btn.disabled = false; return; }
+    let pngDataUrl;
+    try {
+      pngDataUrl = await _htmlToPng(el);
+    } catch(e) {
+      _durum('❌ PNG oluşturulamadı: ' + e.message, 'error');
+      btn.disabled = false; btn.innerHTML = _sheetsIkon() + " Drive'a Yükle + Sheets'e Aktar";
+      return;
+    }
 
     // 2) _kampanyaData'ya rozet bilgilerini ekle
     //    (Drive URL'i createSheet içinde accessToken hazır olunca uploadImageToDrive ile set edilecek)
