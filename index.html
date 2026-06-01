@@ -4312,16 +4312,18 @@ const RozetAI = (() => {
       'SADECE SVG KODU döndür. <svg ile başla </svg> ile bit.'
     }], 2000, sistemPrompt);
 
-    // Tüm SVG bloklarını dene — bazen markdown içine sarılı geliyor
-    const m = svgRaw.match(/<svg[\s\S]*<\/svg>/i)
-           || svgRaw.match(/```svg\s*([\s\S]*?)```/i)
-           || svgRaw.match(/```\s*(<svg[\s\S]*<\/svg>)\s*```/i);
-
+    // Önce markdown fence'i temizle, sonra SVG'yi çıkar
+    const temiz = svgRaw
+      .replace(/```svg\s*/gi, '')
+      .replace(/```xml\s*/gi, '')
+      .replace(/```\s*/g, '')
+      .trim();
+    const m = temiz.match(/<svg[\s\S]*<\/svg>/i);
     if (!m) {
       const onizleme = svgRaw.slice(0, 200).replace(/</g,'&lt;');
       throw new Error('Rozet ' + no + ' SVG parse hatası. Model yanıtı: "' + onizleme + '..."');
     }
-    return m[1] || m[0];
+    return m[0];
   }
 
   /* ── API çağrı yardımcısı ────────────────────────────────── */
