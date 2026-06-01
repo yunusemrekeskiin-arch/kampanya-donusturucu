@@ -1180,6 +1180,8 @@ input[type="checkbox"] {
     <div class="card-hdr">
       <h3><span>📋</span><span data-i18n="table_title">Kampanya Ürünleri</span></h3>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="selectImageFolder()" id="folderBtn" style="font-size:12px;padding:7px 12px">📁 Görsel Klasörü Seç</button>
+        <div style="width:1px;height:20px;background:var(--border)"></div>
         <div style="position:relative;">
           <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;">🔍</span>
           <input type="text" id="searchInput" placeholder="Ürün veya marka ara..." oninput="filterTable()"
@@ -1302,11 +1304,6 @@ input[type="checkbox"] {
       </div>
       <div class="card-body" style="padding:1.25rem 1.5rem">
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-          <!-- İçeri alma grubu -->
-          <div style="display:flex;gap:6px;align-items:center;padding-right:12px;border-right:1px solid var(--border)">
-            <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">İçeri Al</span>
-            <button class="btn btn-ghost" onclick="selectImageFolder()" id="folderBtn" style="font-size:12px;padding:7px 12px">📁 Görsel Klasörü</button>
-          </div>
           <!-- Dışarı verme grubu -->
           <div style="display:flex;gap:6px;align-items:center">
             <span style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Dışarı Al</span>
