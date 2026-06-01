@@ -4160,7 +4160,7 @@ const RozetAI = (() => {
   function dragLeave()  { document.getElementById('rozetDropZone').style.borderColor = 'rgba(99,102,241,0.3)'; }
   function drop(e)      { e.preventDefault(); dragLeave(); dosyaYukle(e.dataTransfer.files[0]); }
 
-  /* ── Ana Analiz + Üretim ─────────────────────────────────── */
+  /* ── Ana Analiz + Üretim (2 Adımlı) ────────────────────── */
   async function analiz() {
     if (!_key()) { _durum('❌ Claude API anahtarı girilmedi.', 'error'); return; }
 
@@ -4168,56 +4168,98 @@ const RozetAI = (() => {
     const txt  = document.getElementById('rozetAnalizTxt');
     const ikon = document.getElementById('rozetAnalizIkon');
     btn.disabled = true;
-    if (txt)  txt.textContent  = 'Üretiliyor...';
+    if (txt)  txt.textContent  = 'Çalışıyor...';
     if (ikon) ikon.textContent = '⏳';
 
-    _durum(_spinner('Claude görsel analiz ediyor ve 3 profesyonel rozet üretiyor...'), 'info');
     document.getElementById('rozetSonuclar').style.display = 'none';
     document.getElementById('rozetBos').style.display = 'none';
     _driveUrl = null;
 
     const urunBilgi = (typeof rows !== 'undefined' && rows.length)
       ? rows.slice(0, 5).map(r => `${r.marka} ${r.urun} — ${r.fiyat} TL`).join('\n')
-      : 'Market kampanyası';
-
-    const mesajIcerik = [];
-    if (_b64) {
-      mesajIcerik.push({ type: 'image', source: { type: 'base64', media_type: _mime, data: _b64.split(',')[1] } });
-    }
-    mesajIcerik.push({ type: 'text', text: _prompt(urunBilgi, !!_b64) });
+      : 'Market kampanyası ürünleri';
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': _key(),
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-opus-4-6',
-          max_tokens: 8000,
-          messages: [{ role: 'user', content: mesajIcerik }]
-        })
-      });
+      /* ─────────────────────────────────────────────────────
+         ADIM 1: Görsel Analizi
+         Referans SS varsa Claude'a sadece analiz yaptır.
+         Yoksa doğrudan Adım 2'ye geç.
+      ───────────────────────────────────────────────────── */
+      let analiz = null;
 
-      if (!res.ok) {
-        const e = await res.json().catch(() => ({}));
-        throw new Error(e.error?.message || `HTTP ${res.status}`);
+      if (_b64) {
+        _durum(_spinner('Adım 1/2 — Claude referans görseli analiz ediyor...'), 'info');
+
+        const adim1Res = await _api([
+          { type: 'image', source: { type: 'base64', media_type: _mime, data: _b64.split(',')[1] } },
+          { type: 'text',  text: `Bu rozet/badge görselini bir tasarım uzmanı gözüyle derinlemesine analiz et.
+
+Aşağıdaki başlıklar altında DETAYLI ve SOMUT analiz yaz. Her madde için gördüğün gerçek değerleri yaz:
+
+## RENK PALETİ
+- Ana renkler (hex kodlarıyla): örn #e63030, #ffffff
+- Gradient yönleri ve renk geçişleri
+- Gölge renkleri ve opasite değerleri
+- Arka plan ve ön plan kontrast oranı
+
+## GEOMETRİ & YAPI
+- Temel şekil(ler): daire/köşegen/şerit/bayrak/altıgen/patlama vb.
+- Katman sırası (en alttan en üste)
+- Köşe yarıçapları, açılar, oranlar
+- Dekoratif elementler (çizgi, nokta, halo, vb.)
+
+## TİPOGRAFİ
+- Font ağırlığı (bold/black/heavy)
+- Metin hiyerarşisi: büyük sayı/yüzde → alt başlık → etiket
+- Büyük harf / küçük harf kullanımı
+- Satır aralığı ve letter-spacing tahmini
+
+## EFEKTLER
+- Drop shadow: renk, offset-x, offset-y, blur miktarı
+- Inner glow veya bevel var mı?
+- Texture veya desen var mı?
+- Herhangi bir özel SVG filter efekti
+
+## GENEL TASARIM DİLİ
+- Stil kategorisi: retro/modern/minimalist/agresif/premium vb.
+- Pazar hedefi: indirim/lüks/hızlı tüketim vb.
+- Öne çıkan tasarım kararları
+
+Sadece analiz yaz, rozet üretme.` }
+        ], 1500);
+
+        analiz = adim1Res;
+        _durum(_spinner('Adım 2/2 — Claude 3 profesyonel rozet üretiyor...'), 'info');
+      } else {
+        _durum(_spinner('Claude 3 profesyonel rozet üretiyor...'), 'info');
       }
 
-      const data = await res.json();
-      const ham  = (data.content?.[0]?.text || '').replace(/```json\s*/g,'').replace(/```/g,'').trim();
-      const m    = ham.match(/\{[\s\S]*\}/);
+      /* ─────────────────────────────────────────────────────
+         ADIM 2: SVG Üretimi
+         Analiz varsa onu system prompt olarak kullan.
+         Yoksa genel tasarım prensiplerine göre üret.
+      ───────────────────────────────────────────────────── */
+      const uretPrompt = _promptUret(urunBilgi, analiz);
+
+      const adim2Res = await _api(
+        [{ type: 'text', text: uretPrompt }],
+        10000,
+        analiz
+          ? `Sen dünya standartlarında bir SVG rozet tasarımcısısın. Aşağıda sana bir referans rozet görselin detaylı tasarım analizi verilmiştir:\n\n${analiz}\n\nBu analizi tam olarak özümse. Şimdi bu tasarım diline SADIK KALARAK ama 3 FARKLI kompozisyon ile SVG rozetler üreteceksin. Photoshop kalitesinde, gradient ve filter efektli, profesyonel çıktı bekleniyor.`
+          : `Sen dünya standartlarında bir SVG rozet tasarımcısısın. Türk market kampanyaları için Photoshop kalitesinde, gradient ve filter efektli, profesyonel SVG rozetler üretiyorsun. Her rozet gerçek bir tasarım ajansından çıkmış gibi görünmeli.`
+      );
+
+      // JSON parse
+      const ham = adim2Res.replace(/```json\s*/g,'').replace(/```/g,'').trim();
+      const m   = ham.match(/\{[\s\S]*\}/);
       if (!m) throw new Error('Yanıt parse edilemedi. Tekrar dene.');
       const parsed = JSON.parse(m[0]);
-      if (!parsed.rozetler?.length) throw new Error('Claude rozet üretemedi.');
+      if (!parsed.rozetler?.length) throw new Error('Rozet üretilemedi.');
 
       _liste = parsed.rozetler;
       _sec   = -1;
       _kartlarRender();
-      _durum('✅ 3 rozet üretildi! Beğendiğini seç.', 'success');
+      _durum(`✅ ${analiz ? 'Referans analiz edildi ve ' : ''}3 profesyonel rozet üretildi! Beğendiğini seç.`, 'success');
       document.getElementById('rozetBos').style.display = 'none';
 
     } catch(err) {
@@ -4230,30 +4272,73 @@ const RozetAI = (() => {
     if (ikon) ikon.textContent = '✨';
   }
 
-  /* ── Prompt ──────────────────────────────────────────────── */
-  function _prompt(urunler, refVar) {
-    return `${refVar ? 'Yüklenen görseldeki rozet/badge tasarım dilini derinlemesine analiz et:\n• Renk paleti (gradyanlar, gölgeler, kontrastlar)\n• Geometrik yapı (daire, köşe bandı, şerit, bayrak, patlama vs.)\n• Tipografi ağırlığı, hiyerarşi, boşluk kullanımı\n• Efektler (drop shadow, inner glow, bevel)\n\nBU ANALİZİ REFERANS ALARAK' : 'Aşağıdaki kampanya için'} Türk market afişi için 3 adet FARKLI profesyonel SVG rozet üret.
+  /* ── API çağrı yardımcısı ────────────────────────────────── */
+  async function _api(mesajlar, maxTokens, sistem) {
+    const body = {
+      model: 'claude-opus-4-6',
+      max_tokens: maxTokens,
+      messages: [{ role: 'user', content: mesajlar }]
+    };
+    if (sistem) body.system = sistem;
 
-ÜRÜNLER: ${urunler}
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': _key(),
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify(body)
+    });
 
-TASARIM KALİTESİ GEREKSİNİMLERİ:
-Her rozet bir tasarım programından çıkmış gibi görünmeli:
-• <defs> içinde linearGradient, radialGradient, filter (feDropShadow, feGaussianBlur) kullan
-• Katmanlı geometri: ana şekil + vurgu şekli + metin hiyerarşisi
-• Rozet 1: Daire + çapraz dinamik şerit (badge-sticker tarzı)
-• Rozet 2: Köşeli geometrik (altıgen veya elmas) + parlak iç ışık efekti
-• Rozet 3: Modern ribbon/şerit + tipografi odaklı (büyük sayı/yüzde)
-• Her rozetin renk şeması birbirinden farklı ama tutarlı olsun
-• font-family="'Arial Black', Impact, sans-serif" font-weight="900"
-• Türkçe büyük harf: %İNDİRİM, FIRSATLAR, ÖZEL FİYAT, KAÇIRMA, SON STOK vb.
-• width="200" height="200" viewBox="0 0 200 200" (hepsi kare format)
-• SVG içinde dış kaynak/image elementi KULLANMA
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      throw new Error(e.error?.message || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    return data.content?.[0]?.text || '';
+  }
 
-SADECE JSON döndür, markdown veya açıklama YOK:
+  /* ── Prompt: SVG Üretim ──────────────────────────────────── */
+  function _promptUret(urunler, analizMetni) {
+    return `ÜRÜNLER: ${urunler}
+
+${analizMetni ? '⬆ Yukarıdaki sistem promptundaki analizi tam olarak uygula.\n\n' : ''}3 FARKLI, PROFESYONEL SVG ROZET üret. Her biri farklı kompozisyon:
+
+ROZET 1 — Daire Sticker (klasik badge):
+• Tam dolu daire zemin, radialGradient ile merkez parlaklığı
+• Çapraz veya diagonal dekoratif şerit üstte
+• Büyük font-weight:900 ana metin (yüzde veya slogan)
+• feDropShadow filter ile derin gölge
+
+ROZET 2 — Geometrik Patlama (starburst/seal):
+• 8-12 köşeli yıldız/patlama formu (polygon ile)
+• linearGradient dolgu, iç halkasında beyaz stroke
+• İki satır metin: büyük sayı + alt açıklama
+• feGaussianBlur + feBlend ile parlama efekti
+
+ROZET 3 — Modern Şerit/Ribbon:
+• Diagonal köşe bandı veya yatay şerit formu
+• Keskin köşeli geometri, asimetrik denge
+• Bold tipografi hiyerarşisi: BAŞLIK + ALT BAŞLIK + ETİKET
+• Subtle gradient + feDropShadow
+
+TÜM ROZETLER İÇİN ZORUNLU TEKNİK KURALLAR:
+• xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"
+• Her rozet kendi <defs> bloğuna sahip olmalı (id çakışmaları için unique id: rz1_, rz2_, rz3_ prefix)
+• linearGradient veya radialGradient ZORUNLU (düz renk yok)
+• En az 1 adet <filter> efekti (feDropShadow veya feGaussianBlur)
+• font-family="Arial Black, Impact, sans-serif" font-weight="900"
+• Türkçe BÜYÜK HARF metin
+• Dış kaynak/image elementi KULLANMA
+• SVG içinde JavaScript KULLANMA
+
+SADECE aşağıdaki JSON formatında döndür, başka hiçbir şey yazma:
 {"rozetler":[
-  {"svg":"<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"200\\" height=\\"200\\" viewBox=\\"0 0 200 200\\">...</svg>","baslik":"BAŞLIK","aciklama":"stil açıklama"},
-  {"svg":"...","baslik":"...","aciklama":"..."},
-  {"svg":"...","baslik":"...","aciklama":"..."}
+  {"svg":"<svg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"200\\" height=\\"200\\" viewBox=\\"0 0 200 200\\"><defs>...</defs>...</svg>","baslik":"BAŞLIK 1","aciklama":"Daire sticker — stil açıklaması"},
+  {"svg":"<svg ...>...</svg>","baslik":"BAŞLIK 2","aciklama":"Geometrik patlama — stil açıklaması"},
+  {"svg":"<svg ...>...</svg>","baslik":"BAŞLIK 3","aciklama":"Modern şerit — stil açıklaması"}
 ]}`;
   }
 
