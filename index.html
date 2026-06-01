@@ -2270,9 +2270,9 @@ Sadece JSON formatında yanıt ver:
 {
   "kategori": "Algılanan kategori",
   "rozetler": [
-    {"ana_baslik":"BÜYÜK HARF 2-3 KELIME","alt_baslik":"küçük 1-2 kelime","etiket":"Kısa badge","slogan":"Vurucu 1 cümle","renk":"#hex"},
-    {"ana_baslik":"...","alt_baslik":"...","etiket":"...","slogan":"...","renk":"#hex"},
-    {"ana_baslik":"...","alt_baslik":"...","etiket":"...","slogan":"...","renk":"#hex"}
+    {"ana_baslik":"BÜYÜK HARF 2-3 KELIME","alt_baslik":"küçük 1-2 kelime","etiket":"Kısa badge","slogan":"Vurucu 1 cümle","renk":"#hex birinci renk","renk2":"#hex ikinci/vurgu renk"},
+    {"ana_baslik":"...","alt_baslik":"...","etiket":"...","slogan":"...","renk":"#hex birinci renk","renk2":"#hex ikinci/vurgu renk"},
+    {"ana_baslik":"...","alt_baslik":"...","etiket":"...","slogan":"...","renk":"#hex birinci renk","renk2":"#hex ikinci/vurgu renk"}
   ]
 }`;
 
@@ -2289,14 +2289,16 @@ Sadece JSON formatında yanıt ver:
     // Rozet alternatiflerini göster
     const altDiv = document.getElementById('rozetAlternatifler');
     if (altDiv && parsed.rozetler) {
-      altDiv.innerHTML = parsed.rozetler.map((r,i) => `
-        <div onclick="rozetSec(${i})" data-idx="${i}" class="rozet-alt" style="cursor:pointer;border:2px solid ${i===0?r.renk||'#6366f1':'rgba(255,255,255,0.1)'};border-radius:12px;padding:12px 16px;min-width:160px;text-align:center;background:${i===0?'rgba(99,102,241,0.08)':'var(--card-bg)'};transition:all 0.2s;">
-          <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Seçenek ${i+1}</div>
-          <div style="display:inline-block;background:${r.renk||'#e63030'};color:#fff;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;margin-bottom:6px">${r.etiket}</div>
-          <div style="font-size:16px;font-weight:900;color:var(--text);text-transform:uppercase;line-height:1.1">${r.ana_baslik}</div>
-          <div style="font-size:13px;font-weight:600;color:${r.renk||'#e63030'};font-style:italic">${r.alt_baslik}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:4px;line-height:1.4">${r.slogan}</div>
-        </div>`).join('');
+      altDiv.innerHTML = parsed.rozetler.map((r,i) => {
+        const clr = r.renk || '#e63030';
+        const clr2 = r.renk2 || '#f59e0b';
+        const svg = buildRozetSVG(r, i, clr, clr2);
+        return `<div onclick="rozetSec(${i})" data-idx="${i}" class="rozet-alt" style="cursor:pointer;border:2px solid ${i===0?clr:'rgba(255,255,255,0.08)'};border-radius:12px;padding:12px;background:${i===0?'rgba(0,0,0,0.15)':'var(--card-bg)'};transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Seçenek ${i+1}</div>
+          ${svg}
+          <div style="font-size:10px;color:var(--text3);text-align:center;max-width:180px;line-height:1.4">${r.slogan}</div>
+        </div>`;
+      }).join('');
       // Kategori göster
       showKampanyaStatus('✅ ' + (parsed.kategori||'') + ' kategorisi algılandı. Aşağıdan bir rozet seç veya düzenle.','success');
       // İlk rozeti otomatik seç
@@ -2316,9 +2318,51 @@ Sadece JSON formatında yanıt ver:
   if(btn) btn.textContent = '✨ Kampanya Metni Üret';
 }
 
+
+function buildRozetSVG(r, style, clr, clr2) {
+  const baslik = (r.ana_baslik || '').toUpperCase();
+  const alt = (r.alt_baslik || '').toUpperCase();
+  const etiket = (r.etiket || '').toUpperCase();
+  // Her seçenek farklı stil
+  if (style === 0) {
+    // Katmanlı blok stili
+    return `<svg width="200" height="90" viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="20" width="200" height="50" rx="4" fill="${clr2}"/>
+      <rect x="0" y="8" width="160" height="46" rx="4" fill="${clr}"/>
+      <text x="12" y="26" font-family="Arial Black,sans-serif" font-weight="900" font-size="9" fill="rgba(255,255,255,0.7)" letter-spacing="3">${etiket}</text>
+      <text x="12" y="44" font-family="Arial Black,sans-serif" font-weight="900" font-size="18" fill="#fff" letter-spacing="-0.5">${baslik}</text>
+      <rect x="0" y="56" width="120" height="22" rx="0" fill="rgba(0,0,0,0.25)"/>
+      <text x="10" y="71" font-family="Arial Black,sans-serif" font-weight="900" font-size="13" fill="${clr2}" font-style="italic">${alt}</text>
+    </svg>`;
+  } else if (style === 1) {
+    // Büyük kutu + renk bloğu
+    return `<svg width="200" height="90" viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="200" height="90" rx="6" fill="${clr}"/>
+      <rect x="0" y="56" width="200" height="34" rx="0" fill="${clr2}"/>
+      <rect x="0" y="82" width="200" height="8" rx="0" fill="rgba(0,0,0,0.2)"/>
+      <text x="100" y="22" font-family="Arial Black,sans-serif" font-weight="900" font-size="9" fill="rgba(255,255,255,0.6)" text-anchor="middle" letter-spacing="4">${etiket}</text>
+      <text x="100" y="50" font-family="Arial Black,sans-serif" font-weight="900" font-size="22" fill="#fff" text-anchor="middle" letter-spacing="-1">${baslik}</text>
+      <text x="100" y="75" font-family="Arial Black,sans-serif" font-weight="900" font-size="14" fill="${clr}" text-anchor="middle" font-style="italic">${alt}</text>
+    </svg>`;
+  } else {
+    // Pill + kutu combo
+    return `<svg width="200" height="90" viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
+      <rect x="4" y="28" width="192" height="42" rx="4" fill="${clr2}"/>
+      <rect x="4" y="24" width="192" height="42" rx="4" fill="${clr}"/>
+      <rect x="0" y="4" width="90" height="28" rx="14" fill="${clr2}"/>
+      <text x="45" y="22" font-family="Arial Black,sans-serif" font-weight="900" font-size="10" fill="${clr}" text-anchor="middle" letter-spacing="1">${etiket}</text>
+      <text x="100" y="52" font-family="Arial Black,sans-serif" font-weight="900" font-size="20" fill="#fff" text-anchor="middle" letter-spacing="-0.5">${baslik}</text>
+      <rect x="4" y="68" width="100" height="18" rx="2" fill="rgba(0,0,0,0.2)"/>
+      <text x="54" y="80" font-family="Arial Black,sans-serif" font-weight="900" font-size="11" fill="#fff" text-anchor="middle" font-style="italic">${alt}</text>
+    </svg>`;
+  }
+}
+
 let _rozetler = [];
+let _rozetSec = 0;
 
 function rozetSec(idx) {
+  _rozetSec = idx;
   const r = _rozetler[idx];
   if (!r) return;
   document.getElementById('kamp-baslik').value = r.ana_baslik||'';
