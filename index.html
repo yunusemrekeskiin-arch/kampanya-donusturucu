@@ -4244,6 +4244,11 @@ Her metin icin su bilgileri cikar:
 - etiket: Turkce aciklama (kullanici icin)
 - x_yuzde: metnin yatay merkezi (0-100 arasi, sol=0 sag=100)
 - y_yuzde: metnin dikey merkezi (0-100 arasi, ust=0 alt=100)
+- silme_x: metnin sol kenari yuzde (0-100)
+- silme_y: metnin ust kenari yuzde (0-100)
+- silme_genislik: metnin genislik yuzdesi (0-100)
+- silme_yukseklik: metnin yukseklik yuzdesi (0-100)
+- silme_renk: metnin arkasindaki arka plan rengi hex (#234d20 gibi) — orijinal metnin ustunu kapatmak icin kullanilacak
 - renk: hex renk kodu (#ffffff gibi)
 - font_agirlik: normal|bold|900
 - font_stil: normal|italic
@@ -4261,6 +4266,11 @@ SADECE JSON don:
       "etiket": "Ana Baslik",
       "x_yuzde": 50,
       "y_yuzde": 40,
+      "silme_x": 5,
+      "silme_y": 20,
+      "silme_genislik": 90,
+      "silme_yukseklik": 35,
+      "silme_renk": "#234d20",
       "renk": "#ffffff",
       "font_agirlik": "900",
       "font_stil": "italic",
@@ -4361,30 +4371,39 @@ SADECE JSON don:
     const w = _canvas.width;
     const h = _canvas.height;
 
-    // Orijinal gorseli ciz
+    // 1) Orijinal gorseli ciz
     _ctx.clearRect(0,0,w,h);
     _ctx.drawImage(_img, 0, 0, w, h);
 
-    // Metinleri uzerine yaz
     _metinler.forEach(function(mt) {
-      const metin  = mt.yeniMetin || mt.metin;
-      const x      = (mt.x_yuzde/100) * w;
-      const y      = (mt.y_yuzde/100) * h;
-      const boyut  = Math.round((mt.boyut_yuzde/100) * w);
-      const stil   = (mt.font_stil==='italic'?'italic ':'') + mt.font_agirlik + ' ' + boyut + 'px "Arial Black",Impact,sans-serif';
+      const metin = mt.yeniMetin || mt.metin;
+      const x     = (mt.x_yuzde/100) * w;
+      const y     = (mt.y_yuzde/100) * h;
+      const boyut = Math.round((mt.boyut_yuzde/100) * w);
+      const stil  = (mt.font_stil==='italic'?'italic ':'') + mt.font_agirlik + ' ' + boyut + 'px "Arial Black",Impact,sans-serif';
 
+      // 2) Orijinal metni sil — arka plan rengiyle kapat
+      if (mt.silme_x !== undefined) {
+        const sx = (mt.silme_x/100) * w;
+        const sy = (mt.silme_y/100) * h;
+        const sw = (mt.silme_genislik/100) * w;
+        const sh = (mt.silme_yukseklik/100) * h;
+        _ctx.save();
+        _ctx.fillStyle = mt.silme_renk || '#000000';
+        _ctx.fillRect(sx, sy, sw, sh);
+        _ctx.restore();
+      }
+
+      // 3) Yeni metni yaz
       _ctx.save();
       _ctx.font         = stil;
       _ctx.fillStyle    = mt.renk || '#ffffff';
       _ctx.textAlign    = mt.hizalama || 'center';
       _ctx.textBaseline = 'middle';
-
-      // Hafif text shadow
-      _ctx.shadowColor   = 'rgba(0,0,0,0.5)';
-      _ctx.shadowBlur    = 3;
-      _ctx.shadowOffsetX = 1;
-      _ctx.shadowOffsetY = 1;
-
+      _ctx.shadowColor   = 'rgba(0,0,0,0.6)';
+      _ctx.shadowBlur    = Math.max(2, boyut * 0.08);
+      _ctx.shadowOffsetX = Math.max(1, boyut * 0.03);
+      _ctx.shadowOffsetY = Math.max(1, boyut * 0.03);
       _ctx.fillText(metin, x, y);
       _ctx.restore();
     });
