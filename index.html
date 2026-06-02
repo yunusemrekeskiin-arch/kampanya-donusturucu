@@ -1235,6 +1235,12 @@ input[type="checkbox"] {
     <div class="card-hdr">
       <h3><span>📋</span><span data-i18n="table_title">Kampanya Ürünleri</span></h3>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <button onclick="selectImageFolder()" id="folderBtn"
+          style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(99,102,241,0.1);
+                 border:1px solid rgba(99,102,241,0.25);border-radius:8px;color:#a5b4fc;font-size:12px;
+                 font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;white-space:nowrap">
+          📁 Görsel Klasörü Yükle
+        </button>
         <div style="position:relative;">
           <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;">🔍</span>
           <input type="text" id="searchInput" placeholder="Ürün veya marka ara..." oninput="filterTable()"
