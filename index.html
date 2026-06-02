@@ -1291,174 +1291,94 @@ input[type="checkbox"] {
           <div style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">2</div>
           <div>
             <div style="font-size:14px;font-weight:700;color:var(--text)">Kampix Badge Studio</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:1px">Market rozeti yükle · Claude birebir klon üretsin · Metinleri düzenle · Şeffaf PNG indir</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:1px">Rozet yukle &middot; Firca ile metni sil &middot; Yeni metin yaz &middot; PNG indir</div>
           </div>
         </div>
         <button onclick="BadgeStudio.analiz()" id="badgeAnalizBtn"
           style="display:flex;align-items:center;gap:7px;padding:8px 18px;background:linear-gradient(135deg,#7c3aed,#6366f1);
                  border:none;border-radius:9px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;
                  font-family:'Inter',sans-serif;box-shadow:0 2px 12px rgba(124,58,237,0.3)">
-          <span id="badgeAnalizIkon">🔍</span>
-          <span id="badgeAnalizTxt">Rozeti Klonla</span>
+          <span id="badgeAnalizIkon">&#128444;</span>
+          <span id="badgeAnalizTxt">Rozeti Yukle</span>
         </button>
       </div>
-
       <div class="card-body" style="padding:1.25rem 1.5rem">
 
-        <!-- API Key -->
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;padding:10px 14px;
-                    background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:10px;flex-wrap:wrap">
-          <span style="font-size:16px;flex-shrink:0">🔑</span>
-          <input id="kampanyaApiKey" type="password" placeholder="Claude API anahtarı — sk-ant-api03-..."
-            autocomplete="off"
-            style="flex:1;min-width:180px;background:var(--input-bg);border:1px solid var(--input-border);
-                   border-radius:8px;padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
-            oninput="kampanyaApiKeySave(this.value)">
-          <button onclick="BadgeStudio.toggleApiKey()" id="apiKeyToggle"
-            style="padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
-                   border-radius:7px;color:var(--text3);font-size:13px;cursor:pointer;flex-shrink:0" title="Göster/Gizle">👁</button>
-          <div id="kampanyaApiStatus" style="font-size:11px;white-space:nowrap;color:var(--text3)">Girilmedi</div>
-          <a href="https://console.anthropic.com" target="_blank"
-            style="font-size:11px;color:#a5b4fc;text-decoration:none;white-space:nowrap;flex-shrink:0">Anahtar al ↗</a>
-          <select id="rozetModel" onchange="localStorage.setItem('rozet_model',this.value)"
-            style="background:#1e2538;border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:6px 10px;
-                   font-size:12px;color:#a5b4fc;font-family:'Inter',sans-serif;outline:none;cursor:pointer;flex-shrink:0">
-            <option value="claude-opus-4-7">🚀 Opus 4.7 — En İyi</option>
-            <option value="claude-opus-4-6">⭐ Opus 4.6</option>
-            <option value="claude-sonnet-4-6" selected>⚡ Sonnet 4.6</option>
-            <option value="claude-haiku-4-5-20251001">💨 Haiku 4.5</option>
-          </select>
-        </div>
-
-        <!-- HuggingFace Token -->
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding:10px 14px;
-                    background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.2);border-radius:10px;flex-wrap:wrap">
-          <span style="font-size:16px;flex-shrink:0">🤗</span>
-          <input id="hfToken" type="password" placeholder="Hugging Face token — hf_..."
-            autocomplete="off"
-            style="flex:1;min-width:150px;background:var(--input-bg);border:1px solid var(--input-border);
-                   border-radius:8px;padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
-            oninput="localStorage.setItem('hf_token',this.value);document.getElementById('hfStatus').textContent=this.value?'✅':'Girilmedi'">
-          <div id="hfStatus" style="font-size:11px;white-space:nowrap;color:var(--text3)">Girilmedi</div>
-          <a href="https://huggingface.co/settings/tokens" target="_blank"
-            style="font-size:11px;color:#fbbf24;text-decoration:none;white-space:nowrap;flex-shrink:0">HF Token ↗</a>
-        </div>
-
-        <!-- Replicate Token -->
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;padding:10px 14px;
-                    background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:10px;flex-wrap:wrap">
-          <span style="font-size:16px;flex-shrink:0">⚡</span>
-          <input id="replicateToken" type="password" placeholder="Replicate token — r8_..."
-            autocomplete="off"
-            style="flex:1;min-width:150px;background:var(--input-bg);border:1px solid var(--input-border);
-                   border-radius:8px;padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
-            oninput="localStorage.setItem('replicate_token',this.value);document.getElementById('repStatus').textContent=this.value?'✅ Kaydedildi':'Girilmedi'">
-          <button onclick="(function(){const i=document.getElementById('replicateToken');i.type=i.type==='password'?'text':'password';})()"
-            style="padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
-                   border-radius:7px;color:var(--text3);font-size:13px;cursor:pointer;flex-shrink:0">👁</button>
-          <div id="repStatus" style="font-size:11px;white-space:nowrap;color:var(--text3)">Girilmedi</div>
-          <a href="https://replicate.com/account/api-tokens" target="_blank"
-            style="font-size:11px;color:#4ade80;text-decoration:none;white-space:nowrap;flex-shrink:0">Token al ↗</a>
-        </div>
-
-        <!-- Görsel Yükleme -->
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Market Rozeti Görseli</div>
+        <!-- Gorsel Yukleme -->
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Market Rozeti Gorseli</div>
         <div id="badgeDropZone" onclick="document.getElementById('badgeFileInput').click()"
           ondragover="BadgeStudio.dragOver(event)" ondragleave="BadgeStudio.dragLeave(event)" ondrop="BadgeStudio.drop(event)"
           style="border:1.5px dashed rgba(99,102,241,0.3);border-radius:12px;background:rgba(99,102,241,0.03);
-                 padding:18px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s">
-          <div id="badgeUploadIkon"
-            style="width:44px;height:44px;flex-shrink:0;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);
-                   border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">🏷️</div>
+                 padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s">
+          <div id="badgeUploadIkon" style="width:42px;height:42px;flex-shrink:0;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">&#127991;</div>
           <div style="flex:1">
-            <div id="badgeUploadLabel" style="font-size:13px;font-weight:600;color:var(--text2)">Migros, CarrefourSA, BİM, A101, ŞOK rozeti yükle</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px">PNG · JPG · WEBP · Maks 6 MB · Sürükle bırak veya tıkla</div>
+            <div id="badgeUploadLabel" style="font-size:13px;font-weight:600;color:var(--text2)">Market rozeti yukle - PNG, JPG, WEBP</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Maks 6 MB - Surukle birak veya tikla</div>
           </div>
           <button onclick="event.stopPropagation();document.getElementById('badgeFileInput').click()"
-            style="padding:6px 14px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:8px;
-                   color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">Dosya Seç</button>
+            style="padding:6px 14px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:8px;color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">Dosya Sec</button>
         </div>
-        <input type="file" id="badgeFileInput" accept="image/png,image/jpeg,image/jpg,image/webp" style="display:none"
-          onchange="BadgeStudio.dosyaYukle(this.files[0])">
+        <input type="file" id="badgeFileInput" accept="image/png,image/jpeg,image/jpg,image/webp" style="display:none" onchange="BadgeStudio.dosyaYukle(this.files[0])">
 
-        <!-- Yüklenen görsel -->
         <div id="badgeRefOnizleme" style="display:none;margin-top:8px;align-items:center;gap:10px">
-          <img id="badgeRefImg" style="height:64px;border-radius:8px;border:1px solid var(--border);object-fit:contain;background:#fff;padding:4px">
-          <div style="flex:1">
-            <div id="badgeRefIsim" style="font-size:12px;font-weight:600;color:var(--text2)"></div>
-            <div style="font-size:11px;color:#4ade80;margin-top:2px">✓ Hazır — "Rozeti Klonla" butonuna bas</div>
-          </div>
-          <button onclick="BadgeStudio.gorselSil()"
-            style="padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);
-                   border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">✕</button>
+          <img id="badgeRefImg" style="height:56px;border-radius:8px;border:1px solid var(--border);object-fit:contain;background:#fff;padding:3px">
+          <div style="flex:1"><div id="badgeRefIsim" style="font-size:12px;font-weight:600;color:var(--text2)"></div></div>
+          <button onclick="BadgeStudio.gorselSil()" style="padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">X</button>
         </div>
 
-        <!-- Durum -->
-        <div id="badgeDurum" style="display:none;margin-top:12px;padding:12px 16px;border-radius:10px;font-size:13px;border:1px solid transparent"></div>
+        <div id="badgeDurum" style="display:none;margin-top:10px;padding:10px 14px;border-radius:10px;font-size:13px;border:1px solid transparent"></div>
 
-        <!-- Boş durum -->
-        <div id="badgeBos" style="display:flex;align-items:center;gap:12px;padding:20px 0 4px">
-          <div style="width:40px;height:40px;background:rgba(99,102,241,0.08);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🎖</div>
+        <div id="badgeBos" style="display:flex;align-items:center;gap:12px;padding:16px 0 4px">
+          <div style="width:38px;height:38px;background:rgba(99,102,241,0.08);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">&#127894;</div>
           <div>
-            <div style="font-size:13px;font-weight:600;color:var(--text2)">Klon için rozet bekleniyor</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:2px">Gerçek market rozeti yükle → Claude birebir aynısını HTML+CSS ile üretecek → Sen sadece metni değiştir → Şeffaf PNG indir</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text2)">Rozet bekleniyor</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Rozeti yukle - Fircayla mevcut yazilarin ustunu boya - Temizle - Yeni metni yaz - PNG indir</div>
           </div>
         </div>
 
-        <!-- SONUÇ: Klon + Metin Düzenleme -->
-        <div id="badgeSonuc" style="display:none;margin-top:1.25rem">
-
-          <div style="display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap">
-
-            <!-- Sol: Canlı önizleme -->
+        <div id="badgeSonuc" style="display:none;margin-top:1rem">
+          <div style="display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap">
             <div style="flex-shrink:0">
-              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Canlı Önizleme</div>
-              <!-- Şeffaf dama tahtası arka plan = şeffaflığı gösterir -->
-              <div style="border-radius:14px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.2);
-                          background-image:linear-gradient(45deg,#ccc 25%,transparent 25%),linear-gradient(-45deg,#ccc 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ccc 75%),linear-gradient(-45deg,transparent 75%,#ccc 75%);
-                          background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0px;
-                          display:inline-block">
-                <div id="badgeKlonOnizleme" style="line-height:0"></div>
-              </div>
-            </div>
-
-            <!-- Sağ: Metin editörü + butonlar -->
-            <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:12px">
-
-              <!-- Metin Düzenleme -->
-              <div style="padding:14px;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.12);border-radius:12px">
-                <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">✏️ Metinleri Düzenle</div>
-                <div style="display:flex;flex-direction:column;gap:8px" id="badgeMetinAlanlari">
-                  <!-- JS tarafından doldurulur -->
-                </div>
-                <button onclick="BadgeStudio.metinGuncelle()"
-                  style="margin-top:10px;width:100%;padding:8px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);
-                         border-radius:8px;color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
-                  ↻ Önizlemeyi Güncelle
+              <!-- Firca arac cubugu -->
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+                <div style="font-size:11px;color:var(--text3);font-weight:600">Firca boyutu:</div>
+                <input type="range" min="10" max="80" value="30" id="fircaBoyutSlider"
+                  oninput="BadgeStudio.fircaBoyutuAyarla(this.value)"
+                  style="width:90px;accent-color:#ef4444">
+                <span id="fircaBoyutLabel" style="font-size:11px;color:var(--text3);min-width:32px">30px</span>
+                <button onclick="BadgeStudio.maskeyiUygula()"
+                  style="padding:6px 14px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:8px;
+                         color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
+                         box-shadow:0 2px 8px rgba(239,68,68,0.35)">
+                  Secili Alani Temizle
                 </button>
               </div>
-
-              <!-- Aksiyon butonları -->
+              <!-- Canvas - dama arka plan -->
+              <div style="border-radius:12px;overflow:hidden;display:inline-block;
+                          background-image:linear-gradient(45deg,#d1d5db 25%,transparent 25%),linear-gradient(-45deg,#d1d5db 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d1d5db 75%),linear-gradient(-45deg,transparent 75%,#d1d5db 75%);
+                          background-size:14px 14px;background-position:0 0,0 7px,7px -7px,-7px 0">
+                <div id="badgeKlonOnizleme"></div>
+              </div>
+              <div style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">Kirmizi alan = silinecek - Temizle ile uygula</div>
+            </div>
+            <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:10px">
+              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em">Metinler</div>
+              <div id="badgeMetinAlanlari"></div>
               <button onclick="BadgeStudio.pngIndir()"
-                style="padding:11px 20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;
+                style="padding:10px 18px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;
                        color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
-                       box-shadow:0 2px 16px rgba(99,102,241,0.4);display:flex;align-items:center;gap:8px;justify-content:center">
-                ⬇ Şeffaf PNG İndir
+                       box-shadow:0 2px 14px rgba(99,102,241,0.4);text-align:center">
+                PNG Indir
               </button>
               <button onclick="BadgeStudio.driveYukle()"
-                style="padding:10px 20px;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:10px;
+                style="padding:9px 18px;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:10px;
                        color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
-                       box-shadow:0 2px 12px rgba(16,185,129,0.3);display:flex;align-items:center;gap:8px;justify-content:center">
-                <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px">Drive + Sheets
+                       box-shadow:0 2px 10px rgba(16,185,129,0.25);display:flex;align-items:center;gap:6px;justify-content:center">
+                Drive + Sheets
               </button>
-              <div id="badgeDriveLink" style="display:none;padding:8px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px">
-                <div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:3px">✅ Drive'a yüklendi</div>
-                <a id="badgeDriveLinkHref" href="#" target="_blank" style="font-size:11px;color:#a5b4fc;word-break:break-all;text-decoration:none">Link →</a>
-              </div>
-
             </div>
           </div>
-        </div><!-- /badgeSonuc -->
+        </div>
 
       </div>
     </div>
@@ -4185,14 +4105,18 @@ const BadgeStudio = (() => {
   /* ── State ─────────────────────────────────────────── */
   let _b64      = null;
   let _mime     = 'image/jpeg';
-  let _temizB64 = null;  // LaMa'dan gelen temiz gorsel
-  let _canvas   = null;
+  let _img      = null;       // orijinal Image nesnesi
+  let _canvas   = null;       // ana canvas
   let _ctx      = null;
+  let _mask     = null;       // silme maskesi canvas
+  let _maskCtx  = null;
+  let _ciziyorMu = false;
+  let _fircaBoyut = 30;
+  let _mod      = 'fırca';    // 'fırca' | 'metin'
   let _metinler = [];
   let _secili   = -1;
 
-  const _key    = () => localStorage.getItem('claude_api_key') || '';
-  const _hfKey  = () => localStorage.getItem('hf_token') || '';
+  const _key = () => localStorage.getItem('claude_api_key') || '';
 
   /* ── Durum ─────────────────────────────────────────── */
   function _durum(html, tip) {
@@ -4212,7 +4136,6 @@ const BadgeStudio = (() => {
     return '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.25);border-top-color:currentColor;border-radius:50%;animation:spin 0.7s linear infinite"></span>'+t+'</span>';
   }
 
-  /* ── API Key toggles ────────────────────────────────── */
   function toggleApiKey() {
     const inp = document.getElementById('kampanyaApiKey');
     const btn = document.getElementById('apiKeyToggle');
@@ -4229,19 +4152,18 @@ const BadgeStudio = (() => {
     const reader = new FileReader();
     reader.onload = function(e) {
       _b64 = e.target.result;
-      _temizB64 = null;
       document.getElementById('badgeRefImg').src = _b64;
       document.getElementById('badgeRefIsim').textContent = dosya.name;
       document.getElementById('badgeRefOnizleme').style.display = 'flex';
-      document.getElementById('badgeUploadLabel').textContent = '✅ Hazır — "Rozeti Analiz Et" butonuna bas';
+      document.getElementById('badgeUploadLabel').textContent = '✅ Hazır — "Rozeti Yükle" butonuna bas';
       document.getElementById('badgeUploadIkon').textContent = '✅';
-      _durum('Gorsel yuklendi.','info');
     };
     reader.readAsDataURL(dosya);
   }
 
   function gorselSil() {
-    _b64=null; _temizB64=null; _canvas=null; _ctx=null; _metinler=[]; _secili=-1;
+    _b64=null; _img=null; _canvas=null; _ctx=null; _mask=null; _maskCtx=null;
+    _metinler=[]; _secili=-1; _mod='fırca';
     document.getElementById('badgeRefOnizleme').style.display='none';
     document.getElementById('badgeUploadLabel').textContent='Market rozeti yukle';
     document.getElementById('badgeUploadIkon').textContent='🏷️';
@@ -4255,268 +4177,189 @@ const BadgeStudio = (() => {
   function dragLeave()  { document.getElementById('badgeDropZone').style.borderColor='rgba(99,102,241,0.3)'; }
   function drop(e)      { e.preventDefault(); dragLeave(); dosyaYukle(e.dataTransfer.files[0]); }
 
-  /* ── ANA ANALİZ ─────────────────────────────────────── */
+  /* ── Rozeti Yükle (API olmadan) ─────────────────────── */
   async function analiz() {
-    if (!_key()) { _durum('Claude API anahtari girilmedi.','error'); return; }
-    const repToken = localStorage.getItem('replicate_token') || '';
-    const hfToken  = _hfKey();
-    if (!repToken && !hfToken) { _durum('Replicate veya Hugging Face token girilmedi.','error'); return; }
-    if (!_b64)   { _durum('Once gorsel yukle.','error'); return; }
+    if (!_b64) { _durum('Once gorsel yukle.','error'); return; }
 
-    const btn  = document.getElementById('badgeAnalizBtn');
-    const txt  = document.getElementById('badgeAnalizTxt');
-    const ikon = document.getElementById('badgeAnalizIkon');
-    btn.disabled = true;
-    if(txt)  txt.textContent = 'Analiz ediliyor...';
-    if(ikon) ikon.textContent = '⏳';
     document.getElementById('badgeBos').style.display = 'none';
     document.getElementById('badgeSonuc').style.display = 'none';
+    _durum(_spin('Gorsel yukleniyor...'),'info');
 
-    try {
-      /* ADIM 1: Claude metin alanlarini tespit et */
-      _durum(_spin('Adim 1/3 — Claude metin pozisyonlarini tespit ediyor...'),'info');
-      const model = document.getElementById('rozetModel')?.value || 'claude-opus-4-7';
-
-      const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': _key(),
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: model,
-          max_tokens: 1200,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: _mime, data: _b64.split(',')[1] } },
-              { type: 'text', text: `Bu rozetteki TUM metin alanlarini tespit et.
-Her metin icin inpainting maskesi icin bounding box ver (0-100 yuzde).
-Bounding box'lari biraz BUYUT — metnin etrafinda 5-8px bosluk birak.
-
-SADECE JSON don:
-{
-  "genislik": 400,
-  "yukseklik": 400,
-  "maskeler": [
-    {"x": 10, "y": 20, "genislik": 80, "yukseklik": 25}
-  ],
-  "metinler": [
-    {"id": "baslik", "etiket": "Ana Baslik", "varsayilan": "SUPER FIRSATLAR",
-     "x_yuzde": 50, "y_yuzde": 32, "renk": "#ffffff", "boyut": 32,
-     "agirlik": "900", "stil": "italic", "hizalama": "center"}
-  ]
-}` }
-            ]
-          }]
-        })
-      });
-
-      if (!claudeRes.ok) throw new Error('Claude API hatasi (' + claudeRes.status + '). API anahtarini kontrol et.');
-      const claudeData = await claudeRes.json();
-      const ham = (claudeData.content[0].text||'').replace(/```json\s*/g,'').replace(/```/g,'').trim();
-      const parsed = JSON.parse(ham.match(/\{[\s\S]*\}/)[0]);
-
-      _metinler = (parsed.metinler||[]).map(function(mt) {
-        return { id:mt.id, etiket:mt.etiket, metin:mt.varsayilan||'',
-                 x:mt.x_yuzde||50, y:mt.y_yuzde||50, renk:mt.renk||'#ffffff',
-                 boyut:mt.boyut||28, agirlik:mt.agirlik||'900',
-                 stil:mt.stil||'normal', hizalama:mt.hizalama||'center' };
-      });
-
-      /* ADIM 2: Maske canvas'i olustur */
-      _durum(_spin('Adim 2/3 — Metin maskesi olusturuluyor...'),'info');
-      const maskeB64 = await _maskeOlustur(parsed.maskeler || [], parsed.genislik||400, parsed.yukseklik||400);
-
-      /* ADIM 3: LaMa inpainting */
-      _durum(_spin('Adim 3/3 — LaMa metinleri siliyor (30-60sn surebilir)...'),'info');
-      _temizB64 = await _lamaInpaint(_b64, maskeB64);
-
-      /* Canvas kur */
-      _canvasKur(_temizB64);
+    _img = new Image();
+    _img.onload = function() {
+      _canvasKur();
       _editAlanlariOlustur();
-      _durum('Temiz arka plan hazir! Metinleri duzenle.','success');
+      _durum('','');
       document.getElementById('badgeBos').style.display = 'none';
       document.getElementById('badgeSonuc').style.display = 'block';
-
-    } catch(err) {
-      _durum('Hata: '+err.message,'error');
-      document.getElementById('badgeBos').style.display = 'flex';
-    }
-
-    btn.disabled = false;
-    if(txt)  txt.textContent = 'Rozeti Analiz Et';
-    if(ikon) ikon.textContent = '🔍';
-  }
-
-  /* ── Maske Oluştur ──────────────────────────────────── */
-  function _maskeOlustur(maskeler, gw, gh) {
-    return new Promise(function(resolve) {
-      const c = document.createElement('canvas');
-      c.width = gw; c.height = gh;
-      const ctx = c.getContext('2d');
-      // Siyah zemin (korunacak alan)
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0,0,gw,gh);
-      // Beyaz = silinecek metin alanlari
-      ctx.fillStyle = '#ffffff';
-      maskeler.forEach(function(m) {
-        const x = (m.x/100)*gw;
-        const y = (m.y/100)*gh;
-        const w = (m.genislik/100)*gw;
-        const h = (m.yukseklik/100)*gh;
-        ctx.fillRect(x, y, w, h);
-      });
-      resolve(c.toDataURL('image/png'));
-    });
-  }
-
-  /* ── Inpainting (Replicate önce, HF fallback) ───────── */
-  async function _lamaInpaint(gorselB64, maskeB64) {
-    const repToken = localStorage.getItem('replicate_token') || '';
-    const hfToken  = _hfKey();
-
-    // Replicate: Stabil, hızlı, her zaman açık
-    if (repToken) {
-      try {
-        _durum(_spin('Replicate LaMa ile metin siliniyor...'),'info');
-        return await _replicateInpaint(gorselB64, maskeB64, repToken);
-      } catch(e) {
-        console.error('Replicate hatasi:', e);
-        _durum(_spin('Replicate: ' + e.message + ' — HF deneniyor...'),'info');
-        await new Promise(r => setTimeout(r, 1500));
-      }
-    }
-
-    // HF Fallback
-    if (hfToken) {
-      return await _hfInpaint(gorselB64, maskeB64, hfToken);
-    }
-
-    throw new Error('Replicate veya Hugging Face tokenı girilmedi.');
-  }
-
-  async function _replicateInpaint(gorselB64, maskeB64, token) {
-    // Vercel proxy uzerinden cagir (CORS sorunu nedeniyle)
-    const proxyUrl = '/api/inpaint';
-
-    const res = await fetch(proxyUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        image: gorselB64,
-        mask:  maskeB64,
-        token: token
-      }),
-      signal: AbortSignal.timeout(90000)
-    });
-
-    if (!res.ok) {
-      const e = await res.json().catch(function(){return {};});
-      throw new Error(e.error || 'Proxy hatasi: ' + res.status);
-    }
-
-    const data = await res.json();
-    if (data.result) return data.result;
-    throw new Error(data.error || 'Sonuc alinamadi.');
-  }
-
-  async function _hfInpaint(gorselB64, maskeB64, token) {
-    const endpoints = [
-      'https://Sanster-lama-cleaner-lama.hf.space/run/predict',
-      'https://Sanster-IOPaint-lama.hf.space/run/predict'
-    ];
-    const payload = { data: [gorselB64, maskeB64, 'LaMa'] };
-
-    for (const ep of endpoints) {
-      try {
-        const res = await fetch(ep, {
-          method: 'POST',
-          headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
-          body: JSON.stringify(payload),
-          signal: AbortSignal.timeout(90000)
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.data && data.data[0]) return data.data[0];
-        }
-      } catch(e) { /* devam */ }
-    }
-    throw new Error('HF Space uyanik degil. Replicate token gir veya 1-2 dk sonra tekrar dene.');
+    };
+    _img.src = _b64;
   }
 
   /* ── Canvas Kur ─────────────────────────────────────── */
-  function _canvasKur(b64) {
+  function _canvasKur() {
     const wrap = document.getElementById('badgeKlonOnizleme');
-    if (!wrap) return;
+    if (!wrap || !_img) return;
 
+    // Boyut hesapla
+    const maxW = Math.min(420, window.innerWidth - 60);
+    let w = _img.naturalWidth  || 400;
+    let h = _img.naturalHeight || 400;
+    if (w > maxW) { h = Math.round(h * maxW/w); w = maxW; }
+
+    // Ana canvas
     _canvas = document.createElement('canvas');
-    _canvas.width  = 400;
-    _canvas.height = 400;
-    _canvas.style.cssText = 'border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.3);display:block;max-width:100%;cursor:pointer';
+    _canvas.width  = w;
+    _canvas.height = h;
+    _canvas.style.cssText = 'border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.3);display:block;cursor:crosshair;touch-action:none;max-width:100%';
     _ctx = _canvas.getContext('2d');
 
-    _canvas.addEventListener('click', function(e) {
-      const rect  = _canvas.getBoundingClientRect();
-      const sx    = 400/rect.width;
-      const sy    = 400/rect.height;
-      const mx    = (e.clientX-rect.left)*sx;
-      const my    = (e.clientY-rect.top)*sy;
-      _metinler.forEach(function(mt,i) {
-        const tx = (mt.x/100)*400;
-        const ty = (mt.y/100)*400;
-        if (Math.abs(mx-tx)<80 && Math.abs(my-ty)<35) {
-          _secili = i;
-          _editAlanlariOlustur();
-          _canvasYenile();
-        }
-      });
-    });
+    // Maske canvas (şeffaf, üstte)
+    _mask = document.createElement('canvas');
+    _mask.width  = w;
+    _mask.height = h;
+    _maskCtx = _mask.getContext('2d');
 
+    // Konteyner
+    const cont = document.createElement('div');
+    cont.style.cssText = 'position:relative;display:inline-block;line-height:0';
+
+    // Üst katman (çizim için)
+    const overlay = document.createElement('canvas');
+    overlay.width  = w;
+    overlay.height = h;
+    overlay.id = 'badgeOverlay';
+    overlay.style.cssText = 'position:absolute;top:0;left:0;border-radius:10px;cursor:crosshair;touch-action:none';
+
+    cont.appendChild(_canvas);
+    cont.appendChild(overlay);
     wrap.innerHTML = '';
-    wrap.appendChild(_canvas);
+    wrap.appendChild(cont);
 
-    const img = new Image();
-    img.onload = function() {
-      _ctx.drawImage(img, 0, 0, 400, 400);
-      _metinleriCiz();
-    };
-    img.src = b64;
+    // Orijinali çiz
+    _ctx.drawImage(_img, 0, 0, w, h);
+
+    // Çizim olayları
+    _fircaOlaylariEkle(overlay, w, h);
+  }
+
+  /* ── Fırça Olayları ─────────────────────────────────── */
+  function _fircaOlaylariEkle(overlay, w, h) {
+    const ovCtx = overlay.getContext('2d');
+
+    function _pos(e) {
+      const rect = overlay.getBoundingClientRect();
+      const scaleX = w / rect.width;
+      const scaleY = h / rect.height;
+      const src = e.touches ? e.touches[0] : e;
+      return {
+        x: (src.clientX - rect.left) * scaleX,
+        y: (src.clientY - rect.top)  * scaleY
+      };
+    }
+
+    function _ciz(e) {
+      if (!_ciziyorMu || _mod !== 'fırca') return;
+      e.preventDefault();
+      const p = _pos(e);
+
+      // Overlay'e kırmızı yarı şeffaf fırça
+      ovCtx.beginPath();
+      ovCtx.arc(p.x, p.y, _fircaBoyut/2, 0, Math.PI*2);
+      ovCtx.fillStyle = 'rgba(239,68,68,0.45)';
+      ovCtx.fill();
+
+      // Maskeye beyaz (silinecek alan)
+      _maskCtx.beginPath();
+      _maskCtx.arc(p.x, p.y, _fircaBoyut/2, 0, Math.PI*2);
+      _maskCtx.fillStyle = '#ffffff';
+      _maskCtx.fill();
+    }
+
+    overlay.addEventListener('mousedown',  function(e){ _ciziyorMu=true; _ciz(e); });
+    overlay.addEventListener('mousemove',  _ciz);
+    overlay.addEventListener('mouseup',    function(){ _ciziyorMu=false; });
+    overlay.addEventListener('mouseleave', function(){ _ciziyorMu=false; });
+    overlay.addEventListener('touchstart', function(e){ _ciziyorMu=true; _ciz(e); }, {passive:false});
+    overlay.addEventListener('touchmove',  _ciz, {passive:false});
+    overlay.addEventListener('touchend',   function(){ _ciziyorMu=false; });
+  }
+
+  /* ── Maskeyi Uygula (blur + fill) ───────────────────── */
+  function maskeyiUygula() {
+    if (!_ctx || !_canvas || !_img || !_mask) return;
+    const w = _canvas.width;
+    const h = _canvas.height;
+
+    // Maskedeki beyaz alanları bul
+    const maskData = _maskCtx.getImageData(0, 0, w, h);
+    const imgData  = _ctx.getImageData(0, 0, w, h);
+
+    // Her maske pikseli için çevresinden renk örnekle
+    for (let y=0; y<h; y++) {
+      for (let x=0; x<w; x++) {
+        const i = (y*w + x) * 4;
+        if (maskData.data[i] > 128) { // Beyaz = silinecek
+          // Çevreden renk al (kenara yakın pikseller)
+          let r=0, g=0, b=0, cnt=0;
+          const ornekMesafe = Math.round(_fircaBoyut * 0.8);
+          for (let dy=-ornekMesafe; dy<=ornekMesafe; dy+=2) {
+            for (let dx=-ornekMesafe; dx<=ornekMesafe; dx+=2) {
+              const nx = x+dx, ny = y+dy;
+              if (nx<0||nx>=w||ny<0||ny>=h) continue;
+              const ni = (ny*w + nx) * 4;
+              if (maskData.data[ni] > 128) continue; // Maske alanını atlat
+              r += imgData.data[ni];
+              g += imgData.data[ni+1];
+              b += imgData.data[ni+2];
+              cnt++;
+            }
+          }
+          if (cnt > 0) {
+            imgData.data[i]   = Math.round(r/cnt);
+            imgData.data[i+1] = Math.round(g/cnt);
+            imgData.data[i+2] = Math.round(b/cnt);
+          }
+        }
+      }
+    }
+
+    _ctx.putImageData(imgData, 0, 0);
+
+    // Overlay ve maskeyi temizle
+    const overlay = document.getElementById('badgeOverlay');
+    if (overlay) overlay.getContext('2d').clearRect(0,0,w,h);
+    _maskCtx.clearRect(0,0,w,h);
+
+    // Metinleri yeniden çiz
+    _metinleriCiz();
+    _durum('Temizleme tamamlandi! Simdi metin ekleyebilirsin.','success');
   }
 
   /* ── Canvas Yenile ──────────────────────────────────── */
   function _canvasYenile() {
-    if (!_ctx||!_canvas||!_temizB64) return;
-    const img = new Image();
-    img.onload = function() {
-      _ctx.clearRect(0,0,400,400);
-      _ctx.drawImage(img, 0, 0, 400, 400);
-      _metinleriCiz();
-    };
-    img.src = _temizB64;
+    if (!_ctx||!_canvas||!_img) return;
+    _ctx.drawImage(_img, 0, 0, _canvas.width, _canvas.height);
+    _metinleriCiz();
   }
 
   function _metinleriCiz() {
-    _metinler.forEach(function(mt,i) {
-      const x   = (mt.x/100)*400;
-      const y   = (mt.y/100)*400;
+    if (!_ctx) return;
+    _metinler.forEach(function(mt, i) {
+      const x    = (mt.x/100)*_canvas.width;
+      const y    = (mt.y/100)*_canvas.height;
       const stil = (mt.stil==='italic'?'italic ':'')+mt.agirlik+' '+mt.boyut+'px "Arial Black",Impact,sans-serif';
       _ctx.save();
       _ctx.font=stil; _ctx.fillStyle=mt.renk;
-      _ctx.textAlign=mt.hizalama; _ctx.textBaseline='middle';
-      _ctx.shadowColor='rgba(0,0,0,0.6)'; _ctx.shadowBlur=mt.boyut*0.12;
-      _ctx.shadowOffsetX=mt.boyut*0.05; _ctx.shadowOffsetY=mt.boyut*0.05;
+      _ctx.textAlign=mt.hizalama||'center'; _ctx.textBaseline='middle';
+      _ctx.shadowColor='rgba(0,0,0,0.65)';
+      _ctx.shadowBlur=mt.boyut*0.12; _ctx.shadowOffsetX=mt.boyut*0.05; _ctx.shadowOffsetY=mt.boyut*0.05;
       if (i===_secili) {
-        const mw = _ctx.measureText(mt.metin).width;
-        _ctx.shadowBlur=0;
-        _ctx.strokeStyle='rgba(99,102,241,0.9)'; _ctx.lineWidth=2;
-        _ctx.setLineDash([4,3]);
+        const mw=_ctx.measureText(mt.metin).width;
+        _ctx.save(); _ctx.shadowBlur=0;
+        _ctx.strokeStyle='rgba(99,102,241,0.9)'; _ctx.lineWidth=2; _ctx.setLineDash([4,3]);
         _ctx.strokeRect(x-(mt.hizalama==='center'?mw/2:0)-6, y-mt.boyut/2-4, mw+12, mt.boyut+8);
-        _ctx.setLineDash([]);
-        _ctx.shadowColor='rgba(0,0,0,0.6)'; _ctx.shadowBlur=mt.boyut*0.12;
-        _ctx.shadowOffsetX=mt.boyut*0.05; _ctx.shadowOffsetY=mt.boyut*0.05;
+        _ctx.restore();
       }
       _ctx.fillText(mt.metin, x, y);
       _ctx.restore();
@@ -4527,82 +4370,118 @@ SADECE JSON don:
   function _editAlanlariOlustur() {
     const wrap = document.getElementById('badgeMetinAlanlari');
     if (!wrap) return;
-    wrap.innerHTML = _metinler.map(function(mt,i) {
+
+    if (_metinler.length === 0) {
+      // Ilk metin otomatik ekle
+      _metinler = [{
+        id:'metin1', etiket:'Metin 1',
+        metin:'YAZI BURAYA', x:50, y:50,
+        renk:'#ffffff', boyut:28, agirlik:'900', stil:'normal', hizalama:'center'
+      }];
+    }
+
+    wrap.innerHTML = _metinler.map(function(mt, i) {
       const s = i===_secili;
       return '<div onclick="BadgeStudio.metinSec('+i+')" style="padding:10px;border-radius:8px;cursor:pointer;border:1.5px solid '+(s?'#6366f1':'rgba(255,255,255,0.07)')+';background:'+(s?'rgba(99,102,241,0.08)':'transparent')+';margin-bottom:6px">'+
         '<div style="font-size:10px;color:'+(s?'#a5b4fc':'var(--text3)')+';font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">'+mt.etiket+'</div>'+
         '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">'+
-        '<input type="text" id="bmt-'+mt.id+'" value="'+mt.metin+'" oninput="BadgeStudio.metinGuncelle()"'+
+        '<input type="text" id="bmt-'+mt.id+'" value="'+mt.metin+'" oninput="BadgeStudio.metinGuncelle()" placeholder="Metin..."'+
         ' style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text);font-family:Inter,sans-serif;outline:none">'+
         '<input type="color" value="'+mt.renk+'" id="bmc-'+mt.id+'" oninput="BadgeStudio.metinGuncelle()"'+
         ' style="width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;padding:2px;flex-shrink:0">'+
         '</div>'+
         '<div style="display:flex;gap:6px;align-items:center">'+
-        '<span style="font-size:10px;color:var(--text3);white-space:nowrap">Boyut '+mt.boyut+'px:</span>'+
-        '<input type="range" id="bms-'+mt.id+'" min="8" max="80" value="'+mt.boyut+'" oninput="BadgeStudio.metinGuncelle()"'+
+        '<span style="font-size:10px;color:var(--text3);white-space:nowrap">Boyut:</span>'+
+        '<input type="range" min="8" max="120" value="'+mt.boyut+'" id="bms-'+mt.id+'" oninput="BadgeStudio.metinGuncelle()"'+
         ' style="flex:1;accent-color:#6366f1">'+
+        '<span id="bmsv-'+mt.id+'" style="font-size:10px;color:var(--text3);min-width:28px">'+mt.boyut+'px</span>'+
         '</div>'+
         '</div>';
-    }).join('');
+    }).join('') +
+    '<button onclick="BadgeStudio.metinEkle()" style="width:100%;padding:7px;background:rgba(99,102,241,0.1);border:1px dashed rgba(99,102,241,0.3);border-radius:8px;color:#a5b4fc;font-size:12px;cursor:pointer;font-family:Inter,sans-serif;margin-top:4px">+ Yeni Metin Ekle</button>';
   }
 
-  function metinSec(i) { _secili=i; _editAlanlariOlustur(); _canvasYenile(); }
+  function metinSec(i) { _secili=i; _editAlanlariOlustur(); _metinleriCiz(); }
+
+  function metinEkle() {
+    const id = 'metin'+(Date.now());
+    _metinler.push({ id, etiket:'Metin '+(+_metinler.length+1),
+      metin:'YENİ METİN', x:50, y:50+(+_metinler.length*15),
+      renk:'#ffffff', boyut:28, agirlik:'900', stil:'normal', hizalama:'center'
+    });
+    _secili = _metinler.length - 1;
+    _editAlanlariOlustur();
+    _metinleriCiz();
+  }
 
   function metinGuncelle() {
     _metinler.forEach(function(mt) {
       const inp=document.getElementById('bmt-'+mt.id);
       const clr=document.getElementById('bmc-'+mt.id);
       const sld=document.getElementById('bms-'+mt.id);
+      const slv=document.getElementById('bmsv-'+mt.id);
       if(inp) mt.metin=inp.value;
       if(clr) mt.renk=clr.value;
-      if(sld) mt.boyut=parseInt(sld.value);
+      if(sld) { mt.boyut=parseInt(sld.value); if(slv) slv.textContent=sld.value+'px'; }
     });
-    _canvasYenile();
+    // Canvas'ı orijinalden yeniden çiz + metinleri uygula
+    if (_ctx && _img && _canvas) {
+      // Sadece metinleri güncelle (silinen alanı korumak için drawImage yapmıyoruz)
+      const imgData = _ctx.getImageData(0,0,_canvas.width,_canvas.height);
+      _ctx.putImageData(imgData, 0, 0);
+      _metinleriCiz();
+    }
+  }
+
+  /* ── Fırça Boyutu ───────────────────────────────────── */
+  function fircaBoyutuAyarla(val) {
+    _fircaBoyut = parseInt(val);
+    const el = document.getElementById('fircaBoyutLabel');
+    if (el) el.textContent = val + 'px';
   }
 
   /* ── PNG İndir ──────────────────────────────────────── */
-  async function pngIndir() {
-    if (!_canvas) { _durum('Once analiz yap.','error'); return; }
-    _durum(_spin('PNG olusturuluyor...'),'info');
+  function pngIndir() {
+    if (!_canvas) { _durum('Once gorsel yukle.','error'); return; }
 
-    const scale=4;
-    const hq=document.createElement('canvas');
-    hq.width=400*scale; hq.height=400*scale;
-    const hqCtx=hq.getContext('2d');
+    // 4x yüksek çözünürlük
+    const scale = 4;
+    const hq = document.createElement('canvas');
+    hq.width  = _canvas.width  * scale;
+    hq.height = _canvas.height * scale;
+    const hqCtx = hq.getContext('2d');
+    hqCtx.drawImage(_canvas, 0, 0, hq.width, hq.height);
 
-    await new Promise(function(res) {
-      const img=new Image();
-      img.onload=function(){ hqCtx.drawImage(img,0,0,hq.width,hq.height); res(); };
-      img.src=_temizB64;
-    });
-
+    // Metinleri 4x olarak üstüne yaz
     _metinler.forEach(function(mt) {
-      const x=(mt.x/100)*hq.width;
-      const y=(mt.y/100)*hq.height;
-      const b=mt.boyut*scale;
-      const st=(mt.stil==='italic'?'italic ':'')+mt.agirlik+' '+b+'px "Arial Black",Impact,sans-serif';
+      const x    = (mt.x/100) * hq.width;
+      const y    = (mt.y/100) * hq.height;
+      const b    = mt.boyut * scale;
+      const stil = (mt.stil==='italic'?'italic ':'')+mt.agirlik+' '+b+'px "Arial Black",Impact,sans-serif';
       hqCtx.save();
-      hqCtx.font=st; hqCtx.fillStyle=mt.renk;
-      hqCtx.textAlign=mt.hizalama; hqCtx.textBaseline='middle';
-      hqCtx.shadowColor='rgba(0,0,0,0.65)'; hqCtx.shadowBlur=b*0.12;
-      hqCtx.shadowOffsetX=b*0.05; hqCtx.shadowOffsetY=b*0.05;
-      hqCtx.fillText(mt.metin,x,y);
+      hqCtx.font=stil; hqCtx.fillStyle=mt.renk;
+      hqCtx.textAlign=mt.hizalama||'center'; hqCtx.textBaseline='middle';
+      hqCtx.shadowColor='rgba(0,0,0,0.65)';
+      hqCtx.shadowBlur=b*0.12; hqCtx.shadowOffsetX=b*0.05; hqCtx.shadowOffsetY=b*0.05;
+      hqCtx.fillText(mt.metin, x, y);
       hqCtx.restore();
     });
 
-    const a=document.createElement('a');
-    a.href=hq.toDataURL('image/png');
-    a.download='rozet-kampix.png';
+    const a = document.createElement('a');
+    a.href = hq.toDataURL('image/png');
+    a.download = 'rozet-kampix.png';
     a.click();
     _durum('PNG indirildi!','success');
   }
 
-  /* ── Drive + Sheets ─────────────────────────────────── */
+  /* ── Drive ──────────────────────────────────────────── */
   function driveYukle() {
-    if (!_canvas) { _durum('Once analiz yap.','error'); return; }
-    const pngDataUrl=_canvas.toDataURL('image/png');
+    if (!_canvas) { _durum('Once gorsel yukle.','error'); return; }
     if (typeof _kampanyaData==='undefined') window._kampanyaData={};
-    _kampanyaData=Object.assign(_kampanyaData||{},{rozet_png_b64:pngDataUrl,rozet_baslik:'Badge Studio',rozet_drive_url:''});
+    _kampanyaData = Object.assign(_kampanyaData||{}, {
+      rozet_png_b64: _canvas.toDataURL('image/png'),
+      rozet_baslik: 'Badge Studio', rozet_drive_url: ''
+    });
     exportToSheets();
     _durum('Google hesabina baglaniliyor...','info');
   }
@@ -4615,7 +4494,8 @@ SADECE JSON don:
   })();
 
   return { analiz, dosyaYukle, gorselSil, dragOver, dragLeave, drop,
-           toggleApiKey, metinGuncelle, metinSec, pngIndir, driveYukle, render };
+           toggleApiKey, metinGuncelle, metinSec, metinEkle, pngIndir, driveYukle,
+           maskeyiUygula, fircaBoyutuAyarla, render };
 })();
 
 const RozetAI      = { analiz:BadgeStudio.analiz, render:function(){}, dosyaYukle:BadgeStudio.dosyaYukle,
