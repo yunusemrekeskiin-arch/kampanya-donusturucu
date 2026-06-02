@@ -1139,9 +1139,13 @@ input[type="checkbox"] {
                   <div style="font-size:12px;color:var(--text3);margin-top:1px" id="matchDetail"></div>
                 </div>
               </div>
-              <button class="btn btn-primary" onclick="mappingDevamEt()" style="padding:8px 20px">Devam Et →</button>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <button class="btn btn-ghost" onclick="selectImageFolder()" id="folderBtnStep1" style="white-space:nowrap">📁 Görsel Klasörü Yükle</button>
+                <button class="btn btn-primary" onclick="mappingDevamEt()" style="padding:8px 20px">Devam Et →</button>
+              </div>
             </div>
             <div id="colChipsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px"></div>
+            <div id="folderStatus" style="display:none;margin-top:10px;padding:8px 12px;border-radius:8px;font-size:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;text-align:center"></div>
           </div>
         </div>
       </div>
@@ -1466,9 +1470,6 @@ input[type="checkbox"] {
             <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:16px;height:16px">
             Sheets'e Aktar
           </button>
-          <button class="btn btn-ghost" onclick="exportToSheets()" style="white-space:nowrap">
-            Veri → Sheets
-          </button>
         </div>
 
         <!-- AYIRICI -->
@@ -1477,12 +1478,10 @@ input[type="checkbox"] {
         <!-- İKİNCİL: Excel + Görsel Klasörü -->
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
-          <button class="btn btn-ghost" onclick="selectImageFolder()" id="folderBtn">📁 Görsel Klasörü</button>
           <div style="flex:1"></div>
           <button class="btn btn-ghost" onclick="window.print()">🖨 Yazdır</button>
         </div>
 
-        <div id="folderStatus" style="display:none;margin-top:2px;padding:8px 12px;border-radius:8px;font-size:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;text-align:center"></div>
         <div id="sheetsStatus"></div>
       </div>
     </div>
