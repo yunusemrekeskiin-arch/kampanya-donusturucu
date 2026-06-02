@@ -1330,6 +1330,23 @@ input[type="checkbox"] {
           </select>
         </div>
 
+        <!-- HuggingFace Token -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;padding:10px 14px;
+                    background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.2);border-radius:10px;flex-wrap:wrap">
+          <span style="font-size:16px;flex-shrink:0">🤗</span>
+          <input id="hfToken" type="password" placeholder="Hugging Face token — hf_..."
+            autocomplete="off"
+            style="flex:1;min-width:180px;background:var(--input-bg);border:1px solid var(--input-border);
+                   border-radius:8px;padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
+            oninput="localStorage.setItem('hf_token',this.value);document.getElementById('hfStatus').textContent=this.value?'✅ Kaydedildi':'Girilmedi'">
+          <button onclick="(function(){const i=document.getElementById('hfToken');i.type=i.type==='password'?'text':'password';})()"
+            style="padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
+                   border-radius:7px;color:var(--text3);font-size:13px;cursor:pointer;flex-shrink:0">👁</button>
+          <div id="hfStatus" style="font-size:11px;white-space:nowrap;color:var(--text3)">Girilmedi</div>
+          <a href="https://huggingface.co/settings/tokens" target="_blank"
+            style="font-size:11px;color:#fbbf24;text-decoration:none;white-space:nowrap;flex-shrink:0">Token al ↗</a>
+        </div>
+
         <!-- Görsel Yükleme -->
         <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Market Rozeti Görseli</div>
         <div id="badgeDropZone" onclick="document.getElementById('badgeFileInput').click()"
@@ -2133,9 +2150,16 @@ function showTable() {
   if (rozetMod) rozetMod.style.display = 'block';
   // API key input'u doldur
   document.dispatchEvent(new Event('kampanyaPanelAcildi'));
-  // Model seçimini yükle
+  // Model ve HF token yükle
   const savedModel = localStorage.getItem('rozet_model');
   if (savedModel) { const sel = document.getElementById('rozetModel'); if (sel) sel.value = savedModel; }
+  const savedHf = localStorage.getItem('hf_token');
+  if (savedHf) {
+    const hfInp = document.getElementById('hfToken');
+    const hfSt  = document.getElementById('hfStatus');
+    if (hfInp) hfInp.value = savedHf;
+    if (hfSt)  { hfSt.textContent = '✅ Kaydedildi'; hfSt.style.color = '#4ade80'; }
+  }
 }
 
 function asciiToTr(str) {
@@ -4145,16 +4169,16 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 const BadgeStudio = (() => {
 
   /* ── State ─────────────────────────────────────────── */
-  let _b64    = null;
-  let _mime   = 'image/jpeg';
-  let _canvas = null;
-  let _ctx    = null;
-  let _bgSvg  = null;   // Claude'un ürettiği arka plan SVG (metin yok)
-  let _metinler = [];   // [{id,etiket,metin,x,y,renk,boyut,agirlik,stil,hizalama}]
-  let _seciliMetin = -1;
-  let _drag = null;
+  let _b64      = null;
+  let _mime     = 'image/jpeg';
+  let _temizB64 = null;  // LaMa'dan gelen temiz gorsel
+  let _canvas   = null;
+  let _ctx      = null;
+  let _metinler = [];
+  let _secili   = -1;
 
-  const _key = () => localStorage.getItem('claude_api_key') || '';
+  const _key    = () => localStorage.getItem('claude_api_key') || '';
+  const _hfKey  = () => localStorage.getItem('hf_token') || '';
 
   /* ── Durum ─────────────────────────────────────────── */
   function _durum(html, tip) {
@@ -4174,7 +4198,7 @@ const BadgeStudio = (() => {
     return '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.25);border-top-color:currentColor;border-radius:50%;animation:spin 0.7s linear infinite"></span>'+t+'</span>';
   }
 
-  /* ── API Key toggle ─────────────────────────────────── */
+  /* ── API Key toggles ────────────────────────────────── */
   function toggleApiKey() {
     const inp = document.getElementById('kampanyaApiKey');
     const btn = document.getElementById('apiKeyToggle');
@@ -4187,24 +4211,25 @@ const BadgeStudio = (() => {
   function dosyaYukle(dosya) {
     if (!dosya) return;
     if (dosya.size > 6*1024*1024) { _durum('Maks 6MB.','error'); return; }
+    _mime = dosya.type || 'image/jpeg';
     const reader = new FileReader();
     reader.onload = function(e) {
       _b64 = e.target.result;
-      _mime = dosya.type || 'image/jpeg';
+      _temizB64 = null;
       document.getElementById('badgeRefImg').src = _b64;
       document.getElementById('badgeRefIsim').textContent = dosya.name;
       document.getElementById('badgeRefOnizleme').style.display = 'flex';
       document.getElementById('badgeUploadLabel').textContent = '✅ Hazır — "Rozeti Analiz Et" butonuna bas';
       document.getElementById('badgeUploadIkon').textContent = '✅';
-      _durum('Gorsel yuklendi. Analiz Et butonuna bas.','info');
+      _durum('Gorsel yuklendi.','info');
     };
     reader.readAsDataURL(dosya);
   }
 
   function gorselSil() {
-    _b64=null; _canvas=null; _ctx=null; _bgSvg=null; _metinler=[]; _seciliMetin=-1;
+    _b64=null; _temizB64=null; _canvas=null; _ctx=null; _metinler=[]; _secili=-1;
     document.getElementById('badgeRefOnizleme').style.display='none';
-    document.getElementById('badgeUploadLabel').textContent='Migros, CarrefourSA, BIM, A101, SOK rozeti yukle';
+    document.getElementById('badgeUploadLabel').textContent='Market rozeti yukle';
     document.getElementById('badgeUploadIkon').textContent='🏷️';
     document.getElementById('badgeFileInput').value='';
     document.getElementById('badgeSonuc').style.display='none';
@@ -4218,7 +4243,8 @@ const BadgeStudio = (() => {
 
   /* ── ANA ANALİZ ─────────────────────────────────────── */
   async function analiz() {
-    if (!_key()) { _durum('API anahtari girilmedi.','error'); return; }
+    if (!_key()) { _durum('Claude API anahtari girilmedi.','error'); return; }
+    if (!_hfKey()) { _durum('Hugging Face token girilmedi.','error'); return; }
     if (!_b64)   { _durum('Once gorsel yukle.','error'); return; }
 
     const btn  = document.getElementById('badgeAnalizBtn');
@@ -4229,46 +4255,13 @@ const BadgeStudio = (() => {
     if(ikon) ikon.textContent = '⏳';
     document.getElementById('badgeBos').style.display = 'none';
     document.getElementById('badgeSonuc').style.display = 'none';
-    _durum(_spin('Claude rozet seklini analiz ediyor, metin olmadan yeniden ciziyor...'),'info');
-
-    const model = document.getElementById('rozetModel')?.value || 'claude-opus-4-7';
-
-    const prompt = `Bu market kampanya rozetini analiz et.
-
-AMAC: Bu rozetin SADECE arka planini, seklini ve efektlerini SVG ile yeniden ciz.
-METINLERI CIZME — sadece geometri, renkler, gradientlar, golge efektleri.
-
-TEKNIK GEREKSINIMLER:
-- viewBox="0 0 400 400" width="400" height="400"
-- Rozetin tam seklini (daire, starburst, ribbon vb.) ciz
-- Gorseldeki renkleri ve gradientlari AYNEN kullan
-- Golge, highlight, derinlik efektlerini ekle
-- Hicbir text elementi EKLEME
-- Dis kaynak kullanma
-
-Ayrica rozetteki her metin icin pozisyon bilgisi ver.
-
-SADECE JSON don:
-{
-  "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\" width=\"400\" height=\"400\">...</svg>",
-  "metinler": [
-    {
-      "id": "baslik",
-      "etiket": "Ana Baslik",
-      "varsayilan": "SUPER FIRSATLAR",
-      "x_yuzde": 50,
-      "y_yuzde": 35,
-      "renk": "#ffffff",
-      "boyut": 32,
-      "agirlik": "900",
-      "stil": "italic",
-      "hizalama": "center"
-    }
-  ]
-}`;
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      /* ADIM 1: Claude metin alanlarini tespit et */
+      _durum(_spin('Adim 1/3 — Claude metin pozisyonlarini tespit ediyor...'),'info');
+      const model = document.getElementById('rozetModel')?.value || 'claude-opus-4-7';
+
+      const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -4278,46 +4271,57 @@ SADECE JSON don:
         },
         body: JSON.stringify({
           model: model,
-          max_tokens: 4000,
+          max_tokens: 1200,
           messages: [{
             role: 'user',
             content: [
               { type: 'image', source: { type: 'base64', media_type: _mime, data: _b64.split(',')[1] } },
-              { type: 'text', text: prompt }
+              { type: 'text', text: `Bu rozetteki TUM metin alanlarini tespit et.
+Her metin icin inpainting maskesi icin bounding box ver (0-100 yuzde).
+Bounding box'lari biraz BUYUT — metnin etrafinda 5-8px bosluk birak.
+
+SADECE JSON don:
+{
+  "genislik": 400,
+  "yukseklik": 400,
+  "maskeler": [
+    {"x": 10, "y": 20, "genislik": 80, "yukseklik": 25}
+  ],
+  "metinler": [
+    {"id": "baslik", "etiket": "Ana Baslik", "varsayilan": "SUPER FIRSATLAR",
+     "x_yuzde": 50, "y_yuzde": 32, "renk": "#ffffff", "boyut": 32,
+     "agirlik": "900", "stil": "italic", "hizalama": "center"}
+  ]
+}` }
             ]
           }]
         })
       });
 
-      if (!res.ok) {
-        const e = await res.json().catch(function(){return {};});
-        throw new Error(e.error ? e.error.message : 'HTTP '+res.status);
-      }
+      if (!claudeRes.ok) throw new Error('Claude API hatasi: ' + claudeRes.status);
+      const claudeData = await claudeRes.json();
+      const ham = (claudeData.content[0].text||'').replace(/```json\s*/g,'').replace(/```/g,'').trim();
+      const parsed = JSON.parse(ham.match(/\{[\s\S]*\}/)[0]);
 
-      const data = await res.json();
-      const ham = (data.content[0].text||'').replace(/```json\s*/g,'').replace(/```/g,'').trim();
-      const m = ham.match(/\{[\s\S]*\}/);
-      if (!m) throw new Error('Yanit parse edilemedi.');
-      const parsed = JSON.parse(m[0]);
-      if (!parsed.svg) throw new Error('SVG uretilmedi.');
-
-      _bgSvg = parsed.svg;
       _metinler = (parsed.metinler||[]).map(function(mt) {
-        return {
-          id: mt.id, etiket: mt.etiket,
-          metin: mt.varsayilan || '',
-          x: mt.x_yuzde || 50, y: mt.y_yuzde || 50,
-          renk: mt.renk || '#ffffff',
-          boyut: mt.boyut || 28,
-          agirlik: mt.agirlik || '900',
-          stil: mt.stil || 'normal',
-          hizalama: mt.hizalama || 'center'
-        };
+        return { id:mt.id, etiket:mt.etiket, metin:mt.varsayilan||'',
+                 x:mt.x_yuzde||50, y:mt.y_yuzde||50, renk:mt.renk||'#ffffff',
+                 boyut:mt.boyut||28, agirlik:mt.agirlik||'900',
+                 stil:mt.stil||'normal', hizalama:mt.hizalama||'center' };
       });
 
-      _canvasKur();
+      /* ADIM 2: Maske canvas'i olustur */
+      _durum(_spin('Adim 2/3 — Metin maskesi olusturuluyor...'),'info');
+      const maskeB64 = await _maskeOlustur(parsed.maskeler || [], parsed.genislik||400, parsed.yukseklik||400);
+
+      /* ADIM 3: LaMa inpainting */
+      _durum(_spin('Adim 3/3 — LaMa metinleri siliyor (30-60sn surebilir)...'),'info');
+      _temizB64 = await _lamaInpaint(_b64, maskeB64);
+
+      /* Canvas kur */
+      _canvasKur(_temizB64);
       _editAlanlariOlustur();
-      _durum('Rozet olusturuldu! Metinleri duzenle, surukle konumla.','success');
+      _durum('Temiz arka plan hazir! Metinleri duzenle.','success');
       document.getElementById('badgeBos').style.display = 'none';
       document.getElementById('badgeSonuc').style.display = 'block';
 
@@ -4331,30 +4335,105 @@ SADECE JSON don:
     if(ikon) ikon.textContent = '🔍';
   }
 
+  /* ── Maske Oluştur ──────────────────────────────────── */
+  function _maskeOlustur(maskeler, gw, gh) {
+    return new Promise(function(resolve) {
+      const c = document.createElement('canvas');
+      c.width = gw; c.height = gh;
+      const ctx = c.getContext('2d');
+      // Siyah zemin (korunacak alan)
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0,0,gw,gh);
+      // Beyaz = silinecek metin alanlari
+      ctx.fillStyle = '#ffffff';
+      maskeler.forEach(function(m) {
+        const x = (m.x/100)*gw;
+        const y = (m.y/100)*gh;
+        const w = (m.genislik/100)*gw;
+        const h = (m.yukseklik/100)*gh;
+        ctx.fillRect(x, y, w, h);
+      });
+      resolve(c.toDataURL('image/png'));
+    });
+  }
+
+  /* ── LaMa Inpainting ────────────────────────────────── */
+  async function _lamaInpaint(gorselB64, maskeB64) {
+    const token = _hfKey();
+
+    // Base64'ten blob'a cevir
+    function b64toBlob(b64, mime) {
+      const byteStr = atob(b64.split(',')[1]);
+      const ab = new ArrayBuffer(byteStr.length);
+      const ia = new Uint8Array(ab);
+      for (let i=0; i<byteStr.length; i++) ia[i] = byteStr.charCodeAt(i);
+      return new Blob([ab], {type: mime});
+    }
+
+    const formData = new FormData();
+    formData.append('image', b64toBlob(gorselB64, 'image/png'), 'image.png');
+    formData.append('mask',  b64toBlob(maskeB64,  'image/png'), 'mask.png');
+
+    const res = await fetch('https://huggingface.co/spaces/QuanSun/EVF-SAM/api/predict', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: formData
+    });
+
+    // Alternatif: lama-cleaner space
+    if (!res.ok) {
+      // lama-cleaner dene
+      const formData2 = new FormData();
+      formData2.append('image', b64toBlob(gorselB64, 'image/png'), 'image.png');
+      formData2.append('mask',  b64toBlob(maskeB64,  'image/png'), 'mask.png');
+
+      const res2 = await fetch('https://huggingface.co/spaces/Sanster/lama-cleaner-lama/api/predict', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          data: [
+            gorselB64,
+            maskeB64,
+            'LaMa'
+          ]
+        })
+      });
+      if (!res2.ok) throw new Error('LaMa API erisim hatasi. Token dogru mu?');
+      const data2 = await res2.json();
+      if (data2.data && data2.data[0]) return data2.data[0];
+      throw new Error('LaMa sonuc donmedi.');
+    }
+
+    const data = await res.json();
+    if (data.data && data.data[0]) return data.data[0];
+    throw new Error('Inpainting sonucu alinamadi.');
+  }
+
   /* ── Canvas Kur ─────────────────────────────────────── */
-  function _canvasKur() {
+  function _canvasKur(b64) {
     const wrap = document.getElementById('badgeKlonOnizleme');
     if (!wrap) return;
 
     _canvas = document.createElement('canvas');
     _canvas.width  = 400;
     _canvas.height = 400;
-    _canvas.style.cssText = 'border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.3);display:block;max-width:100%;cursor:crosshair';
+    _canvas.style.cssText = 'border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.3);display:block;max-width:100%;cursor:pointer';
     _ctx = _canvas.getContext('2d');
 
-    // Tiklama ile metin secimi
     _canvas.addEventListener('click', function(e) {
-      const rect = _canvas.getBoundingClientRect();
-      const scaleX = 400 / rect.width;
-      const scaleY = 400 / rect.height;
-      const mx = (e.clientX - rect.left) * scaleX;
-      const my = (e.clientY - rect.top)  * scaleY;
-
-      _metinler.forEach(function(mt, i) {
+      const rect  = _canvas.getBoundingClientRect();
+      const sx    = 400/rect.width;
+      const sy    = 400/rect.height;
+      const mx    = (e.clientX-rect.left)*sx;
+      const my    = (e.clientY-rect.top)*sy;
+      _metinler.forEach(function(mt,i) {
         const tx = (mt.x/100)*400;
         const ty = (mt.y/100)*400;
-        if (Math.abs(mx-tx)<80 && Math.abs(my-ty)<30) {
-          _seciliMetin = i;
+        if (Math.abs(mx-tx)<80 && Math.abs(my-ty)<35) {
+          _secili = i;
           _editAlanlariOlustur();
           _canvasYenile();
         }
@@ -4363,62 +4442,47 @@ SADECE JSON don:
 
     wrap.innerHTML = '';
     wrap.appendChild(_canvas);
-    _canvasYenile();
+
+    const img = new Image();
+    img.onload = function() {
+      _ctx.drawImage(img, 0, 0, 400, 400);
+      _metinleriCiz();
+    };
+    img.src = b64;
   }
 
   /* ── Canvas Yenile ──────────────────────────────────── */
   function _canvasYenile() {
-    if (!_ctx || !_canvas) return;
-    _ctx.clearRect(0,0,400,400);
-
-    // 1) SVG arka plani ciz
-    if (_bgSvg) {
-      const blob = new Blob([_bgSvg], {type:'image/svg+xml'});
-      const url  = URL.createObjectURL(blob);
-      const img  = new Image();
-      img.onload = function() {
-        _ctx.drawImage(img, 0, 0, 400, 400);
-        URL.revokeObjectURL(url);
-        // 2) Metinleri uzerine yaz
-        _metinleriCiz();
-      };
-      img.src = url;
-    } else {
+    if (!_ctx||!_canvas||!_temizB64) return;
+    const img = new Image();
+    img.onload = function() {
+      _ctx.clearRect(0,0,400,400);
+      _ctx.drawImage(img, 0, 0, 400, 400);
       _metinleriCiz();
-    }
+    };
+    img.src = _temizB64;
   }
 
   function _metinleriCiz() {
-    _metinler.forEach(function(mt, i) {
+    _metinler.forEach(function(mt,i) {
       const x   = (mt.x/100)*400;
       const y   = (mt.y/100)*400;
-      const stil = (mt.stil==='italic'?'italic ':'') + mt.agirlik + ' ' + mt.boyut + 'px "Arial Black",Impact,sans-serif';
-
+      const stil = (mt.stil==='italic'?'italic ':'')+mt.agirlik+' '+mt.boyut+'px "Arial Black",Impact,sans-serif';
       _ctx.save();
-      _ctx.font = stil;
-      _ctx.fillStyle    = mt.renk;
-      _ctx.textAlign    = mt.hizalama;
-      _ctx.textBaseline = 'middle';
-      _ctx.shadowColor   = 'rgba(0,0,0,0.6)';
-      _ctx.shadowBlur    = mt.boyut * 0.1;
-      _ctx.shadowOffsetX = mt.boyut * 0.04;
-      _ctx.shadowOffsetY = mt.boyut * 0.04;
-
-      // Secili metni vurgula
-      if (i === _seciliMetin) {
+      _ctx.font=stil; _ctx.fillStyle=mt.renk;
+      _ctx.textAlign=mt.hizalama; _ctx.textBaseline='middle';
+      _ctx.shadowColor='rgba(0,0,0,0.6)'; _ctx.shadowBlur=mt.boyut*0.12;
+      _ctx.shadowOffsetX=mt.boyut*0.05; _ctx.shadowOffsetY=mt.boyut*0.05;
+      if (i===_secili) {
         const mw = _ctx.measureText(mt.metin).width;
-        _ctx.shadowBlur = 0;
-        _ctx.strokeStyle = 'rgba(99,102,241,0.8)';
-        _ctx.lineWidth = 2;
+        _ctx.shadowBlur=0;
+        _ctx.strokeStyle='rgba(99,102,241,0.9)'; _ctx.lineWidth=2;
         _ctx.setLineDash([4,3]);
         _ctx.strokeRect(x-(mt.hizalama==='center'?mw/2:0)-6, y-mt.boyut/2-4, mw+12, mt.boyut+8);
         _ctx.setLineDash([]);
-        _ctx.shadowColor   = 'rgba(0,0,0,0.6)';
-        _ctx.shadowBlur    = mt.boyut * 0.1;
-        _ctx.shadowOffsetX = mt.boyut * 0.04;
-        _ctx.shadowOffsetY = mt.boyut * 0.04;
+        _ctx.shadowColor='rgba(0,0,0,0.6)'; _ctx.shadowBlur=mt.boyut*0.12;
+        _ctx.shadowOffsetX=mt.boyut*0.05; _ctx.shadowOffsetY=mt.boyut*0.05;
       }
-
       _ctx.fillText(mt.metin, x, y);
       _ctx.restore();
     });
@@ -4428,100 +4492,72 @@ SADECE JSON don:
   function _editAlanlariOlustur() {
     const wrap = document.getElementById('badgeMetinAlanlari');
     if (!wrap) return;
-    wrap.innerHTML = _metinler.map(function(mt, i) {
-      const secili = i === _seciliMetin;
-      return '<div onclick="BadgeStudio.metinSec('+i+')" style="padding:10px;border-radius:8px;cursor:pointer;border:1.5px solid '+(secili?'#6366f1':'rgba(255,255,255,0.07)')+';background:'+(secili?'rgba(99,102,241,0.08)':'transparent')+';transition:all 0.15s">' +
-        '<div style="font-size:10px;color:'+(secili?'#a5b4fc':'var(--text3)')+';font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">'+mt.etiket+'</div>' +
-        '<div style="display:flex;gap:6px;align-items:center">' +
-        '<input type="text" id="bmt-'+mt.id+'" value="'+mt.metin+'"' +
-        ' style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text);font-family:Inter,sans-serif;outline:none"' +
-        ' oninput="BadgeStudio.metinGuncelle()">' +
-        '<input type="color" value="'+mt.renk+'" id="bmc-'+mt.id+'"' +
-        ' style="width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;padding:2px;flex-shrink:0"' +
-        ' oninput="BadgeStudio.metinGuncelle()">' +
-        '</div>' +
-        '<div style="display:flex;gap:6px;margin-top:6px;align-items:center">' +
-        '<span style="font-size:10px;color:var(--text3)">Boyut:</span>' +
-        '<input type="range" id="bms-'+mt.id+'" min="10" max="80" value="'+mt.boyut+'"' +
-        ' style="flex:1;accent-color:#6366f1"' +
-        ' oninput="BadgeStudio.metinGuncelle()">' +
-        '<span id="bmsv-'+mt.id+'" style="font-size:10px;color:var(--text3);min-width:24px">'+mt.boyut+'</span>' +
-        '</div>' +
+    wrap.innerHTML = _metinler.map(function(mt,i) {
+      const s = i===_secili;
+      return '<div onclick="BadgeStudio.metinSec('+i+')" style="padding:10px;border-radius:8px;cursor:pointer;border:1.5px solid '+(s?'#6366f1':'rgba(255,255,255,0.07)')+';background:'+(s?'rgba(99,102,241,0.08)':'transparent')+';margin-bottom:6px">'+
+        '<div style="font-size:10px;color:'+(s?'#a5b4fc':'var(--text3)')+';font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">'+mt.etiket+'</div>'+
+        '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">'+
+        '<input type="text" id="bmt-'+mt.id+'" value="'+mt.metin+'" oninput="BadgeStudio.metinGuncelle()"'+
+        ' style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text);font-family:Inter,sans-serif;outline:none">'+
+        '<input type="color" value="'+mt.renk+'" id="bmc-'+mt.id+'" oninput="BadgeStudio.metinGuncelle()"'+
+        ' style="width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;padding:2px;flex-shrink:0">'+
+        '</div>'+
+        '<div style="display:flex;gap:6px;align-items:center">'+
+        '<span style="font-size:10px;color:var(--text3);white-space:nowrap">Boyut '+mt.boyut+'px:</span>'+
+        '<input type="range" id="bms-'+mt.id+'" min="8" max="80" value="'+mt.boyut+'" oninput="BadgeStudio.metinGuncelle()"'+
+        ' style="flex:1;accent-color:#6366f1">'+
+        '</div>'+
         '</div>';
     }).join('');
   }
 
-  function metinSec(i) {
-    _seciliMetin = i;
-    _editAlanlariOlustur();
-    _canvasYenile();
-  }
+  function metinSec(i) { _secili=i; _editAlanlariOlustur(); _canvasYenile(); }
 
-  /* ── Metin Güncelle ─────────────────────────────────── */
   function metinGuncelle() {
     _metinler.forEach(function(mt) {
-      const inp = document.getElementById('bmt-'+mt.id);
-      const clr = document.getElementById('bmc-'+mt.id);
-      const sldr = document.getElementById('bms-'+mt.id);
-      const sldrv = document.getElementById('bmsv-'+mt.id);
-      if (inp) mt.metin = inp.value;
-      if (clr) mt.renk  = clr.value;
-      if (sldr) { mt.boyut = parseInt(sldr.value); if(sldrv) sldrv.textContent = sldr.value; }
+      const inp=document.getElementById('bmt-'+mt.id);
+      const clr=document.getElementById('bmc-'+mt.id);
+      const sld=document.getElementById('bms-'+mt.id);
+      if(inp) mt.metin=inp.value;
+      if(clr) mt.renk=clr.value;
+      if(sld) mt.boyut=parseInt(sld.value);
     });
     _canvasYenile();
   }
 
-  /* ── PNG İndir (şeffaf) ─────────────────────────────── */
+  /* ── PNG İndir ──────────────────────────────────────── */
   async function pngIndir() {
     if (!_canvas) { _durum('Once analiz yap.','error'); return; }
+    _durum(_spin('PNG olusturuluyor...'),'info');
 
-    _durum(_spin('Yuksek cozunurluklu PNG olusturuluyor...'),'info');
+    const scale=4;
+    const hq=document.createElement('canvas');
+    hq.width=400*scale; hq.height=400*scale;
+    const hqCtx=hq.getContext('2d');
 
-    // 4x boyutunda yeniden ciz
-    const scale = 4;
-    const hq = document.createElement('canvas');
-    hq.width  = 400 * scale;
-    hq.height = 400 * scale;
-    const hqCtx = hq.getContext('2d');
+    await new Promise(function(res) {
+      const img=new Image();
+      img.onload=function(){ hqCtx.drawImage(img,0,0,hq.width,hq.height); res(); };
+      img.src=_temizB64;
+    });
 
-    // SVG arkaplan
-    if (_bgSvg) {
-      await new Promise(function(resolve) {
-        const blob = new Blob([_bgSvg], {type:'image/svg+xml'});
-        const url  = URL.createObjectURL(blob);
-        const img  = new Image();
-        img.onload = function() {
-          hqCtx.drawImage(img, 0, 0, hq.width, hq.height);
-          URL.revokeObjectURL(url);
-          resolve();
-        };
-        img.src = url;
-      });
-    }
-
-    // Metinleri 4x olarak yaz
     _metinler.forEach(function(mt) {
-      const x     = (mt.x/100) * hq.width;
-      const y     = (mt.y/100) * hq.height;
-      const boyut = mt.boyut * scale;
-      const stil  = (mt.stil==='italic'?'italic ':'') + mt.agirlik + ' ' + boyut + 'px "Arial Black",Impact,sans-serif';
-
+      const x=(mt.x/100)*hq.width;
+      const y=(mt.y/100)*hq.height;
+      const b=mt.boyut*scale;
+      const st=(mt.stil==='italic'?'italic ':'')+mt.agirlik+' '+b+'px "Arial Black",Impact,sans-serif';
       hqCtx.save();
-      hqCtx.font = stil;
-      hqCtx.fillStyle    = mt.renk;
-      hqCtx.textAlign    = mt.hizalama;
-      hqCtx.textBaseline = 'middle';
-      hqCtx.shadowColor   = 'rgba(0,0,0,0.65)';
-      hqCtx.shadowBlur    = boyut * 0.1;
-      hqCtx.shadowOffsetX = boyut * 0.04;
-      hqCtx.shadowOffsetY = boyut * 0.04;
-      hqCtx.fillText(mt.metin, x, y);
+      hqCtx.font=st; hqCtx.fillStyle=mt.renk;
+      hqCtx.textAlign=mt.hizalama; hqCtx.textBaseline='middle';
+      hqCtx.shadowColor='rgba(0,0,0,0.65)'; hqCtx.shadowBlur=b*0.12;
+      hqCtx.shadowOffsetX=b*0.05; hqCtx.shadowOffsetY=b*0.05;
+      hqCtx.fillText(mt.metin,x,y);
       hqCtx.restore();
     });
 
-    const a = document.createElement('a');
-    a.href = hq.toDataURL('image/png');
-    a.download = 'rozet-kampix.png';
+    const a=document.createElement('a');
+    a.href=hq.toDataURL('image/png');
+    a.download='rozet-kampix.png';
     a.click();
     _durum('PNG indirildi!','success');
   }
@@ -4529,13 +4565,9 @@ SADECE JSON don:
   /* ── Drive + Sheets ─────────────────────────────────── */
   function driveYukle() {
     if (!_canvas) { _durum('Once analiz yap.','error'); return; }
-    const pngDataUrl = _canvas.toDataURL('image/png');
-    if (typeof _kampanyaData === 'undefined') window._kampanyaData = {};
-    _kampanyaData = Object.assign(_kampanyaData||{}, {
-      rozet_png_b64: pngDataUrl,
-      rozet_baslik: 'Badge Studio',
-      rozet_drive_url: '',
-    });
+    const pngDataUrl=_canvas.toDataURL('image/png');
+    if (typeof _kampanyaData==='undefined') window._kampanyaData={};
+    _kampanyaData=Object.assign(_kampanyaData||{},{rozet_png_b64:pngDataUrl,rozet_baslik:'Badge Studio',rozet_drive_url:''});
     exportToSheets();
     _durum('Google hesabina baglaniliyor...','info');
   }
@@ -4543,17 +4575,17 @@ SADECE JSON don:
   function render() {}
 
   (function init() {
-    const m = localStorage.getItem('rozet_model');
-    if (m) { const s=document.getElementById('rozetModel'); if(s) s.value=m; }
+    const m=localStorage.getItem('rozet_model');
+    if(m){ const s=document.getElementById('rozetModel'); if(s) s.value=m; }
   })();
 
   return { analiz, dosyaYukle, gorselSil, dragOver, dragLeave, drop,
            toggleApiKey, metinGuncelle, metinSec, pngIndir, driveYukle, render };
 })();
 
-const RozetAI      = { analiz:BadgeStudio.analiz, render:function(){},
-                       dosyaYukle:BadgeStudio.dosyaYukle, gorselSil:BadgeStudio.gorselSil,
-                       dragOver:BadgeStudio.dragOver, dragLeave:BadgeStudio.dragLeave, drop:BadgeStudio.drop };
+const RozetAI      = { analiz:BadgeStudio.analiz, render:function(){}, dosyaYukle:BadgeStudio.dosyaYukle,
+                       gorselSil:BadgeStudio.gorselSil, dragOver:BadgeStudio.dragOver,
+                       dragLeave:BadgeStudio.dragLeave, drop:BadgeStudio.drop };
 const RozetManager = { render:function(){} };
 /* ── END BadgeStudio ── */
 </script>
