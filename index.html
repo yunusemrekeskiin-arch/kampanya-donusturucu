@@ -4145,16 +4145,18 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 const BadgeStudio = (() => {
 
   /* ── State ─────────────────────────────────────────── */
-  let _b64    = null;   // orijinal gorsel base64
-  let _img    = null;   // Image nesnesi
-  let _canvas = null;   // ana canvas
+  let _b64    = null;
+  let _mime   = 'image/jpeg';
+  let _canvas = null;
   let _ctx    = null;
-  let _analizSonuc = null;  // Claude analiz JSON
-  let _metinler    = [];    // [{id,etiket,x,y,renk,font,boyut,tur}]
+  let _bgSvg  = null;   // Claude'un ürettiği arka plan SVG (metin yok)
+  let _metinler = [];   // [{id,etiket,metin,x,y,renk,boyut,agirlik,stil,hizalama}]
+  let _seciliMetin = -1;
+  let _drag = null;
 
   const _key = () => localStorage.getItem('claude_api_key') || '';
 
-  /* ── Durum mesajı ───────────────────────────────────── */
+  /* ── Durum ─────────────────────────────────────────── */
   function _durum(html, tip) {
     const el = document.getElementById('badgeDurum');
     if (!el) return;
@@ -4164,7 +4166,7 @@ const BadgeStudio = (() => {
       success: 'background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2);color:#4ade80',
       error:   'background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);color:#f87171',
     };
-    el.style.cssText = 'display:block;margin-top:12px;padding:12px 16px;border-radius:10px;font-size:13px;border:1px solid transparent;' + (r[tip]||r.info);
+    el.style.cssText = 'display:block;margin-top:12px;padding:12px 16px;border-radius:10px;font-size:13px;border:1px solid transparent;'+(r[tip]||r.info);
     el.innerHTML = html;
   }
 
@@ -4177,8 +4179,8 @@ const BadgeStudio = (() => {
     const inp = document.getElementById('kampanyaApiKey');
     const btn = document.getElementById('apiKeyToggle');
     if (!inp) return;
-    inp.type = inp.type === 'password' ? 'text' : 'password';
-    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+    inp.type = inp.type==='password' ? 'text' : 'password';
+    btn.textContent = inp.type==='password' ? '👁' : '🙈';
   }
 
   /* ── Dosya Yükleme ──────────────────────────────────── */
@@ -4188,6 +4190,7 @@ const BadgeStudio = (() => {
     const reader = new FileReader();
     reader.onload = function(e) {
       _b64 = e.target.result;
+      _mime = dosya.type || 'image/jpeg';
       document.getElementById('badgeRefImg').src = _b64;
       document.getElementById('badgeRefIsim').textContent = dosya.name;
       document.getElementById('badgeRefOnizleme').style.display = 'flex';
@@ -4199,7 +4202,7 @@ const BadgeStudio = (() => {
   }
 
   function gorselSil() {
-    _b64=null; _img=null; _canvas=null; _ctx=null; _analizSonuc=null; _metinler=[];
+    _b64=null; _canvas=null; _ctx=null; _bgSvg=null; _metinler=[]; _seciliMetin=-1;
     document.getElementById('badgeRefOnizleme').style.display='none';
     document.getElementById('badgeUploadLabel').textContent='Migros, CarrefourSA, BIM, A101, SOK rozeti yukle';
     document.getElementById('badgeUploadIkon').textContent='🏷️';
@@ -4221,60 +4224,44 @@ const BadgeStudio = (() => {
     const btn  = document.getElementById('badgeAnalizBtn');
     const txt  = document.getElementById('badgeAnalizTxt');
     const ikon = document.getElementById('badgeAnalizIkon');
-    btn.disabled=true;
-    if(txt)  txt.textContent ='Analiz ediliyor...';
-    if(ikon) ikon.textContent='⏳';
-    document.getElementById('badgeBos').style.display='none';
-    document.getElementById('badgeSonuc').style.display='none';
-    _durum(_spin('Claude metin pozisyonlarini ve stilini analiz ediyor...'),'info');
+    btn.disabled = true;
+    if(txt)  txt.textContent = 'Analiz ediliyor...';
+    if(ikon) ikon.textContent = '⏳';
+    document.getElementById('badgeBos').style.display = 'none';
+    document.getElementById('badgeSonuc').style.display = 'none';
+    _durum(_spin('Claude rozet seklini analiz ediyor, metin olmadan yeniden ciziyor...'),'info');
 
     const model = document.getElementById('rozetModel')?.value || 'claude-opus-4-7';
 
-    /* Claude'dan sadece metin analizi iste */
     const prompt = `Bu market kampanya rozetini analiz et.
 
-AMAC: Rozetteki her metin elementinin pozisyonunu, fontunu ve rengini tespit et.
-Boylece kullanici orijinal gorselin uzerine yeni metinler yazdirabilecek.
+AMAC: Bu rozetin SADECE arka planini, seklini ve efektlerini SVG ile yeniden ciz.
+METINLERI CIZME — sadece geometri, renkler, gradientlar, golge efektleri.
 
-ROZET BOYUTU: Gorselin genislik ve yuksekligini piksel olarak tahmin et.
+TEKNIK GEREKSINIMLER:
+- viewBox="0 0 400 400" width="400" height="400"
+- Rozetin tam seklini (daire, starburst, ribbon vb.) ciz
+- Gorseldeki renkleri ve gradientlari AYNEN kullan
+- Golge, highlight, derinlik efektlerini ekle
+- Hicbir text elementi EKLEME
+- Dis kaynak kullanma
 
-Her metin icin su bilgileri cikar:
-- id: benzersiz kisa isim (baslik, alt_baslik, etiket, fiyat, vb.)
-- metin: gorseldeki asil metin
-- etiket: Turkce aciklama (kullanici icin)
-- x_yuzde: metnin yatay merkezi (0-100 arasi, sol=0 sag=100)
-- y_yuzde: metnin dikey merkezi (0-100 arasi, ust=0 alt=100)
-- silme_x: metnin sol kenari yuzde (0-100)
-- silme_y: metnin ust kenari yuzde (0-100)
-- silme_genislik: metnin genislik yuzdesi (0-100)
-- silme_yukseklik: metnin yukseklik yuzdesi (0-100)
-- silme_renk: metnin arkasindaki arka plan rengi hex (#234d20 gibi) — orijinal metnin ustunu kapatmak icin kullanilacak
-- renk: hex renk kodu (#ffffff gibi)
-- font_agirlik: normal|bold|900
-- font_stil: normal|italic
-- boyut_yuzde: rozet genisligine gore font buyuklugu yuzde (5-40 arasi)
-- hizalama: left|center|right
+Ayrica rozetteki her metin icin pozisyon bilgisi ver.
 
 SADECE JSON don:
 {
-  "genislik": 400,
-  "yukseklik": 400,
+  "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 400\" width=\"400\" height=\"400\">...</svg>",
   "metinler": [
     {
       "id": "baslik",
-      "metin": "SUPER FIRSATLAR",
       "etiket": "Ana Baslik",
+      "varsayilan": "SUPER FIRSATLAR",
       "x_yuzde": 50,
-      "y_yuzde": 40,
-      "silme_x": 5,
-      "silme_y": 20,
-      "silme_genislik": 90,
-      "silme_yukseklik": 35,
-      "silme_renk": "#234d20",
+      "y_yuzde": 35,
       "renk": "#ffffff",
-      "font_agirlik": "900",
-      "font_stil": "italic",
-      "boyut_yuzde": 18,
+      "boyut": 32,
+      "agirlik": "900",
+      "stil": "italic",
       "hizalama": "center"
     }
   ]
@@ -4291,11 +4278,11 @@ SADECE JSON don:
         },
         body: JSON.stringify({
           model: model,
-          max_tokens: 1500,
+          max_tokens: 4000,
           messages: [{
             role: 'user',
             content: [
-              { type: 'image', source: { type: 'base64', media_type: (_b64.match(/data:([^;]+)/)||[])[1]||'image/jpeg', data: _b64.split(',')[1] } },
+              { type: 'image', source: { type: 'base64', media_type: _mime, data: _b64.split(',')[1] } },
               { type: 'text', text: prompt }
             ]
           }]
@@ -4304,156 +4291,135 @@ SADECE JSON don:
 
       if (!res.ok) {
         const e = await res.json().catch(function(){return {};});
-        throw new Error(e.error ? e.error.message : 'HTTP ' + res.status);
+        throw new Error(e.error ? e.error.message : 'HTTP '+res.status);
       }
 
       const data = await res.json();
       const ham = (data.content[0].text||'').replace(/```json\s*/g,'').replace(/```/g,'').trim();
       const m = ham.match(/\{[\s\S]*\}/);
       if (!m) throw new Error('Yanit parse edilemedi.');
-      _analizSonuc = JSON.parse(m[0]);
-      _metinler = (_analizSonuc.metinler||[]).map(function(mt) {
-        return Object.assign({}, mt, { yeniMetin: mt.metin });
+      const parsed = JSON.parse(m[0]);
+      if (!parsed.svg) throw new Error('SVG uretilmedi.');
+
+      _bgSvg = parsed.svg;
+      _metinler = (parsed.metinler||[]).map(function(mt) {
+        return {
+          id: mt.id, etiket: mt.etiket,
+          metin: mt.varsayilan || '',
+          x: mt.x_yuzde || 50, y: mt.y_yuzde || 50,
+          renk: mt.renk || '#ffffff',
+          boyut: mt.boyut || 28,
+          agirlik: mt.agirlik || '900',
+          stil: mt.stil || 'normal',
+          hizalama: mt.hizalama || 'center'
+        };
       });
 
-      await _canvasOlustur();
+      _canvasKur();
       _editAlanlariOlustur();
-      _durum('Analiz tamamlandi! Metinleri duzenleyebilirsin.','success');
-      document.getElementById('badgeBos').style.display='none';
-      document.getElementById('badgeSonuc').style.display='block';
+      _durum('Rozet olusturuldu! Metinleri duzenle, surukle konumla.','success');
+      document.getElementById('badgeBos').style.display = 'none';
+      document.getElementById('badgeSonuc').style.display = 'block';
 
     } catch(err) {
       _durum('Hata: '+err.message,'error');
-      document.getElementById('badgeBos').style.display='flex';
+      document.getElementById('badgeBos').style.display = 'flex';
     }
 
-    btn.disabled=false;
-    if(txt)  txt.textContent ='Rozeti Analiz Et';
-    if(ikon) ikon.textContent='🔍';
+    btn.disabled = false;
+    if(txt)  txt.textContent = 'Rozeti Analiz Et';
+    if(ikon) ikon.textContent = '🔍';
   }
 
-  /* ── Canvas Oluştur ─────────────────────────────────── */
-  function _canvasOlustur() {
-    return new Promise(function(resolve) {
-      _img = new Image();
-      _img.onload = function() {
-        const wrap = document.getElementById('badgeKlonOnizleme');
-        if (!wrap) { resolve(); return; }
+  /* ── Canvas Kur ─────────────────────────────────────── */
+  function _canvasKur() {
+    const wrap = document.getElementById('badgeKlonOnizleme');
+    if (!wrap) return;
 
-        // Canvas boyutunu orijinal gorsele esitle (max 400px)
-        const maxBoyut = 400;
-        let w = _img.naturalWidth  || 400;
-        let h = _img.naturalHeight || 400;
-        if (w > maxBoyut) { h = Math.round(h * maxBoyut/w); w = maxBoyut; }
-        if (h > maxBoyut) { w = Math.round(w * maxBoyut/h); h = maxBoyut; }
+    _canvas = document.createElement('canvas');
+    _canvas.width  = 400;
+    _canvas.height = 400;
+    _canvas.style.cssText = 'border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.3);display:block;max-width:100%;cursor:crosshair';
+    _ctx = _canvas.getContext('2d');
 
-        _canvas = document.createElement('canvas');
-        _canvas.width  = w;
-        _canvas.height = h;
-        _canvas.id     = 'badgeCanvas';
-        _canvas.style.cssText = 'border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.3);display:block;max-width:100%';
-        _ctx = _canvas.getContext('2d');
+    // Tiklama ile metin secimi
+    _canvas.addEventListener('click', function(e) {
+      const rect = _canvas.getBoundingClientRect();
+      const scaleX = 400 / rect.width;
+      const scaleY = 400 / rect.height;
+      const mx = (e.clientX - rect.left) * scaleX;
+      const my = (e.clientY - rect.top)  * scaleY;
 
-        wrap.innerHTML = '';
-        wrap.appendChild(_canvas);
-
-        _canvasYenile();
-        resolve();
-      };
-      _img.crossOrigin = 'anonymous';
-      _img.src = _b64;
+      _metinler.forEach(function(mt, i) {
+        const tx = (mt.x/100)*400;
+        const ty = (mt.y/100)*400;
+        if (Math.abs(mx-tx)<80 && Math.abs(my-ty)<30) {
+          _seciliMetin = i;
+          _editAlanlariOlustur();
+          _canvasYenile();
+        }
+      });
     });
+
+    wrap.innerHTML = '';
+    wrap.appendChild(_canvas);
+    _canvasYenile();
   }
 
   /* ── Canvas Yenile ──────────────────────────────────── */
   function _canvasYenile() {
-    if (!_ctx || !_canvas || !_img) return;
-    const w = _canvas.width;
-    const h = _canvas.height;
+    if (!_ctx || !_canvas) return;
+    _ctx.clearRect(0,0,400,400);
 
-    // 1) Orijinal gorseli ciz
-    _ctx.clearRect(0,0,w,h);
-    _ctx.drawImage(_img, 0, 0, w, h);
+    // 1) SVG arka plani ciz
+    if (_bgSvg) {
+      const blob = new Blob([_bgSvg], {type:'image/svg+xml'});
+      const url  = URL.createObjectURL(blob);
+      const img  = new Image();
+      img.onload = function() {
+        _ctx.drawImage(img, 0, 0, 400, 400);
+        URL.revokeObjectURL(url);
+        // 2) Metinleri uzerine yaz
+        _metinleriCiz();
+      };
+      img.src = url;
+    } else {
+      _metinleriCiz();
+    }
+  }
 
-    _metinler.forEach(function(mt) {
-      const metin = mt.yeniMetin || mt.metin;
-      const x     = (mt.x_yuzde/100) * w;
-      const y     = (mt.y_yuzde/100) * h;
-      const boyut = Math.round((mt.boyut_yuzde/100) * w);
-      const stil  = (mt.font_stil==='italic'?'italic ':'') + mt.font_agirlik + ' ' + boyut + 'px "Arial Black",Impact,sans-serif';
+  function _metinleriCiz() {
+    _metinler.forEach(function(mt, i) {
+      const x   = (mt.x/100)*400;
+      const y   = (mt.y/100)*400;
+      const stil = (mt.stil==='italic'?'italic ':'') + mt.agirlik + ' ' + mt.boyut + 'px "Arial Black",Impact,sans-serif';
 
-      if (mt.silme_x !== undefined) {
-        const sx = Math.floor((mt.silme_x/100) * w);
-        const sy = Math.floor((mt.silme_y/100) * h);
-        const sw = Math.floor((mt.silme_genislik/100) * w);
-        const sh = Math.floor((mt.silme_yukseklik/100) * h);
+      _ctx.save();
+      _ctx.font = stil;
+      _ctx.fillStyle    = mt.renk;
+      _ctx.textAlign    = mt.hizalama;
+      _ctx.textBaseline = 'middle';
+      _ctx.shadowColor   = 'rgba(0,0,0,0.6)';
+      _ctx.shadowBlur    = mt.boyut * 0.1;
+      _ctx.shadowOffsetX = mt.boyut * 0.04;
+      _ctx.shadowOffsetY = mt.boyut * 0.04;
 
-        // 2) Cevresinden renk ornekle (4 kenar, 5px genislikte)
-        const ornekler = [];
-        const ornekKalinlik = Math.max(3, Math.floor(w * 0.015));
-
-        // Ust kenar
-        if (sy - ornekKalinlik >= 0) {
-          const d = _ctx.getImageData(sx, Math.max(0, sy - ornekKalinlik), sw, ornekKalinlik).data;
-          for (let i = 0; i < d.length; i += 4) ornekler.push([d[i], d[i+1], d[i+2]]);
-        }
-        // Alt kenar
-        if (sy + sh + ornekKalinlik <= h) {
-          const d = _ctx.getImageData(sx, sy + sh, sw, ornekKalinlik).data;
-          for (let i = 0; i < d.length; i += 4) ornekler.push([d[i], d[i+1], d[i+2]]);
-        }
-        // Sol kenar
-        if (sx - ornekKalinlik >= 0) {
-          const d = _ctx.getImageData(Math.max(0, sx - ornekKalinlik), sy, ornekKalinlik, sh).data;
-          for (let i = 0; i < d.length; i += 4) ornekler.push([d[i], d[i+1], d[i+2]]);
-        }
-        // Sag kenar
-        if (sx + sw + ornekKalinlik <= w) {
-          const d = _ctx.getImageData(sx + sw, sy, ornekKalinlik, sh).data;
-          for (let i = 0; i < d.length; i += 4) ornekler.push([d[i], d[i+1], d[i+2]]);
-        }
-
-        // Ortalama rengi hesapla
-        let r = 0, g = 0, b = 0;
-        if (ornekler.length > 0) {
-          ornekler.forEach(function(c) { r += c[0]; g += c[1]; b += c[2]; });
-          r = Math.round(r / ornekler.length);
-          g = Math.round(g / ornekler.length);
-          b = Math.round(b / ornekler.length);
-        } else {
-          // Orneklenemezse claude'un verdigi rengi kullan
-          const fallback = mt.silme_renk || '#000000';
-          const fr = parseInt(fallback.slice(1,3),16);
-          const fg = parseInt(fallback.slice(3,5),16);
-          const fb = parseInt(fallback.slice(5,7),16);
-          r=fr; g=fg; b=fb;
-        }
-
-        // 3) Gradient ile sil (keskin gecisi yumusat)
-        const grad = _ctx.createRadialGradient(
-          sx + sw/2, sy + sh/2, Math.min(sw,sh) * 0.1,
-          sx + sw/2, sy + sh/2, Math.max(sw,sh) * 0.75
-        );
-        grad.addColorStop(0,   'rgba('+r+','+g+','+b+',1)');
-        grad.addColorStop(0.7, 'rgba('+r+','+g+','+b+',1)');
-        grad.addColorStop(1,   'rgba('+r+','+g+','+b+',0.6)');
-        _ctx.save();
-        _ctx.fillStyle = grad;
-        _ctx.fillRect(sx, sy, sw, sh);
-        _ctx.restore();
+      // Secili metni vurgula
+      if (i === _seciliMetin) {
+        const mw = _ctx.measureText(mt.metin).width;
+        _ctx.shadowBlur = 0;
+        _ctx.strokeStyle = 'rgba(99,102,241,0.8)';
+        _ctx.lineWidth = 2;
+        _ctx.setLineDash([4,3]);
+        _ctx.strokeRect(x-(mt.hizalama==='center'?mw/2:0)-6, y-mt.boyut/2-4, mw+12, mt.boyut+8);
+        _ctx.setLineDash([]);
+        _ctx.shadowColor   = 'rgba(0,0,0,0.6)';
+        _ctx.shadowBlur    = mt.boyut * 0.1;
+        _ctx.shadowOffsetX = mt.boyut * 0.04;
+        _ctx.shadowOffsetY = mt.boyut * 0.04;
       }
 
-      // 4) Yeni metni yaz
-      _ctx.save();
-      _ctx.font         = stil;
-      _ctx.fillStyle    = mt.renk || '#ffffff';
-      _ctx.textAlign    = mt.hizalama || 'center';
-      _ctx.textBaseline = 'middle';
-      _ctx.shadowColor   = 'rgba(0,0,0,0.65)';
-      _ctx.shadowBlur    = Math.max(2, boyut * 0.1);
-      _ctx.shadowOffsetX = Math.max(1, boyut * 0.04);
-      _ctx.shadowOffsetY = Math.max(1, boyut * 0.04);
-      _ctx.fillText(metin, x, y);
+      _ctx.fillText(mt.metin, x, y);
       _ctx.restore();
     });
   }
@@ -4462,70 +4428,100 @@ SADECE JSON don:
   function _editAlanlariOlustur() {
     const wrap = document.getElementById('badgeMetinAlanlari');
     if (!wrap) return;
-    wrap.innerHTML = _metinler.map(function(mt) {
-      return '<div style="display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center">' +
-        '<div>' +
-        '<div style="font-size:10px;color:var(--text3);font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.05em">' + mt.etiket + '</div>' +
-        '<input type="text" id="bmt-' + mt.id + '" value="' + (mt.metin||'') + '"' +
-        ' style="width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:6px 10px;font-size:13px;font-weight:600;color:var(--text);font-family:Inter,sans-serif;outline:none;box-sizing:border-box"' +
+    wrap.innerHTML = _metinler.map(function(mt, i) {
+      const secili = i === _seciliMetin;
+      return '<div onclick="BadgeStudio.metinSec('+i+')" style="padding:10px;border-radius:8px;cursor:pointer;border:1.5px solid '+(secili?'#6366f1':'rgba(255,255,255,0.07)')+';background:'+(secili?'rgba(99,102,241,0.08)':'transparent')+';transition:all 0.15s">' +
+        '<div style="font-size:10px;color:'+(secili?'#a5b4fc':'var(--text3)')+';font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">'+mt.etiket+'</div>' +
+        '<div style="display:flex;gap:6px;align-items:center">' +
+        '<input type="text" id="bmt-'+mt.id+'" value="'+mt.metin+'"' +
+        ' style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text);font-family:Inter,sans-serif;outline:none"' +
+        ' oninput="BadgeStudio.metinGuncelle()">' +
+        '<input type="color" value="'+mt.renk+'" id="bmc-'+mt.id+'"' +
+        ' style="width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;padding:2px;flex-shrink:0"' +
         ' oninput="BadgeStudio.metinGuncelle()">' +
         '</div>' +
-        '<input type="color" value="' + (mt.renk||'#ffffff') + '" id="bmc-' + mt.id + '"' +
-        ' style="width:32px;height:32px;border:none;border-radius:6px;cursor:pointer;padding:2px;margin-top:16px"' +
+        '<div style="display:flex;gap:6px;margin-top:6px;align-items:center">' +
+        '<span style="font-size:10px;color:var(--text3)">Boyut:</span>' +
+        '<input type="range" id="bms-'+mt.id+'" min="10" max="80" value="'+mt.boyut+'"' +
+        ' style="flex:1;accent-color:#6366f1"' +
         ' oninput="BadgeStudio.metinGuncelle()">' +
+        '<span id="bmsv-'+mt.id+'" style="font-size:10px;color:var(--text3);min-width:24px">'+mt.boyut+'</span>' +
+        '</div>' +
         '</div>';
     }).join('');
+  }
+
+  function metinSec(i) {
+    _seciliMetin = i;
+    _editAlanlariOlustur();
+    _canvasYenile();
   }
 
   /* ── Metin Güncelle ─────────────────────────────────── */
   function metinGuncelle() {
     _metinler.forEach(function(mt) {
-      const inp = document.getElementById('bmt-' + mt.id);
-      const clr = document.getElementById('bmc-' + mt.id);
-      if (inp) mt.yeniMetin = inp.value;
-      if (clr) mt.renk = clr.value;
+      const inp = document.getElementById('bmt-'+mt.id);
+      const clr = document.getElementById('bmc-'+mt.id);
+      const sldr = document.getElementById('bms-'+mt.id);
+      const sldrv = document.getElementById('bmsv-'+mt.id);
+      if (inp) mt.metin = inp.value;
+      if (clr) mt.renk  = clr.value;
+      if (sldr) { mt.boyut = parseInt(sldr.value); if(sldrv) sldrv.textContent = sldr.value; }
     });
     _canvasYenile();
   }
 
-  /* ── Şeffaf PNG İndir ───────────────────────────────── */
-  function pngIndir() {
+  /* ── PNG İndir (şeffaf) ─────────────────────────────── */
+  async function pngIndir() {
     if (!_canvas) { _durum('Once analiz yap.','error'); return; }
 
-    // 4x boyutunda yuksek cozunurluklu canvas
+    _durum(_spin('Yuksek cozunurluklu PNG olusturuluyor...'),'info');
+
+    // 4x boyutunda yeniden ciz
     const scale = 4;
     const hq = document.createElement('canvas');
-    hq.width  = _canvas.width  * scale;
-    hq.height = _canvas.height * scale;
+    hq.width  = 400 * scale;
+    hq.height = 400 * scale;
     const hqCtx = hq.getContext('2d');
 
-    // Orijinal gorseli buyut
-    hqCtx.drawImage(_img, 0, 0, hq.width, hq.height);
+    // SVG arkaplan
+    if (_bgSvg) {
+      await new Promise(function(resolve) {
+        const blob = new Blob([_bgSvg], {type:'image/svg+xml'});
+        const url  = URL.createObjectURL(blob);
+        const img  = new Image();
+        img.onload = function() {
+          hqCtx.drawImage(img, 0, 0, hq.width, hq.height);
+          URL.revokeObjectURL(url);
+          resolve();
+        };
+        img.src = url;
+      });
+    }
 
-    // Metinleri yuksek cozunurlukle yaz
+    // Metinleri 4x olarak yaz
     _metinler.forEach(function(mt) {
-      const metin = mt.yeniMetin || mt.metin;
-      const x     = (mt.x_yuzde/100) * hq.width;
-      const y     = (mt.y_yuzde/100) * hq.height;
-      const boyut = Math.round((mt.boyut_yuzde/100) * hq.width);
-      const stil  = (mt.font_stil==='italic'?'italic ':'') + mt.font_agirlik + ' ' + boyut + 'px "Arial Black",Impact,sans-serif';
+      const x     = (mt.x/100) * hq.width;
+      const y     = (mt.y/100) * hq.height;
+      const boyut = mt.boyut * scale;
+      const stil  = (mt.stil==='italic'?'italic ':'') + mt.agirlik + ' ' + boyut + 'px "Arial Black",Impact,sans-serif';
 
       hqCtx.save();
       hqCtx.font = stil;
-      hqCtx.fillStyle    = mt.renk || '#ffffff';
-      hqCtx.textAlign    = mt.hizalama || 'center';
+      hqCtx.fillStyle    = mt.renk;
+      hqCtx.textAlign    = mt.hizalama;
       hqCtx.textBaseline = 'middle';
-      hqCtx.shadowColor   = 'rgba(0,0,0,0.5)';
-      hqCtx.shadowBlur    = 6;
-      hqCtx.shadowOffsetX = 2;
-      hqCtx.shadowOffsetY = 2;
-      hqCtx.fillText(metin, x, y);
+      hqCtx.shadowColor   = 'rgba(0,0,0,0.65)';
+      hqCtx.shadowBlur    = boyut * 0.1;
+      hqCtx.shadowOffsetX = boyut * 0.04;
+      hqCtx.shadowOffsetY = boyut * 0.04;
+      hqCtx.fillText(mt.metin, x, y);
       hqCtx.restore();
     });
 
     const a = document.createElement('a');
     a.href = hq.toDataURL('image/png');
-    a.download = 'rozet-duzenlenmiş.png';
+    a.download = 'rozet-kampix.png';
     a.click();
     _durum('PNG indirildi!','success');
   }
@@ -4552,7 +4548,7 @@ SADECE JSON don:
   })();
 
   return { analiz, dosyaYukle, gorselSil, dragOver, dragLeave, drop,
-           toggleApiKey, metinGuncelle, pngIndir, driveYukle, render };
+           toggleApiKey, metinGuncelle, metinSec, pngIndir, driveYukle, render };
 })();
 
 const RozetAI      = { analiz:BadgeStudio.analiz, render:function(){},
