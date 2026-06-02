@@ -4298,7 +4298,7 @@ SADECE JSON don:
         })
       });
 
-      if (!claudeRes.ok) throw new Error('Claude API hatasi: ' + claudeRes.status);
+      if (!claudeRes.ok) throw new Error('Claude API hatasi (' + claudeRes.status + '). API anahtarini kontrol et.');
       const claudeData = await claudeRes.json();
       const ham = (claudeData.content[0].text||'').replace(/```json\s*/g,'').replace(/```/g,'').trim();
       const parsed = JSON.parse(ham.match(/\{[\s\S]*\}/)[0]);
@@ -4361,7 +4361,6 @@ SADECE JSON don:
   async function _lamaInpaint(gorselB64, maskeB64) {
     const token = _hfKey();
 
-    // Base64'ten blob'a cevir
     function b64toBlob(b64, mime) {
       const byteStr = atob(b64.split(',')[1]);
       const ab = new ArrayBuffer(byteStr.length);
@@ -4370,46 +4369,70 @@ SADECE JSON don:
       return new Blob([ab], {type: mime});
     }
 
-    const formData = new FormData();
-    formData.append('image', b64toBlob(gorselB64, 'image/png'), 'image.png');
-    formData.append('mask',  b64toBlob(maskeB64,  'image/png'), 'mask.png');
+    // Gradio Space API — JSON payload
+    const payload = {
+      data: [
+        gorselB64,   // image
+        maskeB64,    // mask
+        'LaMa'       // model
+      ]
+    };
 
-    const res = await fetch('https://huggingface.co/spaces/QuanSun/EVF-SAM/api/predict', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token },
-      body: formData
-    });
+    // Oncce lama-cleaner dene
+    const endpoints = [
+      'https://Sanster-lama-cleaner-lama.hf.space/run/predict',
+      'https://Sanster-lama-cleaner.hf.space/run/predict',
+      'https://cleanclip-lama-cleaner.hf.space/run/predict'
+    ];
 
-    // Alternatif: lama-cleaner space
-    if (!res.ok) {
-      // lama-cleaner dene
-      const formData2 = new FormData();
-      formData2.append('image', b64toBlob(gorselB64, 'image/png'), 'image.png');
-      formData2.append('mask',  b64toBlob(maskeB64,  'image/png'), 'mask.png');
+    let lastErr = '';
+    for (const ep of endpoints) {
+      try {
+        _durum(_spin('LaMa deneniyor: ' + ep.split('/')[2].slice(0,30) + '...'),'info');
+        const res = await fetch(ep, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify(payload),
+          signal: AbortSignal.timeout(60000)
+        });
 
-      const res2 = await fetch('https://huggingface.co/spaces/Sanster/lama-cleaner-lama/api/predict', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          data: [
-            gorselB64,
-            maskeB64,
-            'LaMa'
-          ]
-        })
-      });
-      if (!res2.ok) throw new Error('LaMa API erisim hatasi. Token dogru mu?');
-      const data2 = await res2.json();
-      if (data2.data && data2.data[0]) return data2.data[0];
-      throw new Error('LaMa sonuc donmedi.');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.data && data.data[0]) return data.data[0];
+        }
+        lastErr = 'HTTP ' + res.status;
+      } catch(e) {
+        lastErr = e.message;
+      }
     }
 
-    const data = await res.json();
-    if (data.data && data.data[0]) return data.data[0];
-    throw new Error('Inpainting sonucu alinamadi.');
+    // Son care: IOPaint Space
+    try {
+      const formData = new FormData();
+      formData.append('image', b64toBlob(gorselB64,'image/png'), 'image.png');
+      formData.append('mask',  b64toBlob(maskeB64, 'image/png'), 'mask.png');
+
+      const res = await fetch('https://Sanster-IOPaint-lama.hf.space/inpaint', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: formData,
+        signal: AbortSignal.timeout(90000)
+      });
+
+      if (res.ok) {
+        const blob = await res.blob();
+        return await new Promise(function(resolve) {
+          const reader = new FileReader();
+          reader.onload = function(e) { resolve(e.target.result); };
+          reader.readAsDataURL(blob);
+        });
+      }
+    } catch(e) { lastErr = e.message; }
+
+    throw new Error('LaMa erisimi basarisiz: ' + lastErr + '. Space uyanik olmayabilir, 1-2 dk bekleyip tekrar dene.');
   }
 
   /* ── Canvas Kur ─────────────────────────────────────── */
