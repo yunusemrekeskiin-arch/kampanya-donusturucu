@@ -4384,7 +4384,9 @@ SADECE JSON don:
         _durum(_spin('Replicate LaMa ile metin siliniyor...'),'info');
         return await _replicateInpaint(gorselB64, maskeB64, repToken);
       } catch(e) {
-        _durum(_spin('Replicate basarisiz, HF deneniyor: '+e.message),'info');
+        console.error('Replicate hatasi:', e);
+        _durum(_spin('Replicate: ' + e.message + ' — HF deneniyor...'),'info');
+        await new Promise(r => setTimeout(r, 1500));
       }
     }
 
@@ -4397,53 +4399,28 @@ SADECE JSON don:
   }
 
   async function _replicateInpaint(gorselB64, maskeB64, token) {
-    // allenhooo/lama — 18M+ run, stabil, $0.00044/run
-    const VERSION = 'cdac78a1bec5b23c07fd29692fb70baa513ea403a39e643c48ec5edadb15fe72';
+    // Vercel proxy uzerinden cagir (CORS sorunu nedeniyle)
+    const proxyUrl = '/api/inpaint';
 
-    const startRes = await fetch('https://api.replicate.com/v1/predictions', {
+    const res = await fetch(proxyUrl, {
       method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        version: VERSION,
-        input: {
-          image: gorselB64,
-          mask:  maskeB64
-        }
-      })
+        image: gorselB64,
+        mask:  maskeB64,
+        token: token
+      }),
+      signal: AbortSignal.timeout(90000)
     });
 
-    if (!startRes.ok) {
-      const e = await startRes.json().catch(function(){return {};});
-      throw new Error('Replicate baslatamiyor: ' + (e.detail || startRes.status));
+    if (!res.ok) {
+      const e = await res.json().catch(function(){return {};});
+      throw new Error(e.error || 'Proxy hatasi: ' + res.status);
     }
 
-    const data = await startRes.json();
-    return await _replicatePoll(data.id, token);
-  }
-
-  async function _replicatePoll(id, token) {
-    for (let i=0; i<30; i++) {
-      await new Promise(r => setTimeout(r, 3000));
-      const res = await fetch('https://api.replicate.com/v1/predictions/'+id, {
-        headers: { 'Authorization': 'Bearer '+token }
-      });
-      const data = await res.json();
-      if (data.status === 'succeeded' && data.output) {
-        // output URL'den base64'e cevir
-        const imgRes = await fetch(data.output[0] || data.output);
-        const blob = await imgRes.blob();
-        return await new Promise(function(resolve) {
-          const reader = new FileReader();
-          reader.onload = function(e) { resolve(e.target.result); };
-          reader.readAsDataURL(blob);
-        });
-      }
-      if (data.status === 'failed') throw new Error('Replicate islemi basarisiz: ' + data.error);
-    }
-    throw new Error('Replicate zaman asimi (90sn).');
+    const data = await res.json();
+    if (data.result) return data.result;
+    throw new Error(data.error || 'Sonuc alinamadi.');
   }
 
   async function _hfInpaint(gorselB64, maskeB64, token) {
