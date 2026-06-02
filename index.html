@@ -1331,20 +1331,34 @@ input[type="checkbox"] {
         </div>
 
         <!-- HuggingFace Token -->
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;padding:10px 14px;
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;padding:10px 14px;
                     background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.2);border-radius:10px;flex-wrap:wrap">
           <span style="font-size:16px;flex-shrink:0">🤗</span>
           <input id="hfToken" type="password" placeholder="Hugging Face token — hf_..."
             autocomplete="off"
-            style="flex:1;min-width:180px;background:var(--input-bg);border:1px solid var(--input-border);
+            style="flex:1;min-width:150px;background:var(--input-bg);border:1px solid var(--input-border);
                    border-radius:8px;padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
-            oninput="localStorage.setItem('hf_token',this.value);document.getElementById('hfStatus').textContent=this.value?'✅ Kaydedildi':'Girilmedi'">
-          <button onclick="(function(){const i=document.getElementById('hfToken');i.type=i.type==='password'?'text':'password';})()"
-            style="padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
-                   border-radius:7px;color:var(--text3);font-size:13px;cursor:pointer;flex-shrink:0">👁</button>
+            oninput="localStorage.setItem('hf_token',this.value);document.getElementById('hfStatus').textContent=this.value?'✅':'Girilmedi'">
           <div id="hfStatus" style="font-size:11px;white-space:nowrap;color:var(--text3)">Girilmedi</div>
           <a href="https://huggingface.co/settings/tokens" target="_blank"
-            style="font-size:11px;color:#fbbf24;text-decoration:none;white-space:nowrap;flex-shrink:0">Token al ↗</a>
+            style="font-size:11px;color:#fbbf24;text-decoration:none;white-space:nowrap;flex-shrink:0">HF Token ↗</a>
+        </div>
+
+        <!-- Replicate Token -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;padding:10px 14px;
+                    background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:10px;flex-wrap:wrap">
+          <span style="font-size:16px;flex-shrink:0">⚡</span>
+          <input id="replicateToken" type="password" placeholder="Replicate token — r8_..."
+            autocomplete="off"
+            style="flex:1;min-width:150px;background:var(--input-bg);border:1px solid var(--input-border);
+                   border-radius:8px;padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
+            oninput="localStorage.setItem('replicate_token',this.value);document.getElementById('repStatus').textContent=this.value?'✅ Kaydedildi':'Girilmedi'">
+          <button onclick="(function(){const i=document.getElementById('replicateToken');i.type=i.type==='password'?'text':'password';})()"
+            style="padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
+                   border-radius:7px;color:var(--text3);font-size:13px;cursor:pointer;flex-shrink:0">👁</button>
+          <div id="repStatus" style="font-size:11px;white-space:nowrap;color:var(--text3)">Girilmedi</div>
+          <a href="https://replicate.com/account/api-tokens" target="_blank"
+            style="font-size:11px;color:#4ade80;text-decoration:none;white-space:nowrap;flex-shrink:0">Token al ↗</a>
         </div>
 
         <!-- Görsel Yükleme -->
@@ -2153,12 +2167,12 @@ function showTable() {
   // Model ve HF token yükle
   const savedModel = localStorage.getItem('rozet_model');
   if (savedModel) { const sel = document.getElementById('rozetModel'); if (sel) sel.value = savedModel; }
-  const savedHf = localStorage.getItem('hf_token');
-  if (savedHf) {
-    const hfInp = document.getElementById('hfToken');
-    const hfSt  = document.getElementById('hfStatus');
-    if (hfInp) hfInp.value = savedHf;
-    if (hfSt)  { hfSt.textContent = '✅ Kaydedildi'; hfSt.style.color = '#4ade80'; }
+  const savedRep = localStorage.getItem('replicate_token');
+  if (savedRep) {
+    const repInp = document.getElementById('replicateToken');
+    const repSt  = document.getElementById('repStatus');
+    if (repInp) repInp.value = savedRep;
+    if (repSt)  { repSt.textContent = '✅ Kaydedildi'; repSt.style.color = '#4ade80'; }
   }
 }
 
@@ -4357,82 +4371,101 @@ SADECE JSON don:
     });
   }
 
-  /* ── LaMa Inpainting ────────────────────────────────── */
+  /* ── Inpainting (Replicate önce, HF fallback) ───────── */
   async function _lamaInpaint(gorselB64, maskeB64) {
-    const token = _hfKey();
+    const repToken = localStorage.getItem('replicate_token') || '';
+    const hfToken  = _hfKey();
 
-    function b64toBlob(b64, mime) {
-      const byteStr = atob(b64.split(',')[1]);
-      const ab = new ArrayBuffer(byteStr.length);
-      const ia = new Uint8Array(ab);
-      for (let i=0; i<byteStr.length; i++) ia[i] = byteStr.charCodeAt(i);
-      return new Blob([ab], {type: mime});
-    }
-
-    // Gradio Space API — JSON payload
-    const payload = {
-      data: [
-        gorselB64,   // image
-        maskeB64,    // mask
-        'LaMa'       // model
-      ]
-    };
-
-    // Oncce lama-cleaner dene
-    const endpoints = [
-      'https://Sanster-lama-cleaner-lama.hf.space/run/predict',
-      'https://Sanster-lama-cleaner.hf.space/run/predict',
-      'https://cleanclip-lama-cleaner.hf.space/run/predict'
-    ];
-
-    let lastErr = '';
-    for (const ep of endpoints) {
+    // Replicate: Stabil, hızlı, her zaman açık
+    if (repToken) {
       try {
-        _durum(_spin('LaMa deneniyor: ' + ep.split('/')[2].slice(0,30) + '...'),'info');
-        const res = await fetch(ep, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-          },
-          body: JSON.stringify(payload),
-          signal: AbortSignal.timeout(60000)
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data.data && data.data[0]) return data.data[0];
-        }
-        lastErr = 'HTTP ' + res.status;
+        _durum(_spin('Replicate LaMa ile metin siliniyor...'),'info');
+        return await _replicateInpaint(gorselB64, maskeB64, repToken);
       } catch(e) {
-        lastErr = e.message;
+        _durum(_spin('Replicate basarisiz, HF deneniyor: '+e.message),'info');
       }
     }
 
-    // Son care: IOPaint Space
-    try {
-      const formData = new FormData();
-      formData.append('image', b64toBlob(gorselB64,'image/png'), 'image.png');
-      formData.append('mask',  b64toBlob(maskeB64, 'image/png'), 'mask.png');
+    // HF Fallback
+    if (hfToken) {
+      return await _hfInpaint(gorselB64, maskeB64, hfToken);
+    }
 
-      const res = await fetch('https://Sanster-IOPaint-lama.hf.space/inpaint', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + token },
-        body: formData,
-        signal: AbortSignal.timeout(90000)
+    throw new Error('Replicate veya Hugging Face tokenı girilmedi.');
+  }
+
+  async function _replicateInpaint(gorselB64, maskeB64, token) {
+    // allenhooo/lama — 18M+ run, stabil, $0.00044/run
+    const VERSION = 'cdac78a1bec5b23c07fd29692fb70baa513ea403a39e643c48ec5edadb15fe72';
+
+    const startRes = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        version: VERSION,
+        input: {
+          image: gorselB64,
+          mask:  maskeB64
+        }
+      })
+    });
+
+    if (!startRes.ok) {
+      const e = await startRes.json().catch(function(){return {};});
+      throw new Error('Replicate baslatamiyor: ' + (e.detail || startRes.status));
+    }
+
+    const data = await startRes.json();
+    return await _replicatePoll(data.id, token);
+  }
+
+  async function _replicatePoll(id, token) {
+    for (let i=0; i<30; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      const res = await fetch('https://api.replicate.com/v1/predictions/'+id, {
+        headers: { 'Authorization': 'Bearer '+token }
       });
-
-      if (res.ok) {
-        const blob = await res.blob();
+      const data = await res.json();
+      if (data.status === 'succeeded' && data.output) {
+        // output URL'den base64'e cevir
+        const imgRes = await fetch(data.output[0] || data.output);
+        const blob = await imgRes.blob();
         return await new Promise(function(resolve) {
           const reader = new FileReader();
           reader.onload = function(e) { resolve(e.target.result); };
           reader.readAsDataURL(blob);
         });
       }
-    } catch(e) { lastErr = e.message; }
+      if (data.status === 'failed') throw new Error('Replicate islemi basarisiz: ' + data.error);
+    }
+    throw new Error('Replicate zaman asimi (90sn).');
+  }
 
-    throw new Error('LaMa erisimi basarisiz: ' + lastErr + '. Space uyanik olmayabilir, 1-2 dk bekleyip tekrar dene.');
+  async function _hfInpaint(gorselB64, maskeB64, token) {
+    const endpoints = [
+      'https://Sanster-lama-cleaner-lama.hf.space/run/predict',
+      'https://Sanster-IOPaint-lama.hf.space/run/predict'
+    ];
+    const payload = { data: [gorselB64, maskeB64, 'LaMa'] };
+
+    for (const ep of endpoints) {
+      try {
+        const res = await fetch(ep, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
+          body: JSON.stringify(payload),
+          signal: AbortSignal.timeout(90000)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.data && data.data[0]) return data.data[0];
+        }
+      } catch(e) { /* devam */ }
+    }
+    throw new Error('HF Space uyanik degil. Replicate token gir veya 1-2 dk sonra tekrar dene.');
   }
 
   /* ── Canvas Kur ─────────────────────────────────────── */
