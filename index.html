@@ -4258,7 +4258,9 @@ const BadgeStudio = (() => {
   /* ── ANA ANALİZ ─────────────────────────────────────── */
   async function analiz() {
     if (!_key()) { _durum('Claude API anahtari girilmedi.','error'); return; }
-    if (!_hfKey()) { _durum('Hugging Face token girilmedi.','error'); return; }
+    const repToken = localStorage.getItem('replicate_token') || '';
+    const hfToken  = _hfKey();
+    if (!repToken && !hfToken) { _durum('Replicate veya Hugging Face token girilmedi.','error'); return; }
     if (!_b64)   { _durum('Once gorsel yukle.','error'); return; }
 
     const btn  = document.getElementById('badgeAnalizBtn');
