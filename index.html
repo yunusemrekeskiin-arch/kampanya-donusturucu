@@ -1021,8 +1021,8 @@ input[type="checkbox"] {
 .ob-gec{font-size:10px;color:#334155}
 
 /* Floating kartlar */
-.ob-float-badge{position:absolute;bottom:-24px;right:20px;background:#1e1b4b;border:0.5px solid rgba(99,102,241,0.3);border-radius:12px;padding:12px 14px;width:210px;box-shadow:0 16px 48px rgba(0,0,0,0.5)}
-.ob-float-sheets{position:absolute;top:-20px;left:-20px;background:#0f2d1a;border:0.5px solid rgba(16,185,129,0.3);border-radius:12px;padding:10px 14px;width:190px;box-shadow:0 16px 48px rgba(0,0,0,0.4)}
+.ob-float-badge{position:absolute;bottom:-24px;right:20px;background:#1e1b4b;border:0.5px solid rgba(99,102,241,0.3);border-radius:12px;padding:12px 14px;width:210px;box-shadow:0 16px 48px rgba(0,0,0,0.5);z-index:10}
+.ob-float-sheets{position:absolute;top:-20px;left:-20px;background:#0f2d1a;border:0.5px solid rgba(16,185,129,0.3);border-radius:12px;padding:10px 14px;width:190px;box-shadow:0 16px 48px rgba(0,0,0,0.4);z-index:10}
 
 /* Top bar */
 .ob-topbar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -1031,6 +1031,40 @@ input[type="checkbox"] {
 .ob-tbl-btn-sec{padding:5px 10px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:7px;font-size:10px;color:#64748b;font-weight:600;display:flex;align-items:center;gap:4px}
 .ob-tbl-btn-pri{padding:5px 10px;background:#6366f1;border-radius:7px;font-size:10px;color:#fff;font-weight:700}
 
+/* Animasyonlar */
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,0.4)}50%{box-shadow:0 0 0 8px rgba(99,102,241,0)}}
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.ob-app-card{animation:slideLeft 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s both}
+.ob-float-sheets{animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.5s both;animation-fill-mode:both}
+.ob-float-badge{animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.7s both;animation-fill-mode:both}
+.ob-tbl-row:nth-child(1){animation:fadeIn 0.4s ease 0.8s both}
+.ob-tbl-row:nth-child(2){animation:fadeIn 0.4s ease 1.0s both}
+.ob-tbl-row:nth-child(3){animation:fadeIn 0.4s ease 1.2s both}
+.ob-tbl-row:nth-child(4){animation:fadeIn 0.4s ease 1.4s both}
+.ob-tbl-row:nth-child(5){animation:fadeIn 0.4s ease 1.6s both}
+
+/* Sheets kart yeşil pulse */
+.ob-float-sheets{animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.5s both,floatUp 3s ease-in-out 1.5s infinite}
+.ob-float-badge{animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.7s both,floatUp 3s ease-in-out 2s infinite}
+
+/* Sheets aktar butonu pulse */
+.ob-tbl-btn-pri{animation:pulse 2s ease-in-out 2s infinite}
+
+/* Fiyatlar renk vurgusu */
+.ob-fiyat{animation:fadeIn 0.4s ease both}
+
+/* Sol içerik animasyonları */
+.ob-left>*:nth-child(1){animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0s both}
+.ob-left>*:nth-child(2){animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.1s both}
+.ob-left>*:nth-child(3){animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both}
+.ob-left>*:nth-child(4){animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.2s both}
+.ob-left>*:nth-child(5){animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.25s both}
+.ob-left>*:nth-child(6){animation:slideUp 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s both}
 @media(max-width:1024px){.ob-left{width:100%;padding:2rem}.ob-right{display:none}.ob-headline{font-size:40px}.ob-nav{padding:1rem 2rem}}
 </style>
 
@@ -1089,7 +1123,7 @@ input[type="checkbox"] {
 
   <!-- SAĞ -->
   <div class="ob-right">
-    <div class="ob-mockup-wrap">
+    <div class="ob-mockup-wrap" style="position:relative;overflow:visible">
 
       <!-- Sheets floating kart -->
       <div class="ob-float-sheets">
@@ -1122,7 +1156,15 @@ input[type="checkbox"] {
               <div class="ob-tbl-btn-pri">Sheets'e Aktar</div>
             </div>
           </div>
-          <div class="ob-tbl-hdr"><span></span><span>Ürün</span><span>Fiyat</span><span>Tarih</span><span>Geçerlilik</span></div>
+      <!-- Canlı analiz göstergesi -->
+      <div id="ob-live-indicator" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(99,102,241,0.08);border:0.5px solid rgba(99,102,241,0.2);border-radius:8px;margin-bottom:10px;animation:fadeIn 0.4s ease 2.2s both;opacity:0">
+        <div style="display:flex;gap:3px;align-items:center">
+          <span style="width:5px;height:5px;background:#818cf8;border-radius:50%;display:inline-block;animation:pulse 1s ease-in-out infinite"></span>
+          <span style="width:5px;height:5px;background:#818cf8;border-radius:50%;display:inline-block;animation:pulse 1s ease-in-out 0.2s infinite"></span>
+          <span style="width:5px;height:5px;background:#818cf8;border-radius:50%;display:inline-block;animation:pulse 1s ease-in-out 0.4s infinite"></span>
+        </div>
+        <span style="font-size:10px;color:#818cf8;font-weight:600">Claude görsel analiz ediyor...</span>
+      </div>
           <div class="ob-tbl-row">
             <div class="ob-img" style="background:rgba(251,191,36,0.1)">🧴</div>
             <div><div class="ob-brand">MR MUSCLE</div><div class="ob-urun">Kircoz Banyo 750ml</div></div>
