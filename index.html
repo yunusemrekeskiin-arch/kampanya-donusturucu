@@ -1363,6 +1363,20 @@ input[type="checkbox"] {
         <!-- SONUC: Prompt + Uretilen Rozet -->
         <div id="badgeSonuc" style="display:none;margin-top:1.25rem">
 
+          <!-- Kampanya Metni -->
+          <div style="margin-bottom:1rem">
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">
+              Kampanya Metni <span style="color:#6366f1;font-size:10px;font-weight:600">(rozete yazılacak)</span>
+            </div>
+            <input type="text" id="kampanyaMetni" placeholder="örn: Kasa Önü Fırsatları Başladı!, Süper İndirim..."
+              style="width:100%;background:var(--input-bg);border:1.5px solid rgba(99,102,241,0.3);border-radius:9px;
+                     padding:10px 14px;font-size:14px;font-weight:700;color:var(--text);font-family:'Inter',sans-serif;
+                     outline:none;transition:border-color 0.15s;box-sizing:border-box"
+              onfocus="this.style.borderColor='#6366f1'"
+              onblur="this.style.borderColor='rgba(99,102,241,0.3)'"
+              oninput="BadgeStudio.kampanyaMetniGuncelle()">
+          </div>
+
           <!-- Prompt Editoru -->
           <div style="margin-bottom:1rem">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -4341,6 +4355,29 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
     _promptEn = 'Design a professional Turkish market campaign badge. Vibrant orange and red color palette. "SUPER FIRSATLAR" main headline in large, bold, 3D extruded typography. "Basladi!" subtitle in italic script font. Dynamic starburst/explosion form conveying power and energy. Deep shadow effects, inner glow, gradient layers. Real market insert quality. Products: ' + urunler + '. TRANSPARENT background — only the badge shape should be visible, everything outside must be completely transparent. Optimized for PNG format.';
   }
 
+  /* ── Kampanya Metni ─────────────────────────────────── */
+  function metinSec(btn) {
+    const inp = document.getElementById('kampanyaMetni');
+    if (inp) { inp.value = btn.dataset.v; kampanyaMetniGuncelle(); }
+  }
+
+  function kampanyaMetniGuncelle() {
+    const metin = document.getElementById('kampanyaMetni')?.value?.trim();
+    if (!metin) return;
+    const ta = document.getElementById('badgePrompt');
+    if (!ta) return;
+
+    // Mevcut prompt'tan eski kampanya metni satırını temizle, yenisini ekle
+    let prompt = ta.value;
+    prompt = prompt.replace(/\n*ROZETE YAZILACAK METİN:.*$/m, '').trimEnd();
+    prompt += '\n\nROZETE YAZILACAK METİN: "' + metin + '" — Bu metni rozetin ana veya alt başlığı olarak kullan. Metni değiştirme, aynen yaz.';
+    ta.value = prompt;
+
+    // Prompt state'ini de güncelle
+    if (_dil === 'tr') _promptTr = prompt;
+    else _promptEn = prompt;
+  }
+
   /* ── Dil Degistir ───────────────────────────────────── */
   function dilDegistir(dil) {
     _dil = dil;
@@ -4512,7 +4549,8 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
   })();
 
   return { uret, dosyaYukle, gorselSil, dragOver, dragLeave, drop,
-           toggleKey, dilDegistir, promptYenile, rozetSec, pngIndir, driveYukle, render };
+           toggleKey, dilDegistir, promptYenile, rozetSec, pngIndir, driveYukle,
+           metinSec, kampanyaMetniGuncelle, render };
 })();
 
 const RozetAI      = { analiz:BadgeStudio.uret, render:function(){}, dosyaYukle:BadgeStudio.dosyaYukle,
