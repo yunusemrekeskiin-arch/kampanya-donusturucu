@@ -2682,20 +2682,23 @@ async function createSheet(token) {
   if (!sheet.spreadsheetId) { showSheetsStatus('❌ Sheets oluşturulamadı.','error'); return; }
   const sid = sheet.spreadsheetId;
   const kampanya = _kampanyaData;
+  const rozetUrl = kampanya?.rozet_drive_url || '';
   const values = [
-    ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA','SLOGAN','AÇIKLAMA','ETİKET','RENK_ÖNERİ',
-     'KAMP_ANA_BASLIK','KAMP_ALT_BASLIK','KAMP_ETIKET','KAMP_SLOGAN','ROZET_DRIVE_URL'],
-    ...rows.map(r=>[
-      r.imgUrl||'', r.marka, r.urun, r.fiyat, r.tarih, r.arasinda,
-      r.slogan||'', r.aciklama||'', r.etiket||'', r.renkOneri||'',
-      kampanya?.ana_baslik||'', kampanya?.alt_baslik||'', kampanya?.etiket||'', kampanya?.slogan||'',
-      kampanya?.rozet_drive_url||''
+    ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA','ROZET'],
+    ...rows.map((r, i) => [
+      r.imgUrl||'', r.marka, r.urun, r.fiyat,
+      r.tarih, r.arasinda,
+      i === 0 ? rozetUrl : ''
     ])
   ];
-  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:Z${values.length}?valueInputOption=RAW`, {
-    method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+  const sheetsRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
+    method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ values })
   });
+  if (!sheetsRes.ok) {
+    const sheetsErr = await sheetsRes.json().catch(()=>({}));
+    console.error('Sheets yazma hatasi:', sheetsErr);
+  }
   await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}:batchUpdate`, {
     method:'POST', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ requests:[
@@ -4283,7 +4286,9 @@ TURKCE PROMPT:
 INGILIZCE PROMPT:
 [Same prompt in English - optimized for DALL-E/GPT-Image - all design details included]
 
-Her prompt minimum 150 kelime olmali ve cok spesifik olmali.` }
+Her prompt minimum 150 kelime olmali ve cok spesifik olmali.
+
+KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet sekli gorunmeli, arkasi tamamen bos/seffaf. PNG formatina uygun. Bunu prompta mutlaka ekle.` }
             ]
           }]
         })
@@ -4297,8 +4302,15 @@ Her prompt minimum 150 kelime olmali ve cok spesifik olmali.` }
       const trMatch = metin.match(/TURKCE PROMPT[:\s]*([\s\S]*?)(?=INGILIZCE PROMPT|$)/i);
       const enMatch = metin.match(/INGILIZCE PROMPT[:\s]*([\s\S]*?)$/i);
 
-      _promptTr = (trMatch?.[1] || metin).trim().slice(0, 1000);
-      _promptEn = (enMatch?.[1] || '').trim().slice(0, 1000);
+      _promptTr = (trMatch?.[1] || metin).trim().slice(0, 900);
+      _promptEn = (enMatch?.[1] || '').trim().slice(0, 900);
+
+      // Şeffaf arka plan parametresini her iki prompta ekle
+      const seffafTr = '\n\nÖNEMLİ TEKNİK DETAY: Rozet ŞEFFAF (transparent) arka plan üzerinde olmalı. Sadece rozet şekli görünmeli, arka planda hiçbir şey olmamalı. PNG formatı için optimize et. Rozetin dışı tamamen boş/şeffaf.';
+      const seffafEn = '\n\nIMPORTANT TECHNICAL DETAIL: The badge must be on a TRANSPARENT background. Only the badge shape should be visible, nothing else in the background. Optimized for PNG format. Everything outside the badge shape must be completely transparent.';
+
+      _promptTr += seffafTr;
+      _promptEn += seffafEn;
 
       if (!_promptTr) _varsayilanPromptOlustur();
 
@@ -4325,8 +4337,8 @@ Her prompt minimum 150 kelime olmali ve cok spesifik olmali.` }
       ? rows.slice(0,3).map(function(r){ return r.marka + ' ' + r.urun; }).join(', ')
       : 'market kampanyasi';
 
-    _promptTr = 'Profesyonel Turk market kampanyasi rozeti tasarla. Parlak turuncu ve kirmizi renk paleti. "SUPER FIRSATLAR" ana basligi buyuk, kalin, 3D ekstruze tipografi ile. "Basladi!" alt basligi italik script font ile. Guc ve enerji hissettiren starburst/patlama formu. Derin golge efektleri, ic parlama, gradient katmanlari. Gercek market inserti kalitesinde. Urunler: ' + urunler + '. Seffaf arka plan uzerine rozet.';
-    _promptEn = 'Design a professional Turkish market campaign badge. Vibrant orange and red color palette. "SUPER FIRSATLAR" main headline in large, bold, 3D extruded typography. "Basladi!" subtitle in italic script font. Dynamic starburst/explosion form conveying power and energy. Deep shadow effects, inner glow, gradient layers. Real market insert quality. Products: ' + urunler + '. Badge on transparent background.';
+    _promptTr = 'Profesyonel Turk market kampanyasi rozeti tasarla. Parlak turuncu ve kirmizi renk paleti. "SUPER FIRSATLAR" ana basligi buyuk, kalin, 3D ekstruze tipografi ile. "Basladi!" alt basligi italik script font ile. Guc ve enerji hissettiren starburst/patlama formu. Derin golge efektleri, ic parlama, gradient katmanlari. Gercek market inserti kalitesinde. Urunler: ' + urunler + '. SEFFAF arka plan uzerine rozet — sadece rozet sekli gorunmeli, disarisi tamamen seffaf/bos olmali. PNG icin optimize.';
+    _promptEn = 'Design a professional Turkish market campaign badge. Vibrant orange and red color palette. "SUPER FIRSATLAR" main headline in large, bold, 3D extruded typography. "Basladi!" subtitle in italic script font. Dynamic starburst/explosion form conveying power and energy. Deep shadow effects, inner glow, gradient layers. Real market insert quality. Products: ' + urunler + '. TRANSPARENT background — only the badge shape should be visible, everything outside must be completely transparent. Optimized for PNG format.';
   }
 
   /* ── Dil Degistir ───────────────────────────────────── */
