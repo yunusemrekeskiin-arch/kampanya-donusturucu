@@ -2692,7 +2692,7 @@ async function createSheet(token) {
       kampanya?.rozet_drive_url||''
     ])
   ];
-  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:N${values.length}?valueInputOption=RAW`, {
+  await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/A1:Z${values.length}?valueInputOption=RAW`, {
     method:'PUT', headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
     body: JSON.stringify({ values })
   });
