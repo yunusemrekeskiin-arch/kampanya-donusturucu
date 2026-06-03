@@ -1291,95 +1291,158 @@ input[type="checkbox"] {
           <div style="width:28px;height:28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">2</div>
           <div>
             <div style="font-size:14px;font-weight:700;color:var(--text)">Kampix Badge Studio</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:1px">Rozet yukle &middot; Firca ile metni sil &middot; Yeni metin yaz &middot; PNG indir</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:1px">Rozet yukle &middot; Claude analiz etsin &middot; Prompt olustur &middot; OpenAI ile uret &middot; PNG indir</div>
           </div>
         </div>
-        <button onclick="BadgeStudio.analiz()" id="badgeAnalizBtn"
+        <button onclick="BadgeStudio.uret()" id="badgeUretBtn"
           style="display:flex;align-items:center;gap:7px;padding:8px 18px;background:linear-gradient(135deg,#7c3aed,#6366f1);
                  border:none;border-radius:9px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;
                  font-family:'Inter',sans-serif;box-shadow:0 2px 12px rgba(124,58,237,0.3)">
-          <span id="badgeAnalizIkon">&#128444;</span>
-          <span id="badgeAnalizTxt">Rozeti Yukle</span>
+          <span id="badgeUretIkon">&#10024;</span>
+          <span id="badgeUretTxt">Rozet Uret</span>
         </button>
       </div>
       <div class="card-body" style="padding:1.25rem 1.5rem">
 
+        <!-- API Keyleri -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem">
+          <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:10px">
+            <span style="font-size:14px;flex-shrink:0">&#128273;</span>
+            <input id="kampanyaApiKey" type="password" placeholder="Claude API — sk-ant-..."
+              style="flex:1;min-width:0;background:transparent;border:none;font-size:11px;color:var(--text);font-family:monospace;outline:none"
+              oninput="kampanyaApiKeySave(this.value)">
+            <button onclick="BadgeStudio.toggleKey('kampanyaApiKey')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:0">&#128065;</button>
+            <div id="kampanyaApiStatus" style="font-size:10px;white-space:nowrap;color:var(--text3)">-</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:10px">
+            <span style="font-size:14px;flex-shrink:0">&#129302;</span>
+            <input id="openaiApiKey" type="password" placeholder="OpenAI API — sk-..."
+              style="flex:1;min-width:0;background:transparent;border:none;font-size:11px;color:var(--text);font-family:monospace;outline:none"
+              oninput="localStorage.setItem('openai_key',this.value);document.getElementById('openaiStatus').textContent=this.value?'✓':'-'">
+            <button onclick="BadgeStudio.toggleKey('openaiApiKey')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:0">&#128065;</button>
+            <div id="openaiStatus" style="font-size:10px;white-space:nowrap;color:var(--text3)">-</div>
+            <a href="https://platform.openai.com/api-keys" target="_blank" style="font-size:10px;color:#4ade80;text-decoration:none;white-space:nowrap">Al &#8599;</a>
+          </div>
+        </div>
+
         <!-- Gorsel Yukleme -->
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Market Rozeti Gorseli</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Referans Rozet (Claude bu stili analiz edecek)</div>
         <div id="badgeDropZone" onclick="document.getElementById('badgeFileInput').click()"
           ondragover="BadgeStudio.dragOver(event)" ondragleave="BadgeStudio.dragLeave(event)" ondrop="BadgeStudio.drop(event)"
           style="border:1.5px dashed rgba(99,102,241,0.3);border-radius:12px;background:rgba(99,102,241,0.03);
-                 padding:16px 20px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s">
-          <div id="badgeUploadIkon" style="width:42px;height:42px;flex-shrink:0;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">&#127991;</div>
+                 padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.2s">
+          <div id="badgeUploadIkon" style="width:40px;height:40px;flex-shrink:0;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px">&#127991;</div>
           <div style="flex:1">
-            <div id="badgeUploadLabel" style="font-size:13px;font-weight:600;color:var(--text2)">Market rozeti yukle - PNG, JPG, WEBP</div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px">Maks 6 MB - Surukle birak veya tikla</div>
+            <div id="badgeUploadLabel" style="font-size:13px;font-weight:600;color:var(--text2)">Market rozeti yukle — Migros, BIM, A101, CarrefourSA...</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">PNG, JPG, WEBP &middot; Maks 6MB</div>
           </div>
           <button onclick="event.stopPropagation();document.getElementById('badgeFileInput').click()"
-            style="padding:6px 14px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:8px;color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">Dosya Sec</button>
+            style="padding:6px 12px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:8px;color:#a5b4fc;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap">Sec</button>
         </div>
         <input type="file" id="badgeFileInput" accept="image/png,image/jpeg,image/jpg,image/webp" style="display:none" onchange="BadgeStudio.dosyaYukle(this.files[0])">
 
         <div id="badgeRefOnizleme" style="display:none;margin-top:8px;align-items:center;gap:10px">
-          <img id="badgeRefImg" style="height:56px;border-radius:8px;border:1px solid var(--border);object-fit:contain;background:#fff;padding:3px">
-          <div style="flex:1"><div id="badgeRefIsim" style="font-size:12px;font-weight:600;color:var(--text2)"></div></div>
-          <button onclick="BadgeStudio.gorselSil()" style="padding:4px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">X</button>
+          <img id="badgeRefImg" style="height:52px;border-radius:8px;border:1px solid var(--border);object-fit:contain;background:#fff;padding:3px">
+          <div style="flex:1"><div id="badgeRefIsim" style="font-size:12px;font-weight:600;color:var(--text2)"></div>
+          <div style="font-size:11px;color:#4ade80;margin-top:1px">&#10003; Yuklendi</div></div>
+          <button onclick="BadgeStudio.gorselSil()" style="padding:3px 8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">X</button>
         </div>
 
+        <!-- Durum -->
         <div id="badgeDurum" style="display:none;margin-top:10px;padding:10px 14px;border-radius:10px;font-size:13px;border:1px solid transparent"></div>
 
-        <div id="badgeBos" style="display:flex;align-items:center;gap:12px;padding:16px 0 4px">
-          <div style="width:38px;height:38px;background:rgba(99,102,241,0.08);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">&#127894;</div>
+        <!-- Bos durum -->
+        <div id="badgeBos" style="display:flex;align-items:center;gap:12px;padding:14px 0 4px">
+          <div style="width:36px;height:36px;background:rgba(99,102,241,0.08);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0">&#127894;</div>
           <div>
-            <div style="font-size:13px;font-weight:600;color:var(--text2)">Rozet bekleniyor</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:2px">Rozeti yukle - Fircayla mevcut yazilarin ustunu boya - Temizle - Yeni metni yaz - PNG indir</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text2)">Rozet uretmeye hazir</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Referans yukle (istege bagli) - Claude analiz etsin - Prompt olusur - Duzenle - OpenAI ile uret</div>
           </div>
         </div>
 
-        <div id="badgeSonuc" style="display:none;margin-top:1rem">
-          <div style="display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap">
-            <div style="flex-shrink:0">
-              <!-- Firca arac cubugu -->
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-                <div style="font-size:11px;color:var(--text3);font-weight:600">Firca boyutu:</div>
-                <input type="range" min="10" max="80" value="30" id="fircaBoyutSlider"
-                  oninput="BadgeStudio.fircaBoyutuAyarla(this.value)"
-                  style="width:90px;accent-color:#ef4444">
-                <span id="fircaBoyutLabel" style="font-size:11px;color:var(--text3);min-width:32px">30px</span>
-                <button onclick="BadgeStudio.maskeyiUygula()"
-                  style="padding:6px 14px;background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:8px;
-                         color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
-                         box-shadow:0 2px 8px rgba(239,68,68,0.35)">
-                  Secili Alani Temizle
+        <!-- SONUC: Prompt + Uretilen Rozet -->
+        <div id="badgeSonuc" style="display:none;margin-top:1.25rem">
+
+          <!-- Prompt Editoru -->
+          <div style="margin-bottom:1rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em">Uretim Promptu</div>
+              <div style="display:flex;gap:6px">
+                <button onclick="BadgeStudio.dilDegistir('tr')" id="btnTr"
+                  style="padding:4px 10px;background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.4);border-radius:6px;color:#a5b4fc;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">TR</button>
+                <button onclick="BadgeStudio.dilDegistir('en')" id="btnEn"
+                  style="padding:4px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:var(--text3);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">EN</button>
+                <button onclick="BadgeStudio.promptYenile()"
+                  style="padding:4px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:var(--text3);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif">&#8635; Yenile</button>
+              </div>
+            </div>
+            <textarea id="badgePrompt" rows="5"
+              style="width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;
+                     padding:10px 14px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;
+                     outline:none;resize:vertical;line-height:1.6;box-sizing:border-box"
+              placeholder="Referans rozet yuklendikten sonra Claude otomatik prompt olusturacak..."></textarea>
+            <div style="font-size:11px;color:var(--text3);margin-top:4px">&#9998; Promptu duzenleyebilirsin — ne kadar detayli o kadar iyi sonuc</div>
+          </div>
+
+          <!-- Boyut Secimi -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
+            <div style="font-size:11px;color:var(--text3);font-weight:600">Boyut:</div>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
+              <input type="radio" name="rozetBoyut" value="1024x1024" checked style="accent-color:#6366f1"> 1024x1024
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
+              <input type="radio" name="rozetBoyut" value="1024x1792" style="accent-color:#6366f1"> 1024x1792
+            </label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
+              <input type="radio" name="rozetBoyut" value="1792x1024" style="accent-color:#6366f1"> 1792x1024
+            </label>
+            <div style="font-size:11px;color:var(--text3);font-weight:600;margin-left:8px">Adet:</div>
+            <select id="rozetAdet" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:4px 8px;font-size:12px;color:var(--text);font-family:'Inter',sans-serif;outline:none">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+
+          <!-- Uretilen Rozetler -->
+          <div id="rozetSonuclarWrap" style="display:none">
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Uretilen Rozetler — Begendigne tikla</div>
+            <div id="rozetSonuclarGrid" style="display:flex;gap:12px;flex-wrap:wrap"></div>
+          </div>
+
+          <!-- Secilen rozet buyuk onizleme -->
+          <div id="rozetSecimPanel" style="display:none;margin-top:1.25rem;padding:16px;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.12);border-radius:14px">
+            <div style="display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap">
+              <div>
+                <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Secilen Rozet</div>
+                <div style="background-image:linear-gradient(45deg,#d1d5db 25%,transparent 25%),linear-gradient(-45deg,#d1d5db 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d1d5db 75%),linear-gradient(-45deg,transparent 75%,#d1d5db 75%);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0;border-radius:12px;display:inline-block">
+                  <img id="rozetSeciliBuyuk" style="max-width:250px;border-radius:12px;display:block">
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;padding-top:24px">
+                <button onclick="BadgeStudio.pngIndir()"
+                  style="padding:10px 20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;
+                         color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
+                         box-shadow:0 2px 14px rgba(99,102,241,0.4)">
+                  &#11015; PNG Indir
+                </button>
+                <button onclick="BadgeStudio.driveYukle()"
+                  style="padding:9px 20px;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:10px;
+                         color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+                         box-shadow:0 2px 10px rgba(16,185,129,0.25);display:flex;align-items:center;gap:6px">
+                  Drive + Sheets
+                </button>
+                <button onclick="BadgeStudio.uret()"
+                  style="padding:8px 20px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);border-radius:10px;
+                         color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
+                  &#8635; Tekrar Uret
                 </button>
               </div>
-              <!-- Canvas - dama arka plan -->
-              <div style="border-radius:12px;overflow:hidden;display:inline-block;
-                          background-image:linear-gradient(45deg,#d1d5db 25%,transparent 25%),linear-gradient(-45deg,#d1d5db 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d1d5db 75%),linear-gradient(-45deg,transparent 75%,#d1d5db 75%);
-                          background-size:14px 14px;background-position:0 0,0 7px,7px -7px,-7px 0">
-                <div id="badgeKlonOnizleme"></div>
-              </div>
-              <div style="font-size:11px;color:var(--text3);margin-top:6px;text-align:center">Kirmizi alan = silinecek - Temizle ile uygula</div>
-            </div>
-            <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:10px">
-              <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em">Metinler</div>
-              <div id="badgeMetinAlanlari"></div>
-              <button onclick="BadgeStudio.pngIndir()"
-                style="padding:10px 18px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;
-                       color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;
-                       box-shadow:0 2px 14px rgba(99,102,241,0.4);text-align:center">
-                PNG Indir
-              </button>
-              <button onclick="BadgeStudio.driveYukle()"
-                style="padding:9px 18px;background:linear-gradient(135deg,#059669,#10b981);border:none;border-radius:10px;
-                       color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
-                       box-shadow:0 2px 10px rgba(16,185,129,0.25);display:flex;align-items:center;gap:6px;justify-content:center">
-                Drive + Sheets
-              </button>
             </div>
           </div>
-        </div>
 
+        </div><!-- /badgeSonuc -->
       </div>
     </div>
   </div>
@@ -4103,20 +4166,15 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 const BadgeStudio = (() => {
 
   /* ── State ─────────────────────────────────────────── */
-  let _b64      = null;
-  let _mime     = 'image/jpeg';
-  let _img      = null;       // orijinal Image nesnesi
-  let _canvas   = null;       // ana canvas
-  let _ctx      = null;
-  let _mask     = null;       // silme maskesi canvas
-  let _maskCtx  = null;
-  let _ciziyorMu = false;
-  let _fircaBoyut = 30;
-  let _mod      = 'fırca';    // 'fırca' | 'metin'
-  let _metinler = [];
-  let _secili   = -1;
+  let _b64    = null;
+  let _mime   = 'image/jpeg';
+  let _dil    = 'tr';
+  let _promptTr = '';
+  let _promptEn = '';
+  let _seciliUrl = null;
 
-  const _key = () => localStorage.getItem('claude_api_key') || '';
+  const _claudeKey = () => localStorage.getItem('claude_api_key') || '';
+  const _openaiKey = () => localStorage.getItem('openai_key') || '';
 
   /* ── Durum ─────────────────────────────────────────── */
   function _durum(html, tip) {
@@ -4128,7 +4186,7 @@ const BadgeStudio = (() => {
       success: 'background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2);color:#4ade80',
       error:   'background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);color:#f87171',
     };
-    el.style.cssText = 'display:block;margin-top:12px;padding:12px 16px;border-radius:10px;font-size:13px;border:1px solid transparent;'+(r[tip]||r.info);
+    el.style.cssText = 'display:block;margin-top:10px;padding:10px 14px;border-radius:10px;font-size:13px;border:1px solid transparent;'+(r[tip]||r.info);
     el.innerHTML = html;
   }
 
@@ -4136,351 +4194,309 @@ const BadgeStudio = (() => {
     return '<span style="display:inline-flex;align-items:center;gap:8px"><span style="display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.25);border-top-color:currentColor;border-radius:50%;animation:spin 0.7s linear infinite"></span>'+t+'</span>';
   }
 
-  function toggleApiKey() {
-    const inp = document.getElementById('kampanyaApiKey');
-    const btn = document.getElementById('apiKeyToggle');
-    if (!inp) return;
-    inp.type = inp.type==='password' ? 'text' : 'password';
-    btn.textContent = inp.type==='password' ? '👁' : '🙈';
-  }
-
-  /* ── Dosya Yükleme ──────────────────────────────────── */
-  function dosyaYukle(dosya) {
-    if (!dosya) return;
-    if (dosya.size > 6*1024*1024) { _durum('Maks 6MB.','error'); return; }
-    _mime = dosya.type || 'image/jpeg';
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      _b64 = e.target.result;
-      document.getElementById('badgeRefImg').src = _b64;
-      document.getElementById('badgeRefIsim').textContent = dosya.name;
-      document.getElementById('badgeRefOnizleme').style.display = 'flex';
-      document.getElementById('badgeUploadLabel').textContent = '✅ Hazır — "Rozeti Yükle" butonuna bas';
-      document.getElementById('badgeUploadIkon').textContent = '✅';
-    };
-    reader.readAsDataURL(dosya);
-  }
-
-  function gorselSil() {
-    _b64=null; _img=null; _canvas=null; _ctx=null; _mask=null; _maskCtx=null;
-    _metinler=[]; _secili=-1; _mod='fırca';
-    document.getElementById('badgeRefOnizleme').style.display='none';
-    document.getElementById('badgeUploadLabel').textContent='Market rozeti yukle';
-    document.getElementById('badgeUploadIkon').textContent='🏷️';
-    document.getElementById('badgeFileInput').value='';
-    document.getElementById('badgeSonuc').style.display='none';
-    document.getElementById('badgeBos').style.display='flex';
-    _durum('','');
+  /* ── Yardimcilar ────────────────────────────────────── */
+  function toggleKey(id) {
+    const inp = document.getElementById(id);
+    if (inp) inp.type = inp.type==='password' ? 'text' : 'password';
   }
 
   function dragOver(e)  { e.preventDefault(); document.getElementById('badgeDropZone').style.borderColor='#6366f1'; }
   function dragLeave()  { document.getElementById('badgeDropZone').style.borderColor='rgba(99,102,241,0.3)'; }
   function drop(e)      { e.preventDefault(); dragLeave(); dosyaYukle(e.dataTransfer.files[0]); }
 
-  /* ── Rozeti Yükle (API olmadan) ─────────────────────── */
-  async function analiz() {
-    if (!_b64) { _durum('Once gorsel yukle.','error'); return; }
+  /* ── Dosya Yukleme ──────────────────────────────────── */
+  function dosyaYukle(dosya) {
+    if (!dosya) return;
+    if (dosya.size > 6*1024*1024) { _durum('Maks 6MB.','error'); return; }
+    _mime = dosya.type || 'image/jpeg';
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      _b64 = e.target.result;
+      document.getElementById('badgeRefImg').src = _b64;
+      document.getElementById('badgeRefIsim').textContent = dosya.name;
+      document.getElementById('badgeRefOnizleme').style.display = 'flex';
+      document.getElementById('badgeUploadLabel').textContent = 'Yuklendi - Claude analiz ediyor...';
+      document.getElementById('badgeUploadIkon').textContent = '⏳';
+      _durum(_spin('Claude rozeti analiz ediyor...'),'info');
 
-    document.getElementById('badgeBos').style.display = 'none';
-    document.getElementById('badgeSonuc').style.display = 'none';
-    _durum(_spin('Gorsel yukleniyor...'),'info');
+      // Claude key varsa otomatik analiz et
+      if (_claudeKey()) {
+        await _claudeAnalizEt();
+      } else {
+        document.getElementById('badgeUploadIkon').textContent = '✅';
+        document.getElementById('badgeUploadLabel').textContent = 'Yuklendi - Claude API gir ve "Rozet Uret" butonuna bas';
+        _durum('Gorsel hazir. Claude API anahtarini gir, sonra "Rozet Uret" butonuna bas.','info');
+        document.getElementById('badgeBos').style.display = 'none';
+        document.getElementById('badgeSonuc').style.display = 'block';
+        _varsayilanPromptOlustur();
+      }
+    };
+    reader.readAsDataURL(dosya);
+  }
 
-    _img = new Image();
-    _img.onload = function() {
-      _canvasKur();
-      _editAlanlariOlustur();
-      _durum('','');
+  function gorselSil() {
+    _b64=null; _promptTr=''; _promptEn=''; _seciliUrl=null;
+    document.getElementById('badgeRefOnizleme').style.display='none';
+    document.getElementById('badgeUploadLabel').textContent='Market rozeti yukle';
+    document.getElementById('badgeUploadIkon').textContent='🏷️';
+    document.getElementById('badgeFileInput').value='';
+    document.getElementById('badgeSonuc').style.display='none';
+    document.getElementById('badgeBos').style.display='flex';
+    document.getElementById('rozetSonuclarWrap').style.display='none';
+    document.getElementById('rozetSecimPanel').style.display='none';
+    _durum('','');
+  }
+
+  /* ── Claude Analiz ──────────────────────────────────── */
+  async function _claudeAnalizEt() {
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': _claudeKey(),
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: localStorage.getItem('rozet_model') || 'claude-opus-4-7',
+          max_tokens: 1500,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: _mime, data: _b64.split(',')[1] } },
+              { type: 'text', text: `Bu market kampanya rozetini/badge'ini profesyonel bir tasarim direktoru gozuyle analiz et.
+
+Asagidaki bilgileri cikar:
+- Rozet tipi (daire/starburst/ribbon/seal/explosion vb.)
+- Renk paleti (ana renkler hex ile)
+- Tipografi karakteri (kalin/kondanse/italic, font stili)
+- Derinlik ve efektler (3D, golge, parlama, gradient)
+- Genel atmosfer (agresif/premium/eglenceli/klasik)
+- Orijinal metin icerik ve hiyerarsisi
+
+Sonra bu analize dayali 2 prompt yaz:
+
+TURKCE PROMPT:
+[Detayli Turkce gorsel uretim promptu - DALL-E/GPT-Image icin optimize - tum tasarim detaylari dahil - metinler Turkce kampanya icin]
+
+INGILIZCE PROMPT:
+[Same prompt in English - optimized for DALL-E/GPT-Image - all design details included]
+
+Her prompt minimum 150 kelime olmali ve cok spesifik olmali.` }
+            ]
+          }]
+        })
+      });
+
+      if (!res.ok) throw new Error('Claude API hatasi: ' + res.status);
+      const data = await res.json();
+      const metin = data.content[0].text || '';
+
+      // Promptlari ayristir
+      const trMatch = metin.match(/TURKCE PROMPT[:\s]*([\s\S]*?)(?=INGILIZCE PROMPT|$)/i);
+      const enMatch = metin.match(/INGILIZCE PROMPT[:\s]*([\s\S]*?)$/i);
+
+      _promptTr = (trMatch?.[1] || metin).trim().slice(0, 1000);
+      _promptEn = (enMatch?.[1] || '').trim().slice(0, 1000);
+
+      if (!_promptTr) _varsayilanPromptOlustur();
+
+      document.getElementById('badgeUploadIkon').textContent = '✅';
+      document.getElementById('badgeUploadLabel').textContent = 'Analiz tamamlandi - Prompt hazir';
       document.getElementById('badgeBos').style.display = 'none';
       document.getElementById('badgeSonuc').style.display = 'block';
-    };
-    _img.src = _b64;
-  }
+      dilDegistir(_dil);
+      _durum('Analiz tamamlandi! Promptu duzenleyip "Rozet Uret" butonuna bas.','success');
 
-  /* ── Canvas Kur ─────────────────────────────────────── */
-  function _canvasKur() {
-    const wrap = document.getElementById('badgeKlonOnizleme');
-    if (!wrap || !_img) return;
-
-    // Boyut hesapla
-    const maxW = Math.min(420, window.innerWidth - 60);
-    let w = _img.naturalWidth  || 400;
-    let h = _img.naturalHeight || 400;
-    if (w > maxW) { h = Math.round(h * maxW/w); w = maxW; }
-
-    // Ana canvas
-    _canvas = document.createElement('canvas');
-    _canvas.width  = w;
-    _canvas.height = h;
-    _canvas.style.cssText = 'border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.3);display:block;cursor:crosshair;touch-action:none;max-width:100%';
-    _ctx = _canvas.getContext('2d');
-
-    // Maske canvas (şeffaf, üstte)
-    _mask = document.createElement('canvas');
-    _mask.width  = w;
-    _mask.height = h;
-    _maskCtx = _mask.getContext('2d');
-
-    // Konteyner
-    const cont = document.createElement('div');
-    cont.style.cssText = 'position:relative;display:inline-block;line-height:0';
-
-    // Üst katman (çizim için)
-    const overlay = document.createElement('canvas');
-    overlay.width  = w;
-    overlay.height = h;
-    overlay.id = 'badgeOverlay';
-    overlay.style.cssText = 'position:absolute;top:0;left:0;border-radius:10px;cursor:crosshair;touch-action:none';
-
-    cont.appendChild(_canvas);
-    cont.appendChild(overlay);
-    wrap.innerHTML = '';
-    wrap.appendChild(cont);
-
-    // Orijinali çiz
-    _ctx.drawImage(_img, 0, 0, w, h);
-
-    // Çizim olayları
-    _fircaOlaylariEkle(overlay, w, h);
-  }
-
-  /* ── Fırça Olayları ─────────────────────────────────── */
-  function _fircaOlaylariEkle(overlay, w, h) {
-    const ovCtx = overlay.getContext('2d');
-
-    function _pos(e) {
-      const rect = overlay.getBoundingClientRect();
-      const scaleX = w / rect.width;
-      const scaleY = h / rect.height;
-      const src = e.touches ? e.touches[0] : e;
-      return {
-        x: (src.clientX - rect.left) * scaleX,
-        y: (src.clientY - rect.top)  * scaleY
-      };
+    } catch(e) {
+      document.getElementById('badgeUploadIkon').textContent = '✅';
+      _varsayilanPromptOlustur();
+      document.getElementById('badgeBos').style.display = 'none';
+      document.getElementById('badgeSonuc').style.display = 'block';
+      dilDegistir(_dil);
+      _durum('Claude analizi basarisiz (' + e.message + '). Varsayilan prompt kullaniliyor.','info');
     }
-
-    function _ciz(e) {
-      if (!_ciziyorMu || _mod !== 'fırca') return;
-      e.preventDefault();
-      const p = _pos(e);
-
-      // Overlay'e kırmızı yarı şeffaf fırça
-      ovCtx.beginPath();
-      ovCtx.arc(p.x, p.y, _fircaBoyut/2, 0, Math.PI*2);
-      ovCtx.fillStyle = 'rgba(239,68,68,0.45)';
-      ovCtx.fill();
-
-      // Maskeye beyaz (silinecek alan)
-      _maskCtx.beginPath();
-      _maskCtx.arc(p.x, p.y, _fircaBoyut/2, 0, Math.PI*2);
-      _maskCtx.fillStyle = '#ffffff';
-      _maskCtx.fill();
-    }
-
-    overlay.addEventListener('mousedown',  function(e){ _ciziyorMu=true; _ciz(e); });
-    overlay.addEventListener('mousemove',  _ciz);
-    overlay.addEventListener('mouseup',    function(){ _ciziyorMu=false; });
-    overlay.addEventListener('mouseleave', function(){ _ciziyorMu=false; });
-    overlay.addEventListener('touchstart', function(e){ _ciziyorMu=true; _ciz(e); }, {passive:false});
-    overlay.addEventListener('touchmove',  _ciz, {passive:false});
-    overlay.addEventListener('touchend',   function(){ _ciziyorMu=false; });
   }
 
-  /* ── Maskeyi Uygula (blur + fill) ───────────────────── */
-  function maskeyiUygula() {
-    if (!_ctx || !_canvas || !_img || !_mask) return;
-    const w = _canvas.width;
-    const h = _canvas.height;
+  /* ── Varsayilan Prompt ──────────────────────────────── */
+  function _varsayilanPromptOlustur() {
+    const urunler = (typeof rows !== 'undefined' && rows.length)
+      ? rows.slice(0,3).map(function(r){ return r.marka + ' ' + r.urun; }).join(', ')
+      : 'market kampanyasi';
 
-    // Maskedeki beyaz alanları bul
-    const maskData = _maskCtx.getImageData(0, 0, w, h);
-    const imgData  = _ctx.getImageData(0, 0, w, h);
+    _promptTr = 'Profesyonel Turk market kampanyasi rozeti tasarla. Parlak turuncu ve kirmizi renk paleti. "SUPER FIRSATLAR" ana basligi buyuk, kalin, 3D ekstruze tipografi ile. "Basladi!" alt basligi italik script font ile. Guc ve enerji hissettiren starburst/patlama formu. Derin golge efektleri, ic parlama, gradient katmanlari. Gercek market inserti kalitesinde. Urunler: ' + urunler + '. Seffaf arka plan uzerine rozet.';
+    _promptEn = 'Design a professional Turkish market campaign badge. Vibrant orange and red color palette. "SUPER FIRSATLAR" main headline in large, bold, 3D extruded typography. "Basladi!" subtitle in italic script font. Dynamic starburst/explosion form conveying power and energy. Deep shadow effects, inner glow, gradient layers. Real market insert quality. Products: ' + urunler + '. Badge on transparent background.';
+  }
 
-    // Her maske pikseli için çevresinden renk örnekle
-    for (let y=0; y<h; y++) {
-      for (let x=0; x<w; x++) {
-        const i = (y*w + x) * 4;
-        if (maskData.data[i] > 128) { // Beyaz = silinecek
-          // Çevreden renk al (kenara yakın pikseller)
-          let r=0, g=0, b=0, cnt=0;
-          const ornekMesafe = Math.round(_fircaBoyut * 0.8);
-          for (let dy=-ornekMesafe; dy<=ornekMesafe; dy+=2) {
-            for (let dx=-ornekMesafe; dx<=ornekMesafe; dx+=2) {
-              const nx = x+dx, ny = y+dy;
-              if (nx<0||nx>=w||ny<0||ny>=h) continue;
-              const ni = (ny*w + nx) * 4;
-              if (maskData.data[ni] > 128) continue; // Maske alanını atlat
-              r += imgData.data[ni];
-              g += imgData.data[ni+1];
-              b += imgData.data[ni+2];
-              cnt++;
-            }
-          }
-          if (cnt > 0) {
-            imgData.data[i]   = Math.round(r/cnt);
-            imgData.data[i+1] = Math.round(g/cnt);
-            imgData.data[i+2] = Math.round(b/cnt);
-          }
-        }
+  /* ── Dil Degistir ───────────────────────────────────── */
+  function dilDegistir(dil) {
+    _dil = dil;
+    const ta = document.getElementById('badgePrompt');
+    if (ta) ta.value = dil === 'tr' ? _promptTr : _promptEn;
+
+    const btnTr = document.getElementById('btnTr');
+    const btnEn = document.getElementById('btnEn');
+    if (btnTr) {
+      btnTr.style.background = dil==='tr' ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)';
+      btnTr.style.borderColor = dil==='tr' ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.08)';
+      btnTr.style.color = dil==='tr' ? '#a5b4fc' : 'var(--text3)';
+    }
+    if (btnEn) {
+      btnEn.style.background = dil==='en' ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)';
+      btnEn.style.borderColor = dil==='en' ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.08)';
+      btnEn.style.color = dil==='en' ? '#a5b4fc' : 'var(--text3)';
+    }
+  }
+
+  function promptYenile() {
+    if (_b64 && _claudeKey()) {
+      _claudeAnalizEt();
+    } else {
+      _varsayilanPromptOlustur();
+      dilDegistir(_dil);
+    }
+  }
+
+  /* ── ANA URETIM ─────────────────────────────────────── */
+  async function uret() {
+    const openaiKey = _openaiKey();
+    if (!openaiKey) { _durum('OpenAI API anahtari girilmedi.','error'); return; }
+
+    const ta = document.getElementById('badgePrompt');
+    const prompt = ta ? ta.value.trim() : '';
+    if (!prompt) { _durum('Prompt bos. Once rozet yukle veya prompt yaz.','error'); return; }
+
+    const btn  = document.getElementById('badgeUretBtn');
+    const txt  = document.getElementById('badgeUretTxt');
+    const ikon = document.getElementById('badgeUretIkon');
+    btn.disabled = true;
+    if(txt)  txt.textContent = 'Uretiliyor...';
+    if(ikon) ikon.textContent = '⏳';
+
+    const boyut = document.querySelector('input[name="rozetBoyut"]:checked')?.value || '1024x1024';
+    const adet  = parseInt(document.getElementById('rozetAdet')?.value || '3');
+
+    _durum(_spin('OpenAI gpt-image-1 ile ' + adet + ' rozet uretiliyor... (20-40sn)'),'info');
+    document.getElementById('rozetSonuclarWrap').style.display = 'none';
+    document.getElementById('rozetSecimPanel').style.display = 'none';
+
+    try {
+      // Referans gorsel varsa gonder (image variation), yoksa text-to-image
+      let body;
+      if (_b64) {
+        // gpt-image-1 ile gorsel referansi
+        body = JSON.stringify({
+          model: 'gpt-image-1',
+          prompt: prompt,
+          n: adet,
+          size: boyut,
+          quality: 'high',
+          background: 'transparent',
+          response_format: 'b64_json'
+        });
+      } else {
+        body = JSON.stringify({
+          model: 'gpt-image-1',
+          prompt: prompt,
+          n: adet,
+          size: boyut,
+          quality: 'high',
+          background: 'transparent',
+          response_format: 'b64_json'
+        });
       }
-    }
 
-    _ctx.putImageData(imgData, 0, 0);
+      const res = await fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + openaiKey
+        },
+        body: body
+      });
 
-    // Overlay ve maskeyi temizle
-    const overlay = document.getElementById('badgeOverlay');
-    if (overlay) overlay.getContext('2d').clearRect(0,0,w,h);
-    _maskCtx.clearRect(0,0,w,h);
-
-    // Metinleri yeniden çiz
-    _metinleriCiz();
-    _durum('Temizleme tamamlandi! Simdi metin ekleyebilirsin.','success');
-  }
-
-  /* ── Canvas Yenile ──────────────────────────────────── */
-  function _canvasYenile() {
-    if (!_ctx||!_canvas||!_img) return;
-    _ctx.drawImage(_img, 0, 0, _canvas.width, _canvas.height);
-    _metinleriCiz();
-  }
-
-  function _metinleriCiz() {
-    if (!_ctx) return;
-    _metinler.forEach(function(mt, i) {
-      const x    = (mt.x/100)*_canvas.width;
-      const y    = (mt.y/100)*_canvas.height;
-      const stil = (mt.stil==='italic'?'italic ':'')+mt.agirlik+' '+mt.boyut+'px "Arial Black",Impact,sans-serif';
-      _ctx.save();
-      _ctx.font=stil; _ctx.fillStyle=mt.renk;
-      _ctx.textAlign=mt.hizalama||'center'; _ctx.textBaseline='middle';
-      _ctx.shadowColor='rgba(0,0,0,0.65)';
-      _ctx.shadowBlur=mt.boyut*0.12; _ctx.shadowOffsetX=mt.boyut*0.05; _ctx.shadowOffsetY=mt.boyut*0.05;
-      if (i===_secili) {
-        const mw=_ctx.measureText(mt.metin).width;
-        _ctx.save(); _ctx.shadowBlur=0;
-        _ctx.strokeStyle='rgba(99,102,241,0.9)'; _ctx.lineWidth=2; _ctx.setLineDash([4,3]);
-        _ctx.strokeRect(x-(mt.hizalama==='center'?mw/2:0)-6, y-mt.boyut/2-4, mw+12, mt.boyut+8);
-        _ctx.restore();
+      if (!res.ok) {
+        const err = await res.json().catch(function(){return {};});
+        throw new Error(err.error?.message || 'OpenAI hatasi: ' + res.status);
       }
-      _ctx.fillText(mt.metin, x, y);
-      _ctx.restore();
-    });
-  }
 
-  /* ── Edit Alanları ──────────────────────────────────── */
-  function _editAlanlariOlustur() {
-    const wrap = document.getElementById('badgeMetinAlanlari');
-    if (!wrap) return;
+      const data = await res.json();
+      const gorseller = (data.data || []).map(function(item) {
+        return item.b64_json
+          ? 'data:image/png;base64,' + item.b64_json
+          : item.url;
+      });
 
-    if (_metinler.length === 0) {
-      // Ilk metin otomatik ekle
-      _metinler = [{
-        id:'metin1', etiket:'Metin 1',
-        metin:'YAZI BURAYA', x:50, y:50,
-        renk:'#ffffff', boyut:28, agirlik:'900', stil:'normal', hizalama:'center'
-      }];
+      if (!gorseller.length) throw new Error('Gorsel uretilmedi.');
+
+      _rozetleriGoster(gorseller);
+      _durum(gorseller.length + ' rozet uretildi! Begendigne tikla.','success');
+
+    } catch(err) {
+      _durum('Hata: ' + err.message,'error');
     }
 
-    wrap.innerHTML = _metinler.map(function(mt, i) {
-      const s = i===_secili;
-      return '<div onclick="BadgeStudio.metinSec('+i+')" style="padding:10px;border-radius:8px;cursor:pointer;border:1.5px solid '+(s?'#6366f1':'rgba(255,255,255,0.07)')+';background:'+(s?'rgba(99,102,241,0.08)':'transparent')+';margin-bottom:6px">'+
-        '<div style="font-size:10px;color:'+(s?'#a5b4fc':'var(--text3)')+';font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">'+mt.etiket+'</div>'+
-        '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">'+
-        '<input type="text" id="bmt-'+mt.id+'" value="'+mt.metin+'" oninput="BadgeStudio.metinGuncelle()" placeholder="Metin..."'+
-        ' style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text);font-family:Inter,sans-serif;outline:none">'+
-        '<input type="color" value="'+mt.renk+'" id="bmc-'+mt.id+'" oninput="BadgeStudio.metinGuncelle()"'+
-        ' style="width:30px;height:30px;border:none;border-radius:6px;cursor:pointer;padding:2px;flex-shrink:0">'+
-        '</div>'+
-        '<div style="display:flex;gap:6px;align-items:center">'+
-        '<span style="font-size:10px;color:var(--text3);white-space:nowrap">Boyut:</span>'+
-        '<input type="range" min="8" max="120" value="'+mt.boyut+'" id="bms-'+mt.id+'" oninput="BadgeStudio.metinGuncelle()"'+
-        ' style="flex:1;accent-color:#6366f1">'+
-        '<span id="bmsv-'+mt.id+'" style="font-size:10px;color:var(--text3);min-width:28px">'+mt.boyut+'px</span>'+
-        '</div>'+
+    btn.disabled = false;
+    if(txt)  txt.textContent = 'Rozet Uret';
+    if(ikon) ikon.textContent = '✨';
+  }
+
+  let _urls = [];
+
+  function _rozetleriGoster(urls) {
+    _urls = urls;
+    const grid = document.getElementById('rozetSonuclarGrid');
+    const wrap = document.getElementById('rozetSonuclarWrap');
+    if (!grid) return;
+    wrap.style.display = 'block';
+
+    grid.innerHTML = urls.map(function(url, i) {
+      return '<div onclick="BadgeStudio.rozetSec(' + i + ')" id="rozet-kart-' + i + '"' +
+        ' style="cursor:pointer;border:2px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px;' +
+        'background:var(--card-bg);transition:all 0.2s;display:inline-block">' +
+        '<div style="background-image:linear-gradient(45deg,#d1d5db 25%,transparent 25%),linear-gradient(-45deg,#d1d5db 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#d1d5db 75%),linear-gradient(-45deg,transparent 75%,#d1d5db 75%);background-size:10px 10px;background-position:0 0,0 5px,5px -5px,-5px 0;border-radius:8px">' +
+        '<img src="' + url + '" style="width:160px;height:160px;object-fit:contain;display:block;border-radius:8px">' +
+        '</div>' +
+        '<div style="font-size:10px;color:var(--text3);text-align:center;margin-top:6px;font-weight:600">Secenek ' + (i+1) + '</div>' +
         '</div>';
-    }).join('') +
-    '<button onclick="BadgeStudio.metinEkle()" style="width:100%;padding:7px;background:rgba(99,102,241,0.1);border:1px dashed rgba(99,102,241,0.3);border-radius:8px;color:#a5b4fc;font-size:12px;cursor:pointer;font-family:Inter,sans-serif;margin-top:4px">+ Yeni Metin Ekle</button>';
+    }).join('');
   }
 
-  function metinSec(i) { _secili=i; _editAlanlariOlustur(); _metinleriCiz(); }
-
-  function metinEkle() {
-    const id = 'metin'+(Date.now());
-    _metinler.push({ id, etiket:'Metin '+(+_metinler.length+1),
-      metin:'YENİ METİN', x:50, y:50+(+_metinler.length*15),
-      renk:'#ffffff', boyut:28, agirlik:'900', stil:'normal', hizalama:'center'
+  function rozetSec(i) {
+    if (!_urls[i]) return;
+    _seciliUrl = _urls[i];
+    _urls.forEach(function(_, idx) {
+      const k = document.getElementById('rozet-kart-' + idx);
+      if (k) {
+        k.style.border     = idx===i ? '2px solid #6366f1' : '2px solid rgba(255,255,255,0.08)';
+        k.style.background = idx===i ? 'rgba(99,102,241,0.08)' : 'var(--card-bg)';
+        k.style.boxShadow  = idx===i ? '0 0 0 4px rgba(99,102,241,0.15)' : 'none';
+      }
     });
-    _secili = _metinler.length - 1;
-    _editAlanlariOlustur();
-    _metinleriCiz();
+    const buyuk = document.getElementById('rozetSeciliBuyuk');
+    if (buyuk) buyuk.src = _seciliUrl;
+    document.getElementById('rozetSecimPanel').style.display = 'block';
   }
 
-  function metinGuncelle() {
-    _metinler.forEach(function(mt) {
-      const inp=document.getElementById('bmt-'+mt.id);
-      const clr=document.getElementById('bmc-'+mt.id);
-      const sld=document.getElementById('bms-'+mt.id);
-      const slv=document.getElementById('bmsv-'+mt.id);
-      if(inp) mt.metin=inp.value;
-      if(clr) mt.renk=clr.value;
-      if(sld) { mt.boyut=parseInt(sld.value); if(slv) slv.textContent=sld.value+'px'; }
-    });
-    // Canvas'ı orijinalden yeniden çiz + metinleri uygula
-    if (_ctx && _img && _canvas) {
-      // Sadece metinleri güncelle (silinen alanı korumak için drawImage yapmıyoruz)
-      const imgData = _ctx.getImageData(0,0,_canvas.width,_canvas.height);
-      _ctx.putImageData(imgData, 0, 0);
-      _metinleriCiz();
-    }
-  }
-
-  /* ── Fırça Boyutu ───────────────────────────────────── */
-  function fircaBoyutuAyarla(val) {
-    _fircaBoyut = parseInt(val);
-    const el = document.getElementById('fircaBoyutLabel');
-    if (el) el.textContent = val + 'px';
-  }
-
-  /* ── PNG İndir ──────────────────────────────────────── */
+  /* ── PNG Indir ──────────────────────────────────────── */
   function pngIndir() {
-    if (!_canvas) { _durum('Once gorsel yukle.','error'); return; }
-
-    // 4x yüksek çözünürlük
-    const scale = 4;
-    const hq = document.createElement('canvas');
-    hq.width  = _canvas.width  * scale;
-    hq.height = _canvas.height * scale;
-    const hqCtx = hq.getContext('2d');
-    hqCtx.drawImage(_canvas, 0, 0, hq.width, hq.height);
-
-    // Metinleri 4x olarak üstüne yaz
-    _metinler.forEach(function(mt) {
-      const x    = (mt.x/100) * hq.width;
-      const y    = (mt.y/100) * hq.height;
-      const b    = mt.boyut * scale;
-      const stil = (mt.stil==='italic'?'italic ':'')+mt.agirlik+' '+b+'px "Arial Black",Impact,sans-serif';
-      hqCtx.save();
-      hqCtx.font=stil; hqCtx.fillStyle=mt.renk;
-      hqCtx.textAlign=mt.hizalama||'center'; hqCtx.textBaseline='middle';
-      hqCtx.shadowColor='rgba(0,0,0,0.65)';
-      hqCtx.shadowBlur=b*0.12; hqCtx.shadowOffsetX=b*0.05; hqCtx.shadowOffsetY=b*0.05;
-      hqCtx.fillText(mt.metin, x, y);
-      hqCtx.restore();
-    });
-
+    if (!_seciliUrl) { _durum('Once bir rozet sec.','error'); return; }
     const a = document.createElement('a');
-    a.href = hq.toDataURL('image/png');
+    a.href = _seciliUrl;
     a.download = 'rozet-kampix.png';
     a.click();
     _durum('PNG indirildi!','success');
   }
 
-  /* ── Drive ──────────────────────────────────────────── */
+  /* ── Drive + Sheets ─────────────────────────────────── */
   function driveYukle() {
-    if (!_canvas) { _durum('Once gorsel yukle.','error'); return; }
-    if (typeof _kampanyaData==='undefined') window._kampanyaData={};
+    if (!_seciliUrl) { _durum('Once bir rozet sec.','error'); return; }
+    if (typeof _kampanyaData === 'undefined') window._kampanyaData = {};
     _kampanyaData = Object.assign(_kampanyaData||{}, {
-      rozet_png_b64: _canvas.toDataURL('image/png'),
-      rozet_baslik: 'Badge Studio', rozet_drive_url: ''
+      rozet_png_b64: _seciliUrl,
+      rozet_baslik: 'Badge Studio',
+      rozet_drive_url: ''
     });
     exportToSheets();
     _durum('Google hesabina baglaniliyor...','info');
@@ -4489,16 +4505,22 @@ const BadgeStudio = (() => {
   function render() {}
 
   (function init() {
-    const m=localStorage.getItem('rozet_model');
-    if(m){ const s=document.getElementById('rozetModel'); if(s) s.value=m; }
+    const m = localStorage.getItem('rozet_model');
+    if (m) { const s=document.getElementById('rozetModel'); if(s) s.value=m; }
+    const ok = localStorage.getItem('openai_key');
+    if (ok) {
+      const inp = document.getElementById('openaiApiKey');
+      const st  = document.getElementById('openaiStatus');
+      if (inp) inp.value = ok;
+      if (st)  { st.textContent = '✓'; st.style.color = '#4ade80'; }
+    }
   })();
 
-  return { analiz, dosyaYukle, gorselSil, dragOver, dragLeave, drop,
-           toggleApiKey, metinGuncelle, metinSec, metinEkle, pngIndir, driveYukle,
-           maskeyiUygula, fircaBoyutuAyarla, render };
+  return { uret, dosyaYukle, gorselSil, dragOver, dragLeave, drop,
+           toggleKey, dilDegistir, promptYenile, rozetSec, pngIndir, driveYukle, render };
 })();
 
-const RozetAI      = { analiz:BadgeStudio.analiz, render:function(){}, dosyaYukle:BadgeStudio.dosyaYukle,
+const RozetAI      = { analiz:BadgeStudio.uret, render:function(){}, dosyaYukle:BadgeStudio.dosyaYukle,
                        gorselSil:BadgeStudio.gorselSil, dragOver:BadgeStudio.dragOver,
                        dragLeave:BadgeStudio.dragLeave, drop:BadgeStudio.drop };
 const RozetManager = { render:function(){} };
