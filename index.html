@@ -4382,30 +4382,13 @@ Her prompt minimum 150 kelime olmali ve cok spesifik olmali.` }
     document.getElementById('rozetSecimPanel').style.display = 'none';
 
     try {
-      // Referans gorsel varsa gonder (image variation), yoksa text-to-image
-      let body;
-      if (_b64) {
-        // gpt-image-1 ile gorsel referansi
-        body = JSON.stringify({
-          model: 'gpt-image-1',
-          prompt: prompt,
-          n: adet,
-          size: boyut,
-          quality: 'high',
-          background: 'transparent',
-          response_format: 'b64_json'
-        });
-      } else {
-        body = JSON.stringify({
-          model: 'gpt-image-1',
-          prompt: prompt,
-          n: adet,
-          size: boyut,
-          quality: 'high',
-          background: 'transparent',
-          response_format: 'b64_json'
-        });
-      }
+      const body = JSON.stringify({
+        model: 'gpt-image-1',
+        prompt: prompt,
+        n: adet,
+        size: boyut,
+        quality: 'high'
+      });
 
       const res = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
@@ -4423,10 +4406,10 @@ Her prompt minimum 150 kelime olmali ve cok spesifik olmali.` }
 
       const data = await res.json();
       const gorseller = (data.data || []).map(function(item) {
-        return item.b64_json
-          ? 'data:image/png;base64,' + item.b64_json
-          : item.url;
-      });
+        if (item.b64_json) return 'data:image/png;base64,' + item.b64_json;
+        if (item.url) return item.url;
+        return null;
+      }).filter(Boolean);
 
       if (!gorseller.length) throw new Error('Gorsel uretilmedi.');
 
