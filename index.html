@@ -1400,22 +1400,103 @@ input[type="checkbox"] {
       <div class="settings-section" id="section-entegrasyon">
         <div class="settings-card">
           <div class="settings-card-title">API Anahtarları</div>
-          <div class="settings-card-desc">Anahtarlar yalnızca tarayıcında saklanır, sunucuya gönderilmez.</div>
-          <div class="settings-field">
-            <label>Claude API Key</label>
-            <div style="display:flex;gap:8px">
-              <input type="password" id="set-claudeKey" placeholder="sk-ant-api03-..." style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--text);font-family:monospace;outline:none" oninput="kampanyaApiKeySave(this.value)">
-              <button onclick="(function(){var i=document.getElementById('set-claudeKey');i.type=i.type==='password'?'text':'password'})()" style="padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer">👁</button>
+          <div class="settings-card-desc">Anahtarlar şifreli proxy üzerinden iletilir — tarayıcıda görünmez, sunucuda saklanmaz.</div>
+
+          <!-- Claude -->
+          <div style="padding:14px;background:rgba(204,120,92,0.06);border:1px solid rgba(204,120,92,0.2);border-radius:12px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <div style="width:32px;height:32px;background:#CC785C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0">C</div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--text)">Claude API Key</div>
+                <div style="font-size:11px;color:var(--text3)">Görsel analiz · Rozet prompt üretimi</div>
+              </div>
+              <a href="https://console.anthropic.com" target="_blank"
+                style="margin-left:auto;padding:5px 12px;background:rgba(204,120,92,0.15);border:1px solid rgba(204,120,92,0.3);border-radius:7px;font-size:11px;font-weight:600;color:#CC785C;text-decoration:none;white-space:nowrap">
+                Key Al ↗
+              </a>
             </div>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">Görsel analizi + rozet prompt üretimi için</div>
+
+            <!-- Adım adım rehber -->
+            <div style="background:rgba(0,0,0,0.2);border-radius:9px;padding:12px;margin-bottom:12px">
+              <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">📖 Nasıl alınır?</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                  <span style="width:18px;height:18px;background:rgba(204,120,92,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#CC785C;flex-shrink:0">1</span>
+                  <span><strong style="color:var(--text)">console.anthropic.com</strong> adresine git ve hesap oluştur</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                  <span style="width:18px;height:18px;background:rgba(204,120,92,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#CC785C;flex-shrink:0">2</span>
+                  <span>Sol menüden <strong style="color:var(--text)">API Keys</strong> → <strong style="color:var(--text)">Create Key</strong></span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                  <span style="width:18px;height:18px;background:rgba(204,120,92,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#CC785C;flex-shrink:0">3</span>
+                  <span><strong style="color:var(--text)">sk-ant-api03-...</strong> ile başlayan anahtarı kopyala</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                  <span style="width:18px;height:18px;background:rgba(204,120,92,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#CC785C;flex-shrink:0">4</span>
+                  <span>Aşağıdaki alana yapıştır ve kaydet — <strong style="color:#4ade80">ilk $5 ücretsiz!</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px">
+              <input type="password" id="set-claudeKey" placeholder="sk-ant-api03-..."
+                style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--text);font-family:monospace;outline:none"
+                oninput="kampanyaApiKeySave(this.value)">
+              <button onclick="(function(){var i=document.getElementById('set-claudeKey');i.type=i.type==='password'?'text':'password'})()"
+                style="padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer;font-size:13px">👁</button>
+            </div>
+            <div id="claudeKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">
+              Girilmedi — Claude özellikleri devre dışı
+            </div>
           </div>
-          <div class="settings-field">
-            <label>OpenAI API Key</label>
-            <div style="display:flex;gap:8px">
-              <input type="password" id="set-openaiKey" placeholder="sk-..." style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--text);font-family:monospace;outline:none" oninput="localStorage.setItem('openai_key',this.value)">
-              <button onclick="(function(){var i=document.getElementById('set-openaiKey');i.type=i.type==='password'?'text':'password'})()" style="padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer">👁</button>
+
+          <!-- OpenAI -->
+          <div style="padding:14px;background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.2);border-radius:12px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <div style="width:32px;height:32px;background:#10a37f;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0">O</div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--text)">OpenAI API Key</div>
+                <div style="font-size:11px;color:var(--text3)">gpt-image-1 · Rozet üretimi</div>
+              </div>
+              <a href="https://platform.openai.com/api-keys" target="_blank"
+                style="margin-left:auto;padding:5px 12px;background:rgba(16,163,127,0.15);border:1px solid rgba(16,163,127,0.3);border-radius:7px;font-size:11px;font-weight:600;color:#10a37f;text-decoration:none;white-space:nowrap">
+                Key Al ↗
+              </a>
             </div>
-            <div style="font-size:11px;color:var(--text3);margin-top:4px">gpt-image-1 ile rozet üretimi için — <a href="https://platform.openai.com/api-keys" target="_blank" style="color:#a5b4fc;text-decoration:none">Key al ↗</a></div>
+
+            <div style="background:rgba(0,0,0,0.2);border-radius:9px;padding:12px;margin-bottom:12px">
+              <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">📖 Nasıl alınır?</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                  <span style="width:18px;height:18px;background:rgba(16,163,127,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#10a37f;flex-shrink:0">1</span>
+                  <span><strong style="color:var(--text)">platform.openai.com</strong> adresine git ve hesap oluştur</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                  <span style="width:18px;height:18px;background:rgba(16,163,127,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#10a37f;flex-shrink:0">2</span>
+                  <span>Sağ üstten <strong style="color:var(--text)">API Keys</strong> → <strong style="color:var(--text)">Create new secret key</strong></span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                  <span style="width:18px;height:18px;background:rgba(16,163,127,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#10a37f;flex-shrink:0">3</span>
+                  <span><strong style="color:var(--text)">sk-...</strong> ile başlayan anahtarı kopyala</span>
+                </div>
+                <div style="display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)">
+                  <span style="width:18px;height:18px;background:rgba(16,163,127,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#10a37f;flex-shrink:0">4</span>
+                  <span>Billing kısmından <strong style="color:#4ade80">$5-10 kredi</strong> ekle — rozet başına ~$0.04-0.08</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px">
+              <input type="password" id="set-openaiKey" placeholder="sk-..."
+                style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--text);font-family:monospace;outline:none"
+                oninput="localStorage.setItem('openai_key',this.value);_openaiKeyDurumGuncelle()">
+              <button onclick="(function(){var i=document.getElementById('set-openaiKey');i.type=i.type==='password'?'text':'password'})()"
+                style="padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer;font-size:13px">👁</button>
+            </div>
+            <div id="openaiKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">
+              Girilmedi — Rozet üretimi devre dışı
+            </div>
           </div>
         </div>
       </div>
@@ -2547,13 +2628,12 @@ Rules:
 - w,h: width and height of product box as percentage of image width/height (0-100)`;
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('/api/claude', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
+        'X-Api-Key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
@@ -2979,9 +3059,9 @@ async function kampanyaUret() {
     }
     msgContent.push({ type: 'text', text: (refImg ? 'Bu görseldeki rozet tasarım stilini incele: katmanlı renkler, pill şekiller, bold tipografi, geometrik katmanlar.\n\n' : '') + 'Aşağıdaki Türk market kampanyası için ' + (refImg ? 'AYNI TARZDA ' : '') + '3 farklı SVG rozet üret.\n\nÜrünler:\n' + urunler + '\nTarih: ' + tarih + '\nMarka: ' + sirket + '\n\nSadece JSON döndür:\n{"kategori":"...","rozetler":[{"svg":"<svg width=\"240\" height=\"110\" viewBox=\"0 0 240 110\">...</svg>","baslik":"BASLIK","slogan":"slogan"},{"svg":"...","baslik":"...","slogan":"..."},{"svg":"...","baslik":"...","slogan":"..."}]}\n\nSVG kuralları: Impact/Arial Black font, font-weight 900, kalın kontrastlı renkler, katmanlı şekiller, Türkçe büyük harf, her rozet farklı layout.' });
 
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/claude', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      headers: { 'Content-Type': 'application/json', 'X-Api-Key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, messages: [{ role: 'user', content: msgContent }] })
     });
 
@@ -3088,13 +3168,12 @@ Sadece JSON formatında yanıt ver, başka hiçbir şey yazma:
   "renk_oneri": "Markaya uygun hex renk kodu (örn: #e63030)"
 }`;
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/claude', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
+          'X-Api-Key': key,
+          'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
@@ -3364,9 +3443,9 @@ async function testApiKey() {
   ANTHROPIC_API_KEY = key;
   showKeyStatus('⏳ Kontrol ediliyor...', 'loading');
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/claude', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      headers: { 'Content-Type': 'application/json', 'X-Api-Key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 10, messages: [{ role: 'user', content: 'hi' }] })
     });
     if (res.ok) { showKeyStatus('✅ Bağlantı başarılı! Görsel yükleyebilirsin.', 'success'); }
@@ -4180,8 +4259,14 @@ function loadSettingsValues() {
   // API key'leri
   const ck = localStorage.getItem('claude_api_key') || '';
   const ok = localStorage.getItem('openai_key') || '';
-  if (document.getElementById('set-claudeKey')) document.getElementById('set-claudeKey').value = ck;
-  if (document.getElementById('set-openaiKey')) document.getElementById('set-openaiKey').value = ok;
+  if (document.getElementById('set-claudeKey')) {
+    document.getElementById('set-claudeKey').value = ck;
+    _claudeKeyDurumGuncelle();
+  }
+  if (document.getElementById('set-openaiKey')) {
+    document.getElementById('set-openaiKey').value = ok;
+    _openaiKeyDurumGuncelle();
+  }
 }
 
 function saveSettingsAll() {
@@ -4217,7 +4302,31 @@ function saveSettingsAll() {
   }
 }
 
-function settingsLogoYukle(input) {
+function _openaiKeyDurumGuncelle() {
+  const key = localStorage.getItem('openai_key') || '';
+  const el = document.getElementById('openaiKeyStatus');
+  if (!el) return;
+  if (key) {
+    el.textContent = '✅ Girildi — Rozet üretimi aktif';
+    el.style.color = '#4ade80';
+  } else {
+    el.textContent = 'Girilmedi — Rozet üretimi devre dışı';
+    el.style.color = 'var(--text3)';
+  }
+}
+
+function _claudeKeyDurumGuncelle() {
+  const key = localStorage.getItem('claude_api_key') || '';
+  const el = document.getElementById('claudeKeyStatus');
+  if (!el) return;
+  if (key) {
+    el.textContent = '✅ Girildi — Claude özellikleri aktif';
+    el.style.color = '#4ade80';
+  } else {
+    el.textContent = 'Girilmedi — Claude özellikleri devre dışı';
+    el.style.color = 'var(--text3)';
+  }
+}
   if (!input.files[0]) return;
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -5380,13 +5489,12 @@ const BadgeStudio = (() => {
   /* ── Claude Analiz ──────────────────────────────────── */
   async function _claudeAnalizEt() {
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/claude', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': _claudeKey(),
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
+          'X-Api-Key': _claudeKey(),
+          'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
           model: localStorage.getItem('rozet_model') || 'claude-opus-4-7',
@@ -5521,9 +5629,37 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
   }
 
   /* ── ANA URETIM ─────────────────────────────────────── */
+  /* ── Cooldown ───────────────────────────────────────────── */
+  let _sonUretZaman = 0;
+  const _COOLDOWN_MS = 10000; // 10 saniye
+
   async function uret() {
     const openaiKey = _openaiKey();
     if (!openaiKey) { _durum('OpenAI API anahtari girilmedi.','error'); return; }
+
+    // Cooldown kontrolü
+    const simdi = Date.now();
+    const gecen = simdi - _sonUretZaman;
+    if (gecen < _COOLDOWN_MS) {
+      const kalan = Math.ceil((_COOLDOWN_MS - gecen) / 1000);
+      _durum('⏳ ' + kalan + ' saniye bekle...', 'error');
+
+      // Geri sayım güncelle
+      const interval = setInterval(function() {
+        const k = Math.ceil((_COOLDOWN_MS - (Date.now() - _sonUretZaman)) / 1000);
+        if (k <= 0) {
+          clearInterval(interval);
+          _durum('', '');
+          const btn = document.getElementById('badgeUretBtn');
+          const txt = document.getElementById('badgeUretTxt');
+          if (btn) btn.disabled = false;
+          if (txt) txt.textContent = 'Rozet Üret';
+        } else {
+          _durum('⏳ ' + k + ' saniye bekle...', 'error');
+        }
+      }, 1000);
+      return;
+    }
 
     const ta = document.getElementById('badgePrompt');
     const prompt = ta ? ta.value.trim() : '';
@@ -5555,11 +5691,11 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
         quality: quality
       });
 
-      const res = await fetch('https://api.openai.com/v1/images/generations', {
+      const res = await fetch('/api/openai-image', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + openaiKey
+          'X-Api-Key': openaiKey
         },
         body: body
       });
@@ -5582,6 +5718,7 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
       if (!gorseller.length) throw new Error('Gorsel uretilmedi.');
 
       _rozetleriGoster(gorseller);
+      _sonUretZaman = Date.now(); // Cooldown başlat
       _durum(gorseller.length + ' rozet uretildi! Begendigne tikla.','success');
 
     } catch(err) {
