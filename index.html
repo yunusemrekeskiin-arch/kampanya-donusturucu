@@ -1461,7 +1461,16 @@ function signInWithGoogle() {
 
         <div class="settings-card">
           <div class="settings-card-title">API Anahtarları</div>
-          <div class="settings-card-desc">Anahtarlar şifreli proxy üzerinden iletilir — tarayıcıda görünmez, sunucuda saklanmaz.</div>;border:1px solid rgba(204,120,92,0.2);border-radius:12px;margin-bottom:14px">
+          <div class="settings-card-desc">Anahtarlar şifreli proxy üzerinden iletilir — tarayıcıda görünmez, sunucuda saklanmaz.</div>
+
+          <div style="padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:9px;display:flex;gap:10px;align-items:flex-start;margin-bottom:16px">
+            <span style="font-size:15px;flex-shrink:0">⚠️</span>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6">
+              <strong style="color:#fbbf24">Güvenlik notu:</strong> API anahtarları oturum bazlı saklanır. Tarayıcıyı kapattığında silinir, bir sonraki girişte tekrar girmen gerekir. Bu kasıtlı bir güvenlik önlemidir.
+            </div>
+          </div>
+
+          <div style="padding:14px;background:rgba(204,120,92,0.06);border:1px solid rgba(204,120,92,0.2);border-radius:12px;margin-bottom:14px">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
               <div style="width:32px;height:32px;background:#CC785C;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0">C</div>
               <div>
@@ -1503,6 +1512,10 @@ function signInWithGoogle() {
                 oninput="kampanyaApiKeySave(this.value)">
               <button onclick="(function(){var i=document.getElementById('set-claudeKey');i.type=i.type==='password'?'text':'password'})()"
                 style="padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer;font-size:13px">👁</button>
+              <button onclick="testApiKey('claude')"
+                style="padding:8px 14px;background:rgba(204,120,92,0.12);border:1px solid rgba(204,120,92,0.3);border-radius:8px;color:#CC785C;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;white-space:nowrap">
+                Test Et
+              </button>
             </div>
             <div id="claudeKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">
               Girilmedi — Claude özellikleri devre dışı
@@ -1548,9 +1561,13 @@ function signInWithGoogle() {
             <div style="display:flex;gap:8px">
               <input type="password" id="set-openaiKey" placeholder="sk-..."
                 style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--text);font-family:monospace;outline:none"
-                oninput="localStorage.setItem('openai_key',this.value);_openaiKeyDurumGuncelle()">
+                oninput="sessionStorage.setItem('openai_key',this.value);_openaiKeyDurumGuncelle()">
               <button onclick="(function(){var i=document.getElementById('set-openaiKey');i.type=i.type==='password'?'text':'password'})()"
                 style="padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer;font-size:13px">👁</button>
+              <button onclick="testApiKey('openai')"
+                style="padding:8px 14px;background:rgba(16,163,127,0.12);border:1px solid rgba(16,163,127,0.3);border-radius:8px;color:#10a37f;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;white-space:nowrap">
+                Test Et
+              </button>
             </div>
             <div id="openaiKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">
               Girilmedi — Rozet üretimi devre dışı
@@ -1908,7 +1925,7 @@ function signInWithGoogle() {
             <span style="font-size:14px;flex-shrink:0">&#129302;</span>
             <input id="openaiApiKey" type="password" placeholder="OpenAI API — sk-..."
               style="flex:1;min-width:0;background:transparent;border:none;font-size:11px;color:var(--text);font-family:monospace;outline:none"
-              oninput="localStorage.setItem('openai_key',this.value);document.getElementById('openaiStatus').textContent=this.value?'✓':'-'">
+              oninput="sessionStorage.setItem('openai_key',this.value);document.getElementById('openaiStatus').textContent=this.value?'✓':'-'">
             <button onclick="BadgeStudio.toggleKey('openaiApiKey')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:0">&#128065;</button>
             <div id="openaiStatus" style="font-size:10px;white-space:nowrap;color:var(--text3)">-</div>
             <a href="https://platform.openai.com/api-keys" target="_blank" style="font-size:10px;color:#4ade80;text-decoration:none;white-space:nowrap">Al &#8599;</a>
@@ -2661,10 +2678,10 @@ function handleImage(file) {
   reader.readAsDataURL(file);
 }
 
-let ANTHROPIC_API_KEY = localStorage.getItem('claude_api_key') || '';
+let ANTHROPIC_API_KEY = sessionStorage.getItem('claude_api_key') || '';
 
 async function analyzeWithOllama(dataUrl) {
-  ANTHROPIC_API_KEY = (document.getElementById('claudeApiKey')?.value?.trim()) || localStorage.getItem('claude_api_key') || '';
+  ANTHROPIC_API_KEY = (document.getElementById('claudeApiKey')?.value?.trim()) || sessionStorage.getItem('claude_api_key') || '';
   if (!ANTHROPIC_API_KEY) {
     showAiStatus('error', '❌ Lütfen önce Claude API anahtarını gir.');
     return;
@@ -3042,7 +3059,7 @@ document.addEventListener('input', (e) => {
 function kampanyaApiKeySave(val) {
   const trimmed = val.trim();
   if (trimmed) {
-    localStorage.setItem('claude_api_key', trimmed);
+    sessionStorage.setItem('claude_api_key', trimmed);
     const st = document.getElementById('kampanyaApiStatus');
     if (st) { st.textContent = '✅ Kaydedildi'; st.style.color = '#4ade80'; }
   } else {
@@ -3054,7 +3071,7 @@ function kampanyaApiKeySave(val) {
 
 // API key input'u sayfa yüklenince doldur
 (function _loadKampanyaApiKey() {
-  const saved = localStorage.getItem('claude_api_key') || '';
+  const saved = sessionStorage.getItem('claude_api_key') || '';
   const inp = document.getElementById('kampanyaApiKey');
   const st  = document.getElementById('kampanyaApiStatus');
   if (inp && saved) {
@@ -3063,7 +3080,7 @@ function kampanyaApiKeySave(val) {
   }
   // showTable sonrası da güvenli olsun diye event'e de bağla
   document.addEventListener('kampanyaPanelAcildi', function() {
-    const s = localStorage.getItem('claude_api_key') || '';
+    const s = sessionStorage.getItem('claude_api_key') || '';
     const i = document.getElementById('kampanyaApiKey');
     const x = document.getElementById('kampanyaApiStatus');
     if (i && s) { i.value = s; if(x){x.textContent='✅ Kaydedildi';x.style.color='#4ade80';} }
@@ -3096,7 +3113,7 @@ function rozetSec(i) {
 
 async function kampanyaUret() {
   if (!rows.length) { showKampanyaStatus('❌ Önce Excel sekmesinden ürünleri yükle.','error'); return; }
-  const key = localStorage.getItem('claude_api_key') || '';
+  const key = sessionStorage.getItem('claude_api_key') || '';
   if (!key) { showKampanyaStatus('❌ Claude API anahtarı gerekli. Görsel Analiz sekmesinden ekle.','error'); return; }
 
   const btn = document.getElementById('kampanyaUretBtn');
@@ -3190,7 +3207,7 @@ let _kampanyaData = null;
 
 
 async function aiZenginlestir() {
-  const key = localStorage.getItem('claude_api_key') || '';
+  const key = sessionStorage.getItem('claude_api_key') || '';
   if (!key) {
     showSheetsStatus('❌ Claude API anahtarı gerekli. Görsel Analiz sekmesinden ekle.', 'error');
     return;
@@ -3490,14 +3507,14 @@ async function createAiSheet(token) {
 }
 
 function saveApiKey(val) {
-  localStorage.setItem('claude_api_key', val.trim());
+  sessionStorage.setItem('claude_api_key', val.trim());
   ANTHROPIC_API_KEY = val.trim();
 }
 
 async function testApiKey() {
   const key = document.getElementById('claudeApiKey').value.trim();
   if (!key) { showKeyStatus('❌ API anahtarı boş!', 'error'); return; }
-  localStorage.setItem('claude_api_key', key);
+  sessionStorage.setItem('claude_api_key', key);
   ANTHROPIC_API_KEY = key;
   showKeyStatus('⏳ Kontrol ediliyor...', 'loading');
   try {
@@ -3521,7 +3538,7 @@ function showKeyStatus(msg, type) {
 
 // Sayfa açılınca kayıtlı key'i yükle
 window.addEventListener('load', () => {
-  const saved = localStorage.getItem('claude_api_key');
+  const saved = sessionStorage.getItem('claude_api_key');
   if (saved) {
     document.getElementById('claudeApiKey').value = saved;
     ANTHROPIC_API_KEY = saved;
@@ -4318,8 +4335,8 @@ function loadSettingsValues() {
   }
 
   // API key'leri
-  const ck = localStorage.getItem('claude_api_key') || '';
-  const ok = localStorage.getItem('openai_key') || '';
+  const ck = sessionStorage.getItem('claude_api_key') || '';
+  const ok = sessionStorage.getItem('openai_key') || '';
   if (document.getElementById('set-claudeKey')) {
     document.getElementById('set-claudeKey').value = ck;
     _claudeKeyDurumGuncelle();
@@ -4363,8 +4380,73 @@ function saveSettingsAll() {
   }
 }
 
+async function testApiKey(tip) {
+  const statusEl = document.getElementById(tip === 'claude' ? 'claudeKeyStatus' : 'openaiKeyStatus');
+  const key = tip === 'claude'
+    ? sessionStorage.getItem('claude_api_key') || document.getElementById('set-claudeKey')?.value
+    : sessionStorage.getItem('openai_key') || document.getElementById('set-openaiKey')?.value;
+
+  if (!key || key.trim().length < 10) {
+    if (statusEl) { statusEl.textContent = '❌ Anahtar girilmedi veya çok kısa'; statusEl.style.color = '#f87171'; }
+    return;
+  }
+
+  // Format kontrolü
+  if (tip === 'claude' && !key.startsWith('sk-ant')) {
+    if (statusEl) { statusEl.textContent = '❌ Geçersiz format — sk-ant-api03-... ile başlamalı'; statusEl.style.color = '#f87171'; }
+    return;
+  }
+  if (tip === 'openai' && !key.startsWith('sk-')) {
+    if (statusEl) { statusEl.textContent = '❌ Geçersiz format — sk- ile başlamalı'; statusEl.style.color = '#f87171'; }
+    return;
+  }
+
+  if (statusEl) { statusEl.textContent = '⏳ Test ediliyor...'; statusEl.style.color = '#fbbf24'; }
+
+  try {
+    let res, ok, hata;
+
+    if (tip === 'claude') {
+      // Claude'u proxy üzerinden test et — minimal mesaj
+      res = await fetch('/api/claude', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Api-Key': key },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 10,
+          messages: [{ role: 'user', content: 'Hi' }]
+        })
+      });
+      const data = await res.json();
+      ok = res.ok && data.content;
+      hata = data.error || ('HTTP ' + res.status);
+    } else {
+      // OpenAI models endpoint — ucuz, sadece auth kontrolü
+      res = await fetch('https://api.openai.com/v1/models', {
+        headers: { 'Authorization': 'Bearer ' + key }
+      });
+      ok = res.ok;
+      if (!ok) {
+        const data = await res.json().catch(()=>({}));
+        hata = data.error?.message || ('HTTP ' + res.status);
+      }
+    }
+
+    if (ok) {
+      if (statusEl) { statusEl.textContent = '✅ Anahtar geçerli — ' + (tip === 'claude' ? 'Claude' : 'OpenAI') + ' aktif'; statusEl.style.color = '#4ade80'; }
+      // Key'i sessionStorage'a kaydet
+      if (tip === 'claude') { sessionStorage.setItem('claude_api_key', key); kampanyaApiKeySave(key); }
+      else sessionStorage.setItem('openai_key', key);
+    } else {
+      if (statusEl) { statusEl.textContent = '❌ Geçersiz anahtar — ' + hata; statusEl.style.color = '#f87171'; }
+    }
+  } catch(e) {
+    if (statusEl) { statusEl.textContent = '❌ Bağlantı hatası: ' + e.message; statusEl.style.color = '#f87171'; }
+  }
+}
+
 function _openaiKeyDurumGuncelle() {
-  const key = localStorage.getItem('openai_key') || '';
+  const key = sessionStorage.getItem('openai_key') || '';
   const el = document.getElementById('openaiKeyStatus');
   if (!el) return;
   if (key) {
@@ -4377,7 +4459,7 @@ function _openaiKeyDurumGuncelle() {
 }
 
 function _claudeKeyDurumGuncelle() {
-  const key = localStorage.getItem('claude_api_key') || '';
+  const key = sessionStorage.getItem('claude_api_key') || '';
   const el = document.getElementById('claudeKeyStatus');
   if (!el) return;
   if (key) {
@@ -5476,8 +5558,8 @@ const BadgeStudio = (() => {
   let _promptEn = '';
   let _seciliUrl = null;
 
-  const _claudeKey = () => localStorage.getItem('claude_api_key') || '';
-  const _openaiKey = () => localStorage.getItem('openai_key') || '';
+  const _claudeKey = () => sessionStorage.getItem('claude_api_key') || '';
+  const _openaiKey = () => sessionStorage.getItem('openai_key') || '';
 
   /* ── Durum ─────────────────────────────────────────── */
   function _durum(html, tip) {
@@ -5864,7 +5946,7 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
   (function init() {
     const m = localStorage.getItem('rozet_model');
     if (m) { const s=document.getElementById('rozetModel'); if(s) s.value=m; }
-    const ok = localStorage.getItem('openai_key');
+    const ok = sessionStorage.getItem('openai_key');
     if (ok) {
       const inp = document.getElementById('openaiApiKey');
       const st  = document.getElementById('openaiStatus');
