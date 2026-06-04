@@ -4286,17 +4286,16 @@ function saveSettingsAll() {
   if (cp.campaignText) { const el = document.getElementById('arasindaText'); if(el) el.value = cp.campaignText; }
   updateCompanyHeader();
 
-  // Başarı bildirimi
-  const btn = document.querySelector('.s-save-btn');
+  // Kaydet ve kapat
+  const btn = document.querySelector('#settingsPage .s-save-btn');
   if (btn) {
     btn.textContent = '✅ Kaydedildi!';
     btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
-    setTimeout(function() {
-      btn.textContent = '💾 Kaydet';
-      btn.style.background = '';
-      toggleSettings();
-    }, 1000);
   }
+  setTimeout(function() {
+    if (btn) { btn.textContent = '💾 Kaydet'; btn.style.background = ''; }
+    toggleSettings();
+  }, 800);
 }
 
 async function testApiKey(tip) {
