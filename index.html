@@ -3782,6 +3782,7 @@ async function figmaFrameOlustur() {
             name: '#GÖRSEL_' + (i+1),
             x: 8, y: 60,
             width: kartW - 16, height: kartH - 110,
+            imageUrl: r.imgPreview || r.imgUrl || '',
             fills: [{ type: 'SOLID', color: { r: 0.9, g: 0.9, b: 0.9 } }],
             cornerRadius: 6
           },
