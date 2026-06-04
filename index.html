@@ -1255,10 +1255,10 @@ function signInWithGoogle() {
 <div id="settingsPage" style="display:none;position:fixed;inset:0;z-index:9999;font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);overflow-y:auto">
 <style>
 #settingsPage .s-nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:2}
-#settingsPage .s-body{display:flex;min-height:calc(100vh - 57px)}
-#settingsPage .s-sidebar{width:230px;flex-shrink:0;padding:1.5rem 1rem;border-right:1px solid var(--border)}
-#settingsPage .s-content{flex:1;padding:2rem;max-width:780px}
-#settingsPage .s-nav-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text2);margin-bottom:2px;transition:all 0.15s;font-weight:500}
+#settingsPage .s-body{display:flex;min-height:calc(100vh - 57px);width:100%}
+#settingsPage .s-sidebar{width:220px;flex-shrink:0;padding:1.25rem 1rem;border-right:1px solid var(--border)}
+#settingsPage .s-content{flex:1;padding:2rem 2.5rem;overflow-y:auto}
+#settingsPage .s-nav-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text2);margin-bottom:2px;transition:all 0.15s;font-weight:500;background:transparent}
 #settingsPage .s-nav-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
 #settingsPage .s-nav-item.active{background:rgba(99,102,241,0.1);color:#a5b4fc;font-weight:600}
 #settingsPage .s-section{display:none}
@@ -4211,8 +4211,15 @@ function _modelTahminiGoster(model) {
 }
 
 function switchSettingsTab(tab) {
-  document.querySelectorAll('.settings-sidebar-item').forEach(function(el) { el.classList.remove('active'); });
-  document.querySelectorAll('.settings-section').forEach(function(el) { el.classList.remove('active'); });
+  // Tüm sidebar itemları temizle
+  document.querySelectorAll('#settingsPage .s-nav-item').forEach(function(el) {
+    el.classList.remove('active');
+  });
+  // Tüm section'ları gizle
+  document.querySelectorAll('#settingsPage .s-section').forEach(function(el) {
+    el.classList.remove('active');
+  });
+  // Seçili tab ve section'ı aktifleştir
   const tabEl = document.getElementById('tab-' + tab);
   const secEl = document.getElementById('section-' + tab);
   if (tabEl) tabEl.classList.add('active');
