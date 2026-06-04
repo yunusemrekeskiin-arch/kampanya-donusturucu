@@ -4287,7 +4287,7 @@ function saveSettingsAll() {
   updateCompanyHeader();
 
   // Başarı bildirimi
-  const btn = document.querySelector('.settings-save-btn');
+  const btn = document.querySelector('.s-save-btn');
   if (btn) {
     btn.textContent = '✅ Kaydedildi!';
     btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
@@ -4295,7 +4295,7 @@ function saveSettingsAll() {
       btn.textContent = '💾 Kaydet';
       btn.style.background = '';
       toggleSettings();
-    }, 1500);
+    }, 1000);
   }
 }
 
