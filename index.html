@@ -3833,12 +3833,25 @@ async function figmaFrameOlustur() {
   }
 }
 
-function _figmaPluginPayload(frame, fw, fh, token) {
-  // Figma REST API yeni file oluşturamıyor, bunun yerine
-  // kullanıcıya kopyalayabileceği bir plugin komutu verelim
-  const payload = JSON.stringify({ token, frame, width: fw, height: fh });
-  localStorage.setItem('figma_payload', payload);
-  figmaDurum('✅ Frame yapısı hazır! Figma\'da <strong>Kampix Plugin</strong>\'i çalıştır → "Uygula" butonuna bas.', 'success');
+async function _figmaPluginPayload(frame, fw, fh, token) {
+  try {
+    const res = await fetch('/api/figma-payload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ frame, width: fw, height: fh })
+    });
+    const data = await res.json();
+    if (data.code) {
+      figmaDurum(
+        '✅ Hazır! Figma\'da Kampix Plugin\'ini aç → Bu kodu gir: <strong style="font-size:20px;color:#fff;letter-spacing:0.1em">' + data.code + '</strong>',
+        'success'
+      );
+    } else {
+      throw new Error(data.error || 'Bilinmeyen hata');
+    }
+  } catch(e) {
+    figmaDurum('❌ API hatası: ' + e.message, 'error');
+  }
 }
 
 function figmaDurum(msg, tip) {
