@@ -1683,16 +1683,6 @@ input[type="checkbox"] {
           <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">
             🎨 Figma'da Frame Oluştur
           </div>
-          <!-- Figma Token -->
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-            <input type="password" id="figmaToken" placeholder="Figma token — figd_..."
-              style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;
-                     padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
-              oninput="localStorage.setItem('figma_token',this.value)">
-            <button onclick="(function(){var i=document.getElementById('figmaToken');i.type=i.type==='password'?'text':'password';})()"
-              style="padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);font-size:13px;cursor:pointer">👁</button>
-            <a href="https://www.figma.com/settings" target="_blank" style="font-size:11px;color:#a5b4fc;text-decoration:none;white-space:nowrap">Token al ↗</a>
-          </div>
           <!-- Boyut seçimi -->
           <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
             <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer">
