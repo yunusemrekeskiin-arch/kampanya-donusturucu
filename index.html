@@ -1297,6 +1297,11 @@ input[type="checkbox"] {
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Kampanya Varsayılanları
       </div>
+      <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin:12px 0 8px;padding:0 14px">Kullanım</div>
+      <div class="settings-sidebar-item" onclick="switchSettingsTab('maliyet')" id="tab-maliyet">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        API Maliyeti
+      </div>
     </div>
 
     <!-- Content -->
@@ -1415,6 +1420,34 @@ input[type="checkbox"] {
         </div>
       </div>
 
+      <!-- MALİYET -->
+      <div class="settings-section" id="section-maliyet">
+        <div class="settings-card">
+          <div class="settings-card-title">API Maliyet Takibi</div>
+          <div class="settings-card-desc">Gerçek zamanlı token ve görsel başına maliyet hesabı. Veriler sadece tarayıcında saklanır.</div>
+          <div id="settingsMaliyetDetay" style="margin-top:4px"></div>
+          <button onclick="switchSettingsTab('maliyet');setTimeout(settingsMaliyetYukle,100)" style="margin-top:12px;padding:7px 14px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:8px;color:#a5b4fc;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">↻ Yenile</button>
+          <button onclick="if(confirm('Tüm maliyet verisi silinsin mi?')){for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('kampix_maliyet'))localStorage.removeItem(k)};settingsMaliyetYukle()}" style="margin-top:12px;margin-left:8px;padding:7px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;color:#f87171;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">🗑 Geçmişi Temizle</button>
+        </div>
+
+        <!-- Model Seçici -->
+        <div class="settings-card">
+          <div class="settings-card-title">Model Seçimi</div>
+          <div class="settings-card-desc">Daha ucuz model seçerek maliyetini düşürebilirsin. Haiku, Sonnet'ten 10x daha ucuz.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+            <div class="settings-field"><label>Claude Modeli (Görsel Analiz & Rozet Prompt)</label>
+              <select id="set-claudeModel" style="width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:9px;padding:9px 13px;font-size:13px;color:var(--text);font-family:'Geist',sans-serif;outline:none"
+                onchange="localStorage.setItem('rozet_model',this.value)">
+                <option value="claude-haiku-4-5-20251001">⚡ Claude Haiku 4.5 — En Ucuz ($0.8/$4 per 1M)</option>
+                <option value="claude-sonnet-4-6">🎯 Claude Sonnet 4.6 — Dengeli ($3/$15 per 1M)</option>
+                <option value="claude-opus-4-6">🚀 Claude Opus 4.6 — En İyi ($15/$75 per 1M)</option>
+              </select>
+            </div>
+            <div id="modelMaliyetTahmini" style="padding:10px 14px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:9px;font-size:12px;color:#a5b4fc;line-height:1.6"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- KAMPANYA VARSAYILANLARI -->
       <div class="settings-section" id="section-kampanya">
         <div class="settings-card">
@@ -1453,6 +1486,17 @@ input[type="checkbox"] {
       <button class="tema-btn" onclick="setTema('goz')" title="Göz Filtresi" id="btn-goz">🟡</button>
     </div>
     <div class="hdr-status"><div class="hdr-dot"></div>Aktif</div>
+
+    <!-- Maliyet Göstergesi -->
+    <div id="maliyetGosterge" onclick="maliyetDetay()" title="API Maliyeti — tıkla detay gör"
+      style="display:none;align-items:center;gap:6px;padding:5px 10px;background:rgba(255,255,255,0.04);
+             border:1px solid rgba(255,255,255,0.08);border-radius:8px;cursor:pointer;transition:all 0.2s"
+      onmouseover="this.style.background='rgba(99,102,241,0.1)'"
+      onmouseout="this.style.background='rgba(255,255,255,0.04)'">
+      <span style="font-size:12px">💰</span>
+    </div>
+
+    <!-- Maliyet Uyarı Barı -->
 
     <!-- Settings Butonu -->
     <button onclick="toggleSettings()" title="Firma Profili & Ayarlar"
@@ -2028,7 +2072,23 @@ input[type="checkbox"] {
 <button class="help-btn" onclick="toggleHelp()" title="Klavye kısayolları">?</button>
 <button class="company-btn" onclick="toggleCompany()" title="Şirket Profili">🏪</button>
 
-<!-- Şirket Profili Modal -->
+<!-- Maliyet Uyarı Barı -->
+<div id="maliyetUyariBar" style="display:none;align-items:center;gap:8px;padding:8px 1.5rem;
+  background:rgba(251,191,36,0.1);border-bottom:1px solid rgba(251,191,36,0.2);
+  font-size:12px;color:#fbbf24;flex-wrap:wrap"></div>
+
+<!-- Maliyet Modal -->
+<div id="maliyetModal" style="display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,0.6)"
+  onclick="if(event.target===this)document.getElementById('maliyetModal').style.display='none'">
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;width:500px;max-width:95vw;max-height:90vh;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)">
+      <div style="font-size:14px;font-weight:700;color:var(--text)">💰 API Maliyet Takibi</div>
+      <button onclick="document.getElementById('maliyetModal').style.display='none'"
+        style="padding:4px 10px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:6px;color:var(--text3);cursor:pointer;font-size:12px">✕</button>
+    </div>
+    <div id="maliyetModalBody" style="overflow-y:auto;max-height:calc(90vh - 60px)"></div>
+  </div>
+</div>
 <div class="help-overlay" id="companyOverlay" onclick="if(event.target===this)toggleCompany()">
   <div class="company-modal">
     <h2>🏪 Şirket Profili</h2>
@@ -2514,9 +2574,9 @@ Rules:
     }
 
     const data = await response.json();
+    // Token takibi
+    if (data.usage) _maliyetKaydet('claude', 'claude-haiku-4-5-20251001', data.usage.input_tokens||0, data.usage.output_tokens||0);
     const text = data.content?.[0]?.text || '';
-    let clean = text.replace(/```json|```/g,'').trim();
-    const match = clean.match(/\[[\s\S]*\]/);
     if (!match) { showAiStatus('error', '❌ Veri bulunamadı: ' + text.substring(0, 200)); return; }
     const parsed = JSON.parse(match[0]);
     parsed.forEach(p => { if (p.fiyat) p.fiyat = p.fiyat.toString().replace('.',','); });
@@ -3886,16 +3946,199 @@ function setLang(lang) {
   document.getElementById('btn-en').style.color = lang === 'en' ? 'white' : '#64748B';
 }
 
-/* ── SETTINGS SAYFASI ────────────────────────────────────── */
+/* ── MALİYET TAKİP SİSTEMİ ───────────────────────────────── */
+const _FIYATLAR = {
+  // Claude — $ per 1M token
+  'claude-opus-4-8':           { input: 15,    output: 75    },
+  'claude-opus-4-7':           { input: 15,    output: 75    },
+  'claude-opus-4-6':           { input: 15,    output: 75    },
+  'claude-sonnet-4-6':         { input: 3,     output: 15    },
+  'claude-haiku-4-5-20251001': { input: 0.8,   output: 4     },
+  // OpenAI — $ per görsel
+  'gpt-image-1-low':           { gorsel: 0.011 },
+  'gpt-image-1-medium':        { gorsel: 0.042 },
+  'gpt-image-1-high':          { gorsel: 0.167 },
+};
+
+function _maliyetKaydet(tip, model, inputTokens, outputTokens, gorselSayisi) {
+  const bugun = new Date().toISOString().slice(0,10);
+  const key   = 'kampix_maliyet_' + bugun;
+  const veri  = JSON.parse(localStorage.getItem(key) || '{"claude":0,"openai":0,"islemler":[]}');
+
+  let maliyet = 0;
+  let aciklama = '';
+
+  if (tip === 'claude') {
+    const fiyat = _FIYATLAR[model] || _FIYATLAR['claude-sonnet-4-6'];
+    maliyet = ((inputTokens * fiyat.input) + (outputTokens * fiyat.output)) / 1_000_000;
+    aciklama = model + ' — ' + inputTokens + '+' + outputTokens + ' token';
+    veri.claude = (veri.claude || 0) + maliyet;
+  } else if (tip === 'openai') {
+    const quality = localStorage.getItem('openai_quality') || 'medium';
+    const fiyat   = _FIYATLAR['gpt-image-1-' + quality] || _FIYATLAR['gpt-image-1-medium'];
+    maliyet = fiyat.gorsel * (gorselSayisi || 1);
+    aciklama = 'gpt-image-1 — ' + (gorselSayisi||1) + ' görsel (' + quality + ')';
+    veri.openai = (veri.openai || 0) + maliyet;
+  }
+
+  veri.islemler.push({
+    zaman: new Date().toLocaleTimeString('tr-TR'),
+    tip, aciklama,
+    maliyet: maliyet.toFixed(6)
+  });
+
+  localStorage.setItem(key, JSON.stringify(veri));
+  _maliyetGoster();
+
+  // Uyarı eşiği: günlük $1 geçince uyar
+  const gunlukToplam = (veri.claude || 0) + (veri.openai || 0);
+  if (gunlukToplam > 1 && !sessionStorage.getItem('maliyet_uyari_gosterildi')) {
+    sessionStorage.setItem('maliyet_uyari_gosterildi', '1');
+    _maliyetUyari(gunlukToplam);
+  }
+
+  return maliyet;
+}
+
+function _maliyetGoster() {
+  const bugun = new Date().toISOString().slice(0,10);
+  const veri  = JSON.parse(localStorage.getItem('kampix_maliyet_' + bugun) || '{"claude":0,"openai":0}');
+  const toplam = ((veri.claude || 0) + (veri.openai || 0));
+  const el = document.getElementById('maliyetGosterge');
+  if (!el) return;
+
+  const renk = toplam > 1 ? '#f87171' : toplam > 0.5 ? '#fbbf24' : '#4ade80';
+  el.innerHTML =
+    '<span style="font-size:10px;color:#475569;font-weight:600">Bugün:</span> ' +
+    '<span style="font-size:12px;font-weight:700;color:' + renk + '">$' + toplam.toFixed(4) + '</span>';
+  el.style.display = 'flex';
+}
+
+function _maliyetUyari(toplam) {
+  const el = document.getElementById('maliyetUyariBar');
+  if (!el) return;
+  el.innerHTML =
+    '⚠️ Bugünkü API maliyetin <strong>$' + toplam.toFixed(3) + '</strong> oldu. ' +
+    'Claude Haiku kullanarak maliyeti <strong>10x</strong> düşürebilirsin. ' +
+    '<button onclick="document.getElementById(\'maliyetUyariBar\').style.display=\'none\'" ' +
+    'style="padding:2px 8px;background:rgba(255,255,255,0.1);border:none;border-radius:5px;color:#fff;cursor:pointer;font-size:11px;margin-left:8px">✕</button>';
+  el.style.display = 'flex';
+}
+
+function maliyetDetay() {
+  const bugun = new Date().toISOString().slice(0,10);
+  const veri  = JSON.parse(localStorage.getItem('kampix_maliyet_' + bugun) || '{"claude":0,"openai":0,"islemler":[]}');
+  const toplam = ((veri.claude||0) + (veri.openai||0));
+
+  let html = '<div style="padding:1rem;max-height:400px;overflow-y:auto">';
+  html += '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">📊 Bugünkü Maliyet — ' + bugun + '</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">';
+  html += '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px">CLAUDE</div><div style="font-size:16px;font-weight:700;color:#a5b4fc">$' + (veri.claude||0).toFixed(4) + '</div></div>';
+  html += '<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px">OPENAI</div><div style="font-size:16px;font-weight:700;color:#4ade80">$' + (veri.openai||0).toFixed(4) + '</div></div>';
+  html += '<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#fbbf24;font-weight:600;margin-bottom:4px">TOPLAM</div><div style="font-size:16px;font-weight:700;color:#fbbf24">$' + toplam.toFixed(4) + '</div></div>';
+  html += '</div>';
+
+  if (veri.islemler && veri.islemler.length > 0) {
+    html += '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">İşlem Geçmişi</div>';
+    html += '<div style="display:flex;flex-direction:column;gap:4px">';
+    veri.islemler.slice(-10).reverse().forEach(function(item) {
+      const renk = item.tip === 'claude' ? '#818cf8' : '#4ade80';
+      html += '<div style="display:flex;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:7px;font-size:11px">' +
+        '<span style="color:' + renk + ';font-weight:600">' + item.aciklama + '</span>' +
+        '<span style="color:var(--text3)">' + item.zaman + ' — <strong style="color:var(--text2)">$' + item.maliyet + '</strong></span>' +
+        '</div>';
+    });
+    html += '</div>';
+  } else {
+    html += '<div style="font-size:12px;color:var(--text3);text-align:center;padding:20px 0">Henüz işlem yok</div>';
+  }
+  html += '</div>';
+
+  // Modal içinde göster
+  const modal = document.getElementById('maliyetModal');
+  if (modal) {
+    document.getElementById('maliyetModalBody').innerHTML = html;
+    modal.style.display = 'flex';
+  }
+}
+/* ── END MALİYET ──────────────────────────────────────────── */
 function toggleSettings() {
   const page = document.getElementById('settingsPage');
   if (!page) return;
   if (page.style.display === 'none') {
     page.style.display = 'block';
     loadSettingsValues();
+    settingsMaliyetYukle();
   } else {
     page.style.display = 'none';
   }
+}
+
+function settingsMaliyetYukle() {
+  const el = document.getElementById('settingsMaliyetDetay');
+  if (!el) return;
+
+  const simdi = new Date();
+  const bugun = simdi.toISOString().slice(0,10);
+  let html = '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">';
+
+  // Son 7 günü hesapla
+  let claudeHafta = 0, openaiHafta = 0;
+  for (let i=0; i<7; i++) {
+    const d = new Date(simdi);
+    d.setDate(d.getDate() - i);
+    const k = 'kampix_maliyet_' + d.toISOString().slice(0,10);
+    const v = JSON.parse(localStorage.getItem(k) || '{"claude":0,"openai":0}');
+    claudeHafta += v.claude || 0;
+    openaiHafta += v.openai || 0;
+  }
+
+  const bugunVeri = JSON.parse(localStorage.getItem('kampix_maliyet_' + bugun) || '{"claude":0,"openai":0,"islemler":[]}');
+  const bugunToplam = (bugunVeri.claude||0) + (bugunVeri.openai||0);
+  const haftaToplam = claudeHafta + openaiHafta;
+
+  html += '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px">BUGÜN</div><div style="font-size:18px;font-weight:700;color:#a5b4fc">$' + bugunToplam.toFixed(4) + '</div></div>';
+  html += '<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px">7 GÜN</div><div style="font-size:18px;font-weight:700;color:#4ade80">$' + haftaToplam.toFixed(4) + '</div></div>';
+  html += '<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#fbbf24;font-weight:600;margin-bottom:4px">OPENAI</div><div style="font-size:18px;font-weight:700;color:#fbbf24">$' + openaiHafta.toFixed(4) + '</div></div>';
+  html += '</div>';
+
+  // İşlem geçmişi
+  if (bugunVeri.islemler && bugunVeri.islemler.length > 0) {
+    html += '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Bugünkü İşlemler</div>';
+    html += '<div style="display:flex;flex-direction:column;gap:4px">';
+    bugunVeri.islemler.slice(-8).reverse().forEach(function(item) {
+      const renk = item.tip === 'claude' ? '#818cf8' : '#4ade80';
+      html += '<div style="display:flex;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:7px;font-size:11px">' +
+        '<span style="color:' + renk + '">' + item.aciklama + '</span>' +
+        '<span style="color:var(--text3)">' + item.zaman + ' — <strong style="color:var(--text2)">$' + item.maliyet + '</strong></span>' +
+        '</div>';
+    });
+    html += '</div>';
+  } else {
+    html += '<div style="font-size:12px;color:var(--text3);text-align:center;padding:16px 0">Henüz işlem yok</div>';
+  }
+
+  el.innerHTML = html;
+
+  // Model seçiciyi güncelle
+  const modelSec = document.getElementById('set-claudeModel');
+  if (modelSec) {
+    const saved = localStorage.getItem('rozet_model') || 'claude-haiku-4-5-20251001';
+    modelSec.value = saved;
+    _modelTahminiGoster(saved);
+  }
+}
+
+function _modelTahminiGoster(model) {
+  const el = document.getElementById('modelMaliyetTahmini');
+  if (!el) return;
+  const tahminler = {
+    'claude-haiku-4-5-20251001': { islem: '$0.001', gun: '100 işlem/gün = ~$0.10', oneri: '✅ Günlük kullanım için ideal' },
+    'claude-sonnet-4-6':         { islem: '$0.004', gun: '100 işlem/gün = ~$0.40', oneri: '🎯 Kalite/maliyet dengesi' },
+    'claude-opus-4-6':           { islem: '$0.020', gun: '100 işlem/gün = ~$2.00', oneri: '🚀 Sadece kritik işlemler için' },
+  };
+  const t = tahminler[model] || tahminler['claude-haiku-4-5-20251001'];
+  el.innerHTML = '📊 Ortalama işlem başına: <strong>' + t.islem + '</strong> · ' + t.gun + '<br>' + t.oneri;
 }
 
 function switchSettingsTab(tab) {
@@ -3905,6 +4148,7 @@ function switchSettingsTab(tab) {
   const secEl = document.getElementById('section-' + tab);
   if (tabEl) tabEl.classList.add('active');
   if (secEl) secEl.classList.add('active');
+  if (tab === 'maliyet') settingsMaliyetYukle();
 }
 
 function loadSettingsValues() {
@@ -5295,7 +5539,10 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
     const boyut = document.querySelector('input[name="rozetBoyut"]:checked')?.value || '1024x1024';
     const adet  = parseInt(document.getElementById('rozetAdet')?.value || '3');
 
-    _durum(_spin('OpenAI gpt-image-1 ile ' + adet + ' rozet uretiliyor... (20-40sn)'),'info');
+    // Maliyet uyarısı — üretmeden önce göster
+    const quality = 'high';
+    const tahminiMaliyet = (adet * 0.167).toFixed(3);
+    _durum(_spin('OpenAI gpt-image-1 ile ' + adet + ' rozet uretiliyor... ~$' + tahminiMaliyet + ' (20-40sn)'),'info');
     document.getElementById('rozetSonuclarWrap').style.display = 'none';
     document.getElementById('rozetSecimPanel').style.display = 'none';
 
@@ -5305,7 +5552,7 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
         prompt: prompt,
         n: adet,
         size: boyut,
-        quality: 'high'
+        quality: quality
       });
 
       const res = await fetch('https://api.openai.com/v1/images/generations', {
@@ -5323,6 +5570,9 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
       }
 
       const data = await res.json();
+      // Maliyet kaydet
+      _maliyetKaydet('openai', 'gpt-image-1', 0, 0, adet);
+
       const gorseller = (data.data || []).map(function(item) {
         if (item.b64_json) return 'data:image/png;base64,' + item.b64_json;
         if (item.url) return item.url;
