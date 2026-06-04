@@ -2916,7 +2916,7 @@ async function createSheet(token) {
   const kampanya = _kampanyaData;
   const rozetUrl = kampanya?.rozet_drive_url || '';
   const values = [
-    ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA','ROZET'],
+    ['GÖRSEL_URL','MARKA','ÜRÜN','FİYAT','TARİH','ARASINDA','BADGE_ALANI'],
     ...rows.map((r, i) => [
       r.imgUrl||'', r.marka, r.urun, r.fiyat,
       r.tarih, r.arasinda,
@@ -3677,7 +3677,14 @@ async function figmaFrameOlustur() {
   const boyutStr = document.querySelector('input[name="figmaBoyut"]:checked')?.value || '1080x1350';
   const [fw, fh] = boyutStr.split('x').map(Number);
 
-  // Izgara hesapla
+  // Rozet varsa badge alanına ekle
+  const rozetB64 = (typeof _kampanyaData !== 'undefined' && _kampanyaData?.rozet_png_b64)
+    ? _kampanyaData.rozet_png_b64
+    : (document.getElementById('rozetSeciliBuyuk')?.src || null);
+
+  // Rozet'i ayrı sessionStorage'a yaz (payload'ı şişirmemek için)
+  if (rozetB64) sessionStorage.setItem('kampix_rozet_b64', rozetB64);
+  else sessionStorage.removeItem('kampix_rozet_b64');
   const kolonSayisi = 4;
   const padding = 40;
   const gap = 16;
@@ -3719,6 +3726,7 @@ async function figmaFrameOlustur() {
         name: '#BADGE_ALANI',
         x: Math.floor(fw/2) - 150, y: 110,
         width: 300, height: 180,
+        imageUrl: rozetB64 || '',
         fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: 0.1 }],
         cornerRadius: 16
       },
@@ -4971,6 +4979,11 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
   function rozetSec(i) {
     if (!_urls[i]) return;
     _seciliUrl = _urls[i];
+
+    // Figma frame için _kampanyaData'ya kaydet
+    if (typeof _kampanyaData === 'undefined') window._kampanyaData = {};
+    _kampanyaData = Object.assign(_kampanyaData || {}, { rozet_png_b64: _seciliUrl });
+
     _urls.forEach(function(_, idx) {
       const k = document.getElementById('rozet-kart-' + idx);
       if (k) {
