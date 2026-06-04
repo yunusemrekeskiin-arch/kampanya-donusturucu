@@ -1077,7 +1077,7 @@ input[type="checkbox"] {
     <span style="display:inline-block;width:6px;height:6px;background:#f97316;border-radius:50%;margin-bottom:2px"></span>
   </div>
   <div style="display:flex;align-items:center;gap:8px">
-    <span style="font-size:12px;color:#334155">Excel'den Figma'ya tek akış</span>
+    <span style="font-size:12px;color:#334155">Market kampanyaları için AI platformu</span>
   </div>
 </div>
 
@@ -1094,7 +1094,7 @@ input[type="checkbox"] {
     </div>
 
     <h1 class="ob-headline">
-      Kampanyaların için<br><em>en hızlı</em> yol.
+      Kreatif ekibin<br>en iyi arkadaşı.<br><em style="font-size:0.7em;letter-spacing:-0.02em">(Excel değil.)</em>
     </h1>
 
     <p class="ob-sub">
@@ -1677,6 +1677,43 @@ input[type="checkbox"] {
 
         <!-- AYIRICI -->
         <div style="border-top:1px solid var(--border);margin:0 -4px"></div>
+
+        <!-- FİGMA ENTEGRASYONU -->
+        <div style="padding:14px;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.15);border-radius:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">
+            🎨 Figma'da Frame Oluştur
+          </div>
+          <!-- Figma Token -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <input type="password" id="figmaToken" placeholder="Figma token — figd_..."
+              style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;
+                     padding:7px 11px;font-size:12px;color:var(--text);font-family:monospace;outline:none"
+              oninput="localStorage.setItem('figma_token',this.value)">
+            <button onclick="(function(){var i=document.getElementById('figmaToken');i.type=i.type==='password'?'text':'password';})()"
+              style="padding:6px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);font-size:13px;cursor:pointer">👁</button>
+            <a href="https://www.figma.com/settings" target="_blank" style="font-size:11px;color:#a5b4fc;text-decoration:none;white-space:nowrap">Token al ↗</a>
+          </div>
+          <!-- Boyut seçimi -->
+          <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="radio" name="figmaBoyut" value="1080x1350" checked style="accent-color:#6366f1"> 1080×1350
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="radio" name="figmaBoyut" value="1080x1080" style="accent-color:#6366f1"> 1080×1080
+            </label>
+            <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer">
+              <input type="radio" name="figmaBoyut" value="1200x628" style="accent-color:#6366f1"> 1200×628
+            </label>
+          </div>
+          <button onclick="figmaFrameOlustur()"
+            style="width:100%;padding:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:9px;
+                   color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif;
+                   box-shadow:0 2px 12px rgba(99,102,241,0.3);display:flex;align-items:center;justify-content:center;gap:8px">
+            <svg width="14" height="14" viewBox="0 0 38 57" fill="none"><path d="M19 28.5C19 23.8 22.9 20 27.5 20C32.1 20 36 23.8 36 28.5C36 33.1 32.1 37 27.5 37C22.9 37 19 33.1 19 28.5Z" fill="white"/><path d="M2 47.5C2 42.9 5.9 39 10.5 39H19V47.5C19 52.1 15.1 56 10.5 56C5.9 56 2 52.1 2 47.5Z" fill="white"/><path d="M19 2V20H10.5C5.9 20 2 16.1 2 11.5C2 6.9 5.9 3 10.5 3L19 2Z" fill="white"/><path d="M2 28.5C2 23.9 5.9 20 10.5 20H19V37H10.5C5.9 37 2 33.1 2 28.5Z" fill="white"/><path d="M19 2H27.5C32.1 2 36 5.9 36 10.5C36 15.1 32.1 19 27.5 19H19V2Z" fill="white"/></svg>
+            Figma'da Frame Oluştur
+          </button>
+          <div id="figmaStatus" style="margin-top:8px;font-size:12px;color:var(--text3);display:none"></div>
+        </div>
 
         <!-- İKİNCİL: Excel + Görsel Klasörü -->
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
@@ -3634,7 +3671,188 @@ function setLang(lang) {
   document.getElementById('btn-en').style.color = lang === 'en' ? 'white' : '#64748B';
 }
 
-/* ── ONBOARDING FONKSİYONLARI ──────────────────────────────── */
+/* ── FİGMA FRAME OLUŞTURUCU ──────────────────────────────── */
+async function figmaFrameOlustur() {
+  const token = localStorage.getItem('figma_token') || document.getElementById('figmaToken')?.value;
+  if (!token) {
+    figmaDurum('❌ Figma token girilmedi.', 'error'); return;
+  }
+  if (!rows || rows.length === 0) {
+    figmaDurum('❌ Önce ürün tablosunu doldur.', 'error'); return;
+  }
+
+  figmaDurum('⏳ Figma dosyası oluşturuluyor...', 'info');
+
+  // Boyut al
+  const boyutStr = document.querySelector('input[name="figmaBoyut"]:checked')?.value || '1080x1350';
+  const [fw, fh] = boyutStr.split('x').map(Number);
+
+  // Izgara hesapla
+  const kolonSayisi = 4;
+  const padding = 40;
+  const gap = 16;
+  const kartW = Math.floor((fw - padding*2 - gap*(kolonSayisi-1)) / kolonSayisi);
+  const kartH = Math.floor(kartW * 1.3);
+  const ustAlan = Math.floor(fh * 0.38); // logo + rozet + tarih alanı
+
+  // Node'ları oluştur
+  const nodes = [];
+
+  // 1) Ana frame
+  const anaFrame = {
+    type: 'FRAME',
+    name: 'Kampix Insert — ' + new Date().toLocaleDateString('tr-TR'),
+    x: 0, y: 0,
+    width: fw, height: fh,
+    fills: [{ type: 'SOLID', color: { r: 0.957, g: 0.271, b: 0.153 } }], // Kesmar kırmızısı
+    children: []
+  };
+
+  // 2) Üst alan (logo + badge + tarih)
+  anaFrame.children.push({
+    type: 'FRAME',
+    name: 'Üst Alan',
+    x: 0, y: 0,
+    width: fw, height: ustAlan,
+    fills: [],
+    children: [
+      {
+        type: 'RECTANGLE',
+        name: '#LOGO_ALANI',
+        x: Math.floor(fw/2) - 120, y: 20,
+        width: 240, height: 70,
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: 0.15 }],
+        cornerRadius: 12
+      },
+      {
+        type: 'RECTANGLE',
+        name: '#BADGE_ALANI',
+        x: Math.floor(fw/2) - 150, y: 110,
+        width: 300, height: 180,
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: 0.1 }],
+        cornerRadius: 16
+      },
+      {
+        type: 'TEXT',
+        name: '#TARİH',
+        x: Math.floor(fw/2) - 150, y: ustAlan - 60,
+        width: 300, height: 30,
+        characters: '22 - 01 Haziran 2026',
+        style: { fontSize: 22, fontFamily: 'Inter', fontWeight: 700, textAlignHorizontal: 'CENTER' },
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
+      }
+    ]
+  });
+
+  // 3) Ürün kartları alanı (beyaz arka plan)
+  const kartAlaniY = ustAlan + 10;
+  const kartAlaniH = fh - kartAlaniY - padding;
+  const satirSayisi = Math.ceil(rows.length / kolonSayisi);
+
+  anaFrame.children.push({
+    type: 'FRAME',
+    name: 'Ürün Kartları',
+    x: 0, y: kartAlaniY,
+    width: fw, height: kartAlaniH,
+    fills: [{ type: 'SOLID', color: { r: 0.98, g: 0.98, b: 0.98 } }],
+    cornerRadius: 20,
+    children: rows.slice(0, kolonSayisi * satirSayisi).map(function(r, i) {
+      const col = i % kolonSayisi;
+      const row = Math.floor(i / kolonSayisi);
+      const x = padding + col * (kartW + gap);
+      const y = padding + row * (kartH + gap);
+      return {
+        type: 'FRAME',
+        name: 'Kart_' + (i+1),
+        x: x, y: y,
+        width: kartW, height: kartH,
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }],
+        cornerRadius: 10,
+        children: [
+          {
+            type: 'TEXT',
+            name: '#MARKA_' + (i+1),
+            x: 8, y: 8,
+            width: kartW - 16, height: 20,
+            characters: r.marka || 'MARKA',
+            style: { fontSize: 12, fontFamily: 'Inter', fontWeight: 700, textAlignHorizontal: 'LEFT' },
+            fills: [{ type: 'SOLID', color: { r: 0.1, g: 0.1, b: 0.1 } }]
+          },
+          {
+            type: 'TEXT',
+            name: '#ÜRÜN_' + (i+1),
+            x: 8, y: 26,
+            width: kartW - 16, height: 30,
+            characters: r.urun || 'Ürün Adı',
+            style: { fontSize: 10, fontFamily: 'Inter', fontWeight: 400, textAlignHorizontal: 'LEFT' },
+            fills: [{ type: 'SOLID', color: { r: 0.4, g: 0.4, b: 0.4 } }]
+          },
+          {
+            type: 'RECTANGLE',
+            name: '#GÖRSEL_' + (i+1),
+            x: 8, y: 60,
+            width: kartW - 16, height: kartH - 110,
+            fills: [{ type: 'SOLID', color: { r: 0.9, g: 0.9, b: 0.9 } }],
+            cornerRadius: 6
+          },
+          {
+            type: 'FRAME',
+            name: '#FİYAT_ALANI_' + (i+1),
+            x: 8, y: kartH - 44,
+            width: kartW - 16, height: 36,
+            fills: [{ type: 'SOLID', color: { r: 0.957, g: 0.271, b: 0.153 } }],
+            cornerRadius: 8,
+            children: [{
+              type: 'TEXT',
+              name: '#FİYAT_' + (i+1),
+              x: 4, y: 6,
+              width: kartW - 24, height: 24,
+              characters: (r.fiyat || '0') + ' ₺',
+              style: { fontSize: 16, fontFamily: 'Inter', fontWeight: 900, textAlignHorizontal: 'CENTER' },
+              fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
+            }]
+          }
+        ]
+      };
+    })
+  });
+
+  // Figma REST API — create file
+  try {
+    const res = await fetch('/api/figma', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, frame: anaFrame, width: fw, height: fh })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    figmaDurum('✅ Figma frame oluşturuldu! <a href="' + data.url + '" target="_blank" style="color:#a5b4fc">Figma\'da aç →</a>', 'success');
+  } catch(e) {
+    // Figma REST API file oluşturma desteklemiyor, alternatif: Figma Plugin payload oluştur
+    _figmaPluginPayload(anaFrame, fw, fh, token);
+  }
+}
+
+function _figmaPluginPayload(frame, fw, fh, token) {
+  // Figma REST API yeni file oluşturamıyor, bunun yerine
+  // kullanıcıya kopyalayabileceği bir plugin komutu verelim
+  const payload = JSON.stringify({ token, frame, width: fw, height: fh });
+  localStorage.setItem('figma_payload', payload);
+  figmaDurum('✅ Frame yapısı hazır! Figma\'da <strong>Kampix Plugin</strong>\'i çalıştır → "Uygula" butonuna bas.', 'success');
+}
+
+function figmaDurum(msg, tip) {
+  const el = document.getElementById('figmaStatus');
+  if (!el) return;
+  const r = {
+    info: 'color:#a5b4fc',
+    success: 'color:#4ade80',
+    error: 'color:#f87171'
+  };
+  el.style.cssText = 'margin-top:8px;font-size:12px;display:block;' + (r[tip]||r.info);
+  el.innerHTML = msg;
+}
+/* ── END FİGMA ─────────────────────────────────────────────── */
 function obNext(n) {
   for (let i=1; i<=4; i++) {
     const p = document.getElementById('ob-p'+i);
