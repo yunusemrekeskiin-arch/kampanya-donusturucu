@@ -5082,12 +5082,10 @@ function saveCompanyProfile() {
 }
 
 function updateCompanyHeader() {
-  if (companyProfile.name) {
-    document.querySelector('.hdr-title').textContent = companyProfile.name;
-  }
-  if (companyProfile.slogan) {
-    document.querySelector('.hdr-sub').textContent = companyProfile.slogan;
-  }
+  const title = document.querySelector('.hdr-title');
+  const sub   = document.querySelector('.hdr-sub');
+  if (companyProfile.name && title)   title.textContent = companyProfile.name;
+  if (companyProfile.slogan && sub)   sub.textContent   = companyProfile.slogan;
 }
 
 // Sayfa açılınca şirket profilini yükle
