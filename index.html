@@ -1228,6 +1228,29 @@ input[type="checkbox"] {
 </div>
 </div>
 
+<script>
+// Erken tanım — onboarding butonu için
+function signInWithGoogle() {
+  // Gerçek fonksiyon yüklenince devir al
+  if (window._signInReady) return window._signInReady();
+  const b = document.getElementById('googleLoginBtn');
+  const t = document.getElementById('googleBtnText');
+  if (b) b.disabled = true;
+  if (t) t.textContent = 'Yükleniyor...';
+  let n = 0;
+  const iv = setInterval(function() {
+    n++;
+    if (window._signInReady) {
+      clearInterval(iv);
+      if (b) b.disabled = false;
+      if (t) t.textContent = 'Google ile devam edin';
+      window._signInReady();
+    }
+    if (n > 30) { clearInterval(iv); if (b) b.disabled = false; if (t) t.textContent = 'Google ile devam edin'; }
+  }, 200);
+}
+</script>
+
 <!-- ── SETTINGS SAYFASI ── -->
 <div id="settingsPage" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);overflow-y:auto;font-family:'Geist',sans-serif">
   <style>
@@ -4327,6 +4350,8 @@ function _claudeKeyDurumGuncelle() {
     el.style.color = 'var(--text3)';
   }
 }
+
+function settingsLogoYukle(input) {
   if (!input.files[0]) return;
   const reader = new FileReader();
   reader.onload = function(e) {
@@ -4827,6 +4852,7 @@ try {
 } catch(e) { console.warn('Supabase init hatası:', e); }
 
 async function signInWithGoogle() {
+  window._signInReady = signInWithGoogle;
   const btn = document.getElementById('googleLoginBtn');
   const btnText = document.getElementById('googleBtnText');
   const errorDiv = document.getElementById('loginError');
