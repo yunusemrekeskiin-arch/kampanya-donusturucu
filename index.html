@@ -1504,14 +1504,11 @@ input[type="checkbox"] {
           <div style="width:8px;height:8px;background:#6366f1;border-radius:50%;box-shadow:0 0 8px rgba(99,102,241,0.6)"></div>
           <span style="font-size:13px;font-weight:600;color:#a5b4fc">Claude AI — Görsel Analiz</span>
         </div>
-        <div style="display:flex;gap:10px;align-items:center">
-          <input type="password" id="claudeApiKey" placeholder="sk-ant-api03-..." data-i18n-placeholder="api_placeholder" autocomplete="off"
-            style="flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:9px 12px;font-size:13px;color:#E2E8F0;font-family:monospace;outline:none"
-            oninput="saveApiKey(this.value)">
-          <button class="btn btn-primary" onclick="testApiKey()" style="white-space:nowrap" data-i18n="btn_connect">Bağlan</button>
-        </div>
-        <div style="font-size:11px;color:#334155;margin-top:8px"><span data-i18n="api_info">🔒 API anahtarın sadece tarayıcında saklanır, hiçbir yere gönderilmez.</span> <a href="https://console.anthropic.com" target="_blank" style="color:#6366f1">console.anthropic.com</a></div>
         <div id="apiKeyStatus" style="display:none;margin-top:8px;font-size:12px;padding:6px 10px;border-radius:6px"></div>
+        <div id="claudeKeyUyari" style="padding:10px 12px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:8px;font-size:12px;color:#a5b4fc;display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <span>🔑 Claude API anahtarı girilmedi</span>
+          <button onclick="toggleSettings();setTimeout(function(){switchSettingsTab('entegrasyon')},100)" style="padding:5px 12px;background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);border-radius:6px;color:#a5b4fc;font-size:11px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;white-space:nowrap">Ayarlardan Gir →</button>
+        </div>
       </div>
     </div>
     <div class="card">
@@ -1650,26 +1647,16 @@ input[type="checkbox"] {
       </div>
       <div class="card-body" style="padding:1.25rem 1.5rem">
 
-        <!-- API Keyleri -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem">
-          <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:10px">
-            <span style="font-size:14px;flex-shrink:0">&#128273;</span>
-            <input id="kampanyaApiKey" type="password" placeholder="Claude API — sk-ant-..."
-              style="flex:1;min-width:0;background:transparent;border:none;font-size:11px;color:var(--text);font-family:monospace;outline:none"
-              oninput="kampanyaApiKeySave(this.value)">
-            <button onclick="BadgeStudio.toggleKey('kampanyaApiKey')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:0">&#128065;</button>
-            <div id="kampanyaApiStatus" style="font-size:10px;white-space:nowrap;color:var(--text3)">-</div>
+        <!-- API Durumu -->
+        <div id="badgeApiDurum" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.25rem">
+          <div id="claudeKeyBadgeStatus" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:10px;font-size:11px;color:#a5b4fc">
+            <span>🔑</span><span id="claudeKeyBadgeTxt">Claude — kontrol ediliyor...</span>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:10px">
-            <span style="font-size:14px;flex-shrink:0">&#129302;</span>
-            <input id="openaiApiKey" type="password" placeholder="OpenAI API — sk-..."
-              style="flex:1;min-width:0;background:transparent;border:none;font-size:11px;color:var(--text);font-family:monospace;outline:none"
-              oninput="sessionStorage.setItem('openai_key',this.value);document.getElementById('openaiStatus').textContent=this.value?'✓':'-'">
-            <button onclick="BadgeStudio.toggleKey('openaiApiKey')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:12px;padding:0">&#128065;</button>
-            <div id="openaiStatus" style="font-size:10px;white-space:nowrap;color:var(--text3)">-</div>
-            <a href="https://platform.openai.com/api-keys" target="_blank" style="font-size:10px;color:#4ade80;text-decoration:none;white-space:nowrap">Al &#8599;</a>
+          <div id="openaiKeyBadgeStatus" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.15);border-radius:10px;font-size:11px;color:#4ade80">
+            <span>🤖</span><span id="openaiKeyBadgeTxt">OpenAI — kontrol ediliyor...</span>
           </div>
         </div>
+
 
         <!-- Gorsel Yukleme -->
         <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">Referans Rozet (Claude bu stili analiz edecek)</div>
@@ -4111,8 +4098,7 @@ function saveSettingsAll() {
   if (cp.color) _afisClr = cp.color;
   if (cp.campaignText) { const el = document.getElementById('arasindaText'); if(el) el.value = cp.campaignText; }
   updateCompanyHeader();
-
-  // Kaydet ve kapat
+  _apiKeyDurumGuncelle();
   const btn = document.querySelector('#settingsPage .s-save-btn');
   if (btn) {
     btn.textContent = '✅ Kaydedildi!';
@@ -4189,9 +4175,53 @@ async function testApiKey(tip) {
   }
 }
 
+function _apiKeyDurumGuncelle() {
+  const ck = sessionStorage.getItem('claude_api_key') || '';
+  const ok = sessionStorage.getItem('openai_key') || '';
+
+  // Kampanya modülü uyarısı
+  const uyari = document.getElementById('claudeKeyUyari');
+  if (uyari) {
+    if (ck) {
+      uyari.style.background = 'rgba(16,185,129,0.06)';
+      uyari.style.borderColor = 'rgba(16,185,129,0.2)';
+      uyari.innerHTML = '<span style="color:#4ade80">✅ Claude API bağlı — görsel analiz hazır</span>';
+    } else {
+      uyari.style.background = 'rgba(99,102,241,0.06)';
+      uyari.style.borderColor = 'rgba(99,102,241,0.15)';
+      uyari.innerHTML = '<span>🔑 Claude API anahtarı girilmedi</span><button onclick="toggleSettings();setTimeout(function(){switchSettingsTab(\'entegrasyon\')},100)" style="padding:5px 12px;background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.3);border-radius:6px;color:#a5b4fc;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Geist\',sans-serif;white-space:nowrap">Ayarlardan Gir →</button>';
+    }
+  }
+
+  // Badge Studio durumu
+  const ct = document.getElementById('claudeKeyBadgeTxt');
+  const ot = document.getElementById('openaiKeyBadgeTxt');
+  const cs = document.getElementById('claudeKeyBadgeStatus');
+  const os = document.getElementById('openaiKeyBadgeStatus');
+
+  if (ct && cs) {
+    if (ck) {
+      ct.textContent = 'Claude ✅ bağlı';
+      cs.style.borderColor = 'rgba(16,185,129,0.2)';
+      cs.style.background = 'rgba(16,185,129,0.05)';
+      ct.style.color = '#4ade80';
+    } else {
+      ct.innerHTML = 'Claude — <a onclick="toggleSettings();setTimeout(function(){switchSettingsTab(\'entegrasyon\')},100)" style="color:#a5b4fc;cursor:pointer;text-decoration:underline">Anahtar gir</a>';
+    }
+  }
+  if (ot && os) {
+    if (ok) {
+      ot.textContent = 'OpenAI ✅ bağlı';
+      os.style.borderColor = 'rgba(16,185,129,0.2)';
+      ot.style.color = '#4ade80';
+    } else {
+      ot.innerHTML = 'OpenAI — <a onclick="toggleSettings();setTimeout(function(){switchSettingsTab(\'entegrasyon\')},100)" style="color:#4ade80;cursor:pointer;text-decoration:underline">Anahtar gir</a>';
+    }
+  }
+}
+
 function _openaiKeyDurumGuncelle() {
   const key = sessionStorage.getItem('openai_key') || '';
-  const el = document.getElementById('openaiKeyStatus');
   if (!el) return;
   if (key) {
     el.textContent = '✅ Girildi — Rozet üretimi aktif';
@@ -4933,6 +4963,9 @@ window.addEventListener('DOMContentLoaded', () => {
     if (img) { img.src = companyProfile.logoBase64; img.style.display = 'block'; }
     if (ph)  ph.style.display = 'none';
   }
+
+  // API key durumlarını göster
+  setTimeout(_apiKeyDurumGuncelle, 300);
 });
 
 
