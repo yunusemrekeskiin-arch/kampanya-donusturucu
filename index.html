@@ -210,8 +210,8 @@ body, .card, .field input, table, td, th, .inp-row input, .hdr, .tabs, .tab, .up
   .hdr-title { font-size:14px; }
   .hdr-sub { display:none; }
   .wrap { padding:1rem; }
-  .tabs { width:100%; }
-  .tab { flex:1; justify-content:center; padding:8px 12px; font-size:12px; }
+  .tabs { width:100%; overflow-x:auto; }
+  .tab { flex:1; justify-content:center; padding:8px 10px; font-size:11px; }
   .settings-row { grid-template-columns:1fr; }
   table { font-size:12px; }
   th, td { padding:8px 6px; }
@@ -224,6 +224,46 @@ body, .card, .field input, table, td, th, .inp-row input, .hdr, .tabs, .tab, .up
   .afis-preview-wrap { width:100%; }
   #afisCanvas { width:240px; height:339px; }
   .afis-modal { width:100%; }
+
+  /* Onboarding mobil */
+  .ob-wrap { flex-direction:column; }
+  .ob-left { width:100%; padding:1.5rem 1.25rem; }
+  .ob-right { display:flex; width:100%; padding:1rem 1.25rem; justify-content:center; }
+  .ob-card { width:100%; max-width:400px; padding:1.5rem; }
+  .ob-headline { font-size:28px; }
+  .ob-sub { font-size:13px; }
+  .ob-features { display:none; }
+  .ob-nav { padding:1rem 1.25rem; }
+
+  /* Settings mobil */
+  #settingsPage .s-body { flex-direction:column; }
+  #settingsPage .s-sidebar { width:100%; border-right:none; border-bottom:1px solid var(--border); padding:0.75rem; display:flex; flex-wrap:wrap; gap:4px; }
+  #settingsPage .s-nav-item { padding:6px 10px; font-size:12px; flex:1; min-width:120px; justify-content:center; text-align:center; }
+  #settingsPage .s-section-lbl { display:none; }
+  #settingsPage .s-content { padding:1.25rem 1rem; }
+  #settingsPage .s-grid2 { grid-template-columns:1fr; }
+  #settingsPage .s-nav { padding:0.75rem 1rem; }
+
+  /* Ana tablo mobil */
+  .tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .tbl-wrap table { min-width:600px; }
+
+  /* Çıktı paneli mobil */
+  .cikti-panel { position:fixed; bottom:0; left:0; right:0; max-height:70vh; overflow-y:auto; border-radius:16px 16px 0 0; z-index:100; }
+
+  /* Butonlar mobil */
+  .btn { padding:10px 14px; font-size:13px; }
+  .hdr-actions { gap:6px; }
+  .hdr-actions button { padding:5px 10px; font-size:11px; }
+}
+
+@media(max-width:480px) {
+  .ob-headline { font-size:24px; }
+  .ob-card { padding:1.25rem; }
+  .ob-google-btn { padding:12px 16px; font-size:14px; }
+  #settingsPage .s-nav-item { font-size:11px; padding:5px 8px; min-width:80px; }
+  .tab { font-size:10px; padding:7px 8px; }
+  .s-grid2 { grid-template-columns:1fr !important; }
 }
 
 /* TABS */
@@ -4001,126 +4041,124 @@ function settingsMaliyetYukle() {
   const bugunVeri = JSON.parse(localStorage.getItem('insertmill_maliyet_' + bugun) || '{"claude":0,"openai":0,"islemler":[]}');
   const bugunToplam = (bugunVeri.claude||0) + (bugunVeri.openai||0);
   const haftaToplam = claudeHafta + openaiHafta;
+  const ayTahmini = haftaToplam / 7 * 30;
   const cp = haftaToplam > 0 ? Math.round(claudeHafta/haftaToplam*100) : 50;
   const op = 100 - cp;
+  const savedEsik = parseFloat(localStorage.getItem('insertmill_esik') || '1');
+  const esikAsildi = bugunToplam >= savedEsik;
+  const islemler = (bugunVeri.islemler||[]);
 
-  const islemlerHTML = (bugunVeri.islemler||[]).length === 0
-    ? '<div style="font-size:12px;color:var(--text3);text-align:center;padding:1rem">Henüz işlem yok</div>'
-    : (bugunVeri.islemler||[]).slice(-8).reverse().map(function(item) {
+  const islemlerHTML = islemler.length === 0
+    ? `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;gap:8px">
+        <div style="font-size:28px;opacity:0.3">📊</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text2)">Bugün henüz işlem yok</div>
+        <div style="font-size:12px;color:var(--text3)">Claude veya OpenAI kullandığında burada görünür</div>
+      </div>`
+    : islemler.slice(-8).reverse().map(function(item) {
         const renk = item.tip === 'claude' ? '#7F77DD' : '#1D9E75';
-        return '<div style="display:flex;justify-content:space-between;padding:7px 10px;background:rgba(255,255,255,0.03);border-radius:6px;font-size:11px">' +
-          '<span style="color:' + renk + '">' + (item.aciklama||item.tip) + '</span>' +
-          '<span style="color:var(--text3)">' + item.zaman + ' — <strong style="color:var(--text2)">$' + item.maliyet + ' (' + _tlFormat(parseFloat(item.maliyet)) + ')</strong></span>' +
-          '</div>';
+        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:7px;font-size:11px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:6px;height:6px;border-radius:50%;background:${renk};flex-shrink:0"></div>
+            <span style="color:var(--text2)">${item.aciklama||item.tip}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;color:var(--text3)">
+            <span>${item.zaman}</span>
+            <span style="font-weight:600;color:var(--text)">$${item.maliyet}</span>
+            <span style="color:#475569">≈${_tlFormat(parseFloat(item.maliyet||0))}</span>
+          </div>
+        </div>`;
       }).join('');
 
+  const statler = [
+    {lbl:'Bugün', val:bugunToplam, renk:'#a5b4fc', bg:'rgba(99,102,241,0.08)', br:'rgba(99,102,241,0.12)', uyari:esikAsildi},
+    {lbl:'7 Gün', val:haftaToplam, renk:'#4ade80', bg:'rgba(16,185,129,0.08)', br:'rgba(16,185,129,0.12)'},
+    {lbl:'Claude', val:claudeHafta, renk:'#a5b4fc', bg:'rgba(127,119,221,0.08)', br:'rgba(127,119,221,0.12)'},
+    {lbl:'OpenAI', val:openaiHafta, renk:'#4ade80', bg:'rgba(29,158,117,0.08)', br:'rgba(29,158,117,0.12)'},
+  ];
+
   el.innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem">
-      <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.12);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px;text-transform:uppercase">Bugün</div>
-        <div style="font-size:18px;font-weight:700;color:#a5b4fc">${'$'+bugunToplam.toFixed(4)}</div>
-        <div style="font-size:10px;color:#475569;margin-top:2px">${_tlFormat(bugunToplam)}</div>
-      </div>
-      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.12);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px;text-transform:uppercase">7 Gün</div>
-        <div style="font-size:18px;font-weight:700;color:#4ade80">${'$'+haftaToplam.toFixed(4)}</div>
-        <div style="font-size:10px;color:#475569;margin-top:2px">${_tlFormat(haftaToplam)}</div>
-      </div>
-      <div style="background:rgba(127,119,221,0.08);border:1px solid rgba(127,119,221,0.12);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px;text-transform:uppercase">Claude</div>
-        <div style="font-size:18px;font-weight:700;color:#a5b4fc">${'$'+claudeHafta.toFixed(4)}</div>
-        <div style="font-size:10px;color:#475569;margin-top:2px">${_tlFormat(claudeHafta)}</div>
-      </div>
-      <div style="background:rgba(29,158,117,0.08);border:1px solid rgba(29,158,117,0.12);border-radius:10px;padding:12px;text-align:center">
-        <div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px;text-transform:uppercase">OpenAI</div>
-        <div style="font-size:18px;font-weight:700;color:#4ade80">${'$'+openaiHafta.toFixed(4)}</div>
-        <div style="font-size:10px;color:#475569;margin-top:2px">${_tlFormat(openaiHafta)}</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+      ${statler.map(s => `<div style="background:${s.bg};border:1px solid ${s.uyari?'#f59e0b':s.br};border-radius:10px;padding:12px;text-align:center;position:relative">
+        ${s.uyari ? '<div style="position:absolute;top:6px;right:8px;font-size:10px">⚠️</div>' : ''}
+        <div style="font-size:10px;color:${s.renk};font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">${s.lbl}</div>
+        <div style="font-size:17px;font-weight:700;color:${s.renk}">$${ s.val.toFixed(4)}</div>
+        <div style="font-size:10px;color:#475569;margin-top:2px">${_tlFormat(s.val)}</div>
+      </div>`).join('')}
+    </div>
+    <div style="padding:10px 14px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.12);border-radius:9px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div style="font-size:12px;color:var(--text2)"><strong style="color:var(--text)">Bu ay öngörülen:</strong><span style="color:#a5b4fc;margin-left:6px">$${ayTahmini.toFixed(4)}</span><span style="color:#475569;margin-left:4px">≈${_tlFormat(ayTahmini)}</span></div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3)">
+        <span>Günlük uyarı eşiği:</span>
+        <input type="number" value="${savedEsik}" min="0.1" max="100" step="0.1" style="width:70px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--text);font-family:'Geist',sans-serif;outline:none" oninput="localStorage.setItem('insertmill_esik',this.value)">
+        <span>$ / gün</span>
       </div>
     </div>
-
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:1.25rem">
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:14px">
       <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div style="font-size:12px;font-weight:600;color:var(--text2)">Son 7 gün trendi</div>
           <div style="display:flex;gap:10px;font-size:10px;color:var(--text3)">
-            <span><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:#7F77DD;margin-right:3px"></span>Claude</span>
-            <span><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:#1D9E75;margin-right:3px"></span>OpenAI</span>
+            <span><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:#7F77DD;margin-right:3px;vertical-align:middle"></span>Claude</span>
+            <span><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:#1D9E75;margin-right:3px;vertical-align:middle"></span>OpenAI</span>
           </div>
         </div>
-        <div style="position:relative;height:120px"><canvas id="sm-trendChart" role="img" aria-label="7 günlük maliyet trendi"></canvas></div>
+        <div style="position:relative;height:120px"><canvas id="sm-trendChart" role="img" aria-label="7 gunluk maliyet trendi"></canvas></div>
       </div>
       <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px">
-        <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">Dağılım</div>
-        <div style="position:relative;height:90px"><canvas id="sm-dagChart" role="img" aria-label="Claude OpenAI maliyet dağılımı"></canvas></div>
+        <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">Dağılım</div>
+        <div style="position:relative;height:90px"><canvas id="sm-dagChart" role="img" aria-label="Dagilim"></canvas></div>
         <div style="display:flex;gap:8px;margin-top:8px;font-size:10px;color:var(--text3);justify-content:center">
-          <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#7F77DD;margin-right:3px"></span>Claude ${cp}%</span>
-          <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#1D9E75;margin-right:3px"></span>OpenAI ${op}%</span>
+          <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#7F77DD;margin-right:3px;vertical-align:middle"></span>Claude ${cp}%</span>
+          <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#1D9E75;margin-right:3px;vertical-align:middle"></span>OpenAI ${op}%</span>
         </div>
       </div>
     </div>
-
     <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px">
-      <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">Bugünkü işlemler</div>
-      <div style="display:flex;flex-direction:column;gap:4px;max-height:150px;overflow-y:auto">${islemlerHTML}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:600;color:var(--text2)">Bugünkü işlemler</div>
+        <div style="font-size:10px;color:var(--text3)">${islemler.length} işlem</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto">${islemlerHTML}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:4px">
+      <div style="font-size:11px;color:var(--text3)">⚠️ Bu değerler tahminidir. Kesin tutar:</div>
+      <a href="https://console.anthropic.com/settings/usage" target="_blank" style="padding:4px 10px;background:rgba(204,120,92,0.1);border:1px solid rgba(204,120,92,0.2);border-radius:6px;font-size:11px;font-weight:600;color:#CC785C;text-decoration:none">Claude ↗</a>
+      <a href="https://platform.openai.com/usage" target="_blank" style="padding:4px 10px;background:rgba(16,163,127,0.1);border:1px solid rgba(16,163,127,0.2);border-radius:6px;font-size:11px;font-weight:600;color:#10a37f;text-decoration:none">OpenAI ↗</a>
     </div>
   `;
 
-  // Chart.js yükle ve grafikleri çiz
   function _drawCharts() {
     if (typeof Chart === 'undefined') return;
-    const isDark = document.body.classList.contains('dark') || window.matchMedia('(prefers-color-scheme:dark)').matches;
+    const isDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
     const gridC = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-    const txtC  = isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)';
-
+    const txtC  = isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.35)';
     new Chart(document.getElementById('sm-trendChart'), {
-      type: 'bar',
-      data: {
-        labels: gunler,
-        datasets: [
-          {label:'Claude', data:claudeGun, backgroundColor:'#7F77DD', borderRadius:2, stack:'s'},
-          {label:'OpenAI', data:openaiGun, backgroundColor:'#1D9E75', borderRadius:2, stack:'s'}
-        ]
-      },
-      options: {
-        responsive:true, maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>c.dataset.label+': $'+(c.raw/1e4).toFixed(6)}}},
-        scales:{
-          x:{grid:{color:gridC},ticks:{color:txtC,font:{size:9}}},
-          y:{grid:{color:gridC},ticks:{color:txtC,font:{size:9},callback:(v)=>'$'+(v/1e4).toFixed(4)},stacked:true}
-        }
+      type:'bar', data:{labels:gunler, datasets:[
+        {label:'Claude', data:claudeGun, backgroundColor:'#7F77DD', borderRadius:2, stack:'s'},
+        {label:'OpenAI', data:openaiGun, backgroundColor:'#1D9E75', borderRadius:2, stack:'s'}
+      ]},
+      options:{responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.dataset.label+': $'+(c.raw/1e4).toFixed(6)+' ('+_tlFormat(c.raw/1e4)+')'}}},
+        scales:{x:{grid:{color:gridC},ticks:{color:txtC,font:{size:9}}}, y:{grid:{color:gridC},ticks:{color:txtC,font:{size:9},callback:(v)=>'$'+(v/1e4).toFixed(4)},stacked:true}}
       }
     });
-
     new Chart(document.getElementById('sm-dagChart'), {
-      type: 'doughnut',
-      data: {
-        labels:['Claude','OpenAI'],
-        datasets:[{data:[cp,op],backgroundColor:['#534AB7','#0F6E56'],borderWidth:0}]
-      },
-      options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}
+      type:'doughnut', data:{labels:['Claude','OpenAI'], datasets:[{data:[cp,op], backgroundColor:['#534AB7','#0F6E56'], borderWidth:0, hoverOffset:3}]},
+      options:{responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.label+': '+c.raw+'%'}}}}
     });
   }
 
-  if (typeof Chart !== 'undefined') {
-    _drawCharts();
-  } else {
+  if (typeof Chart !== 'undefined') { _drawCharts(); }
+  else {
     const s = document.createElement('script');
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
     s.onload = _drawCharts;
     document.head.appendChild(s);
   }
 
-  // Model seçici
   const modelSec = document.getElementById('set-claudeModel');
-  if (modelSec) {
-    const saved = localStorage.getItem('rozet_model') || 'claude-haiku-4-5-20251001';
-    modelSec.value = saved;
-    _modelTahminiGoster(saved);
-  }
-
-  // Kur
-  const kur = localStorage.getItem('usd_try_kur') || '38.5';
-  if (document.getElementById('set-tlKuru')) document.getElementById('set-tlKuru').value = kur;
+  if (modelSec) { const saved = localStorage.getItem('rozet_model') || 'claude-haiku-4-5-20251001'; modelSec.value = saved; _modelTahminiGoster(saved); }
+  if (document.getElementById('set-tlKuru')) document.getElementById('set-tlKuru').value = localStorage.getItem('usd_try_kur') || '38.5';
 }
 
 function _modelTahminiGoster(model) {
