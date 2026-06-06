@@ -3702,11 +3702,10 @@ function maliyetDetay() {
 function toggleSettings() {
   const page = document.getElementById('settingsPage');
   if (!page) return;
-  if (page.style.display === 'none') {
+  const visible = page.style.display !== 'none' && page.style.display !== '';
+  if (!visible) {
     page.style.display = 'block';
-    // Tema senkronizasyonu
-    const tema = localStorage.getItem('tema') || 'gece';
-    document.body.className = document.body.className; // trigger CSS vars
+    document.body.className = document.body.className;
     loadSettingsValues();
     settingsMaliyetYukle();
   } else {
