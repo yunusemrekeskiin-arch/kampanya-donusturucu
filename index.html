@@ -1296,7 +1296,7 @@ input[type="checkbox"] {
         <div style="display:flex;gap:6px">
           <input type="password" id="set-claudeKey" placeholder="sk-ant-api03-..." class="s-inp" style="flex:1;font-family:monospace" oninput="kampanyaApiKeySave(this.value)">
           <button onclick="(function(){var i=document.getElementById('set-claudeKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
-          <button onclick="testApiKey('claude')" style="padding:7px 12px;background:rgba(204,120,92,0.12);border:1px solid rgba(204,120,92,0.3);border-radius:7px;color:#CC785C;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">Test Et</button>
+          
         </div>
         <div id="claudeKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">Girilmedi — Claude özellikleri devre dışı</div>
       </div>
@@ -1318,7 +1318,7 @@ input[type="checkbox"] {
         <div style="display:flex;gap:6px">
           <input type="password" id="set-openaiKey" placeholder="sk-..." class="s-inp" style="flex:1;font-family:monospace" oninput="sessionStorage.setItem('openai_key',this.value);_openaiKeyDurumGuncelle()">
           <button onclick="(function(){var i=document.getElementById('set-openaiKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
-          <button onclick="testApiKey('openai')" style="padding:7px 12px;background:rgba(16,163,127,0.12);border:1px solid rgba(16,163,127,0.3);border-radius:7px;color:#10a37f;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">Test Et</button>
+          
         </div>
         <div id="openaiKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">Girilmedi — Rozet üretimi devre dışı</div>
       </div>
@@ -1346,7 +1346,15 @@ input[type="checkbox"] {
         </div>
       </div>
       <div class="s-card">
-        <div class="s-card-title">Model Seçimi</div>
+        <div class="s-card-title">Dolar Kuru</div>
+        <div class="s-card-desc">TL karşılığı hesaplamak için güncel kuru gir.</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input class="s-inp" type="number" id="set-tlKuru" placeholder="38.5" step="0.1" style="max-width:120px"
+            oninput="localStorage.setItem('usd_try_kur',this.value);settingsMaliyetYukle()">
+          <span style="font-size:13px;color:var(--text2)">₺ / $1</span>
+          <a href="https://finance.yahoo.com/quote/USDTRY" target="_blank" style="font-size:11px;color:#a5b4fc;text-decoration:none">Güncel kur ↗</a>
+        </div>
+      </div>
         <div class="s-card-desc">Daha ucuz model seçerek maliyetini düşürebilirsin.</div>
         <div class="s-field">
           <label class="s-lbl">Claude Modeli</label>
@@ -3810,6 +3818,16 @@ function setLang(lang) {
   document.getElementById('btn-en').style.color = lang === 'en' ? 'white' : '#64748B';
 }
 
+/* ── DOLAR/TL KURU ────────────────────────────────────────── */
+// Kur localStorage'da saklanır, kullanıcı güncelleyebilir
+function _tlKuru() {
+  return parseFloat(localStorage.getItem('usd_try_kur') || '38.5');
+}
+function _tlFormat(dolar) {
+  const tl = dolar * _tlKuru();
+  if (tl < 1) return (tl * 100).toFixed(2) + ' kr';
+  return tl.toFixed(2) + ' ₺';
+}
 /* ── MALİYET TAKİP SİSTEMİ ───────────────────────────────── */
 const _FIYATLAR = {
   // Claude — $ per 1M token
@@ -3874,7 +3892,8 @@ function _maliyetGoster() {
   const renk = toplam > 1 ? '#f87171' : toplam > 0.5 ? '#fbbf24' : '#4ade80';
   el.innerHTML =
     '<span style="font-size:10px;color:#475569;font-weight:600">Bugün:</span> ' +
-    '<span style="font-size:12px;font-weight:700;color:' + renk + '">$' + toplam.toFixed(4) + '</span>';
+    '<span style="font-size:12px;font-weight:700;color:' + renk + '">$' + toplam.toFixed(4) + '</span>' +
+    '<span style="font-size:10px;color:#475569;margin-left:4px">≈' + _tlFormat(toplam) + '</span>';
   el.style.display = 'flex';
 }
 
@@ -3882,7 +3901,7 @@ function _maliyetUyari(toplam) {
   const el = document.getElementById('maliyetUyariBar');
   if (!el) return;
   el.innerHTML =
-    '⚠️ Bugünkü API maliyetin <strong>$' + toplam.toFixed(3) + '</strong> oldu. ' +
+    '⚠️ Bugünkü API maliyetin <strong>$' + toplam.toFixed(3) + ' (~' + _tlFormat(toplam) + ')</strong> oldu. ' +
     'Claude Haiku kullanarak maliyeti <strong>10x</strong> düşürebilirsin. ' +
     '<button onclick="document.getElementById(\'maliyetUyariBar\').style.display=\'none\'" ' +
     'style="padding:2px 8px;background:rgba(255,255,255,0.1);border:none;border-radius:5px;color:#fff;cursor:pointer;font-size:11px;margin-left:8px">✕</button>';
@@ -3897,9 +3916,9 @@ function maliyetDetay() {
   let html = '<div style="padding:1rem;max-height:400px;overflow-y:auto">';
   html += '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">📊 Bugünkü Maliyet — ' + bugun + '</div>';
   html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">';
-  html += '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px">CLAUDE</div><div style="font-size:16px;font-weight:700;color:#a5b4fc">$' + (veri.claude||0).toFixed(4) + '</div></div>';
-  html += '<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px">OPENAI</div><div style="font-size:16px;font-weight:700;color:#4ade80">$' + (veri.openai||0).toFixed(4) + '</div></div>';
-  html += '<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#fbbf24;font-weight:600;margin-bottom:4px">TOPLAM</div><div style="font-size:16px;font-weight:700;color:#fbbf24">$' + toplam.toFixed(4) + '</div></div>';
+  html += '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px">CLAUDE</div><div style="font-size:16px;font-weight:700;color:#a5b4fc">$' + (veri.claude||0).toFixed(4) + '</div><div style="font-size:11px;color:#475569;margin-top:2px">' + _tlFormat(veri.claude||0) + '</div></div>';
+  html += '<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px">OPENAI</div><div style="font-size:16px;font-weight:700;color:#4ade80">$' + (veri.openai||0).toFixed(4) + '</div><div style="font-size:11px;color:#475569;margin-top:2px">' + _tlFormat(veri.openai||0) + '</div></div>';
+  html += '<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#fbbf24;font-weight:600;margin-bottom:4px">TOPLAM</div><div style="font-size:16px;font-weight:700;color:#fbbf24">$' + toplam.toFixed(4) + '</div><div style="font-size:11px;color:#475569;margin-top:2px">' + _tlFormat(toplam) + '</div></div>';
   html += '</div>';
 
   if (veri.islemler && veri.islemler.length > 0) {
@@ -3963,9 +3982,9 @@ function settingsMaliyetYukle() {
   const bugunToplam = (bugunVeri.claude||0) + (bugunVeri.openai||0);
   const haftaToplam = claudeHafta + openaiHafta;
 
-  html += '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px">BUGÜN</div><div style="font-size:18px;font-weight:700;color:#a5b4fc">$' + bugunToplam.toFixed(4) + '</div></div>';
-  html += '<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px">7 GÜN</div><div style="font-size:18px;font-weight:700;color:#4ade80">$' + haftaToplam.toFixed(4) + '</div></div>';
-  html += '<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#fbbf24;font-weight:600;margin-bottom:4px">OPENAI</div><div style="font-size:18px;font-weight:700;color:#fbbf24">$' + openaiHafta.toFixed(4) + '</div></div>';
+  html += '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px">BUGÜN</div><div style="font-size:18px;font-weight:700;color:#a5b4fc">$' + bugunToplam.toFixed(4) + '</div><div style="font-size:11px;color:#475569;margin-top:2px">' + _tlFormat(bugunToplam) + '</div></div>';
+  html += '<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px">7 GÜN</div><div style="font-size:18px;font-weight:700;color:#4ade80">$' + haftaToplam.toFixed(4) + '</div><div style="font-size:11px;color:#475569;margin-top:2px">' + _tlFormat(haftaToplam) + '</div></div>';
+  html += '<div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.15);border-radius:9px;padding:12px;text-align:center"><div style="font-size:10px;color:#fbbf24;font-weight:600;margin-bottom:4px">OPENAI</div><div style="font-size:18px;font-weight:700;color:#fbbf24">$' + openaiHafta.toFixed(4) + '</div><div style="font-size:11px;color:#475569;margin-top:2px">' + _tlFormat(openaiHafta) + '</div></div>';
   html += '</div>';
 
   // İşlem geçmişi
@@ -4053,6 +4072,10 @@ function loadSettingsValues() {
   // API key'leri
   const ck = sessionStorage.getItem('claude_api_key') || '';
   const ok = sessionStorage.getItem('openai_key') || '';
+  // Kur
+  const kur = localStorage.getItem('usd_try_kur') || '38.5';
+  if (document.getElementById('set-tlKuru')) document.getElementById('set-tlKuru').value = kur;
+
   if (document.getElementById('set-claudeKey')) {
     document.getElementById('set-claudeKey').value = ck;
     _claudeKeyDurumGuncelle();
@@ -4121,10 +4144,15 @@ async function testApiKey(tip) {
     let res, ok, hata;
 
     if (tip === 'claude') {
-      // Claude'u proxy üzerinden test et — minimal mesaj
-      res = await fetch('/api/claude', {
+      // Direkt API test — proxy çalışmıyorsa bile test edilebilsin
+      res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Api-Key': key },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 10,
@@ -4133,7 +4161,7 @@ async function testApiKey(tip) {
       });
       const data = await res.json();
       ok = res.ok && data.content;
-      hata = data.error || ('HTTP ' + res.status);
+      hata = data.error?.message || ('HTTP ' + res.status);
     } else {
       // OpenAI models endpoint — ucuz, sadece auth kontrolü
       res = await fetch('https://api.openai.com/v1/models', {
@@ -4279,15 +4307,11 @@ function setSettingsColor(type, hex) {
 }
 /* ── END SETTINGS ─────────────────────────────────────────── */
 async function figmaFrameOlustur() {
-  const token = localStorage.getItem('figma_token') || document.getElementById('figmaToken')?.value;
-  if (!token) {
-    figmaDurum('❌ Figma token girilmedi.', 'error'); return;
-  }
   if (!rows || rows.length === 0) {
     figmaDurum('❌ Önce ürün tablosunu doldur.', 'error'); return;
   }
 
-  figmaDurum('⏳ Figma dosyası oluşturuluyor...', 'info');
+  figmaDurum('⏳ Frame hazırlanıyor...', 'info');
 
   // Boyut al
   const boyutStr = document.querySelector('input[name="figmaBoyut"]:checked')?.value || '1080x1350';
@@ -4454,11 +4478,11 @@ async function figmaFrameOlustur() {
     figmaDurum('✅ Figma frame oluşturuldu! <a href="' + data.url + '" target="_blank" style="color:#a5b4fc">Figma\'da aç →</a>', 'success');
   } catch(e) {
     // Figma REST API file oluşturma desteklemiyor, alternatif: Figma Plugin payload oluştur
-    _figmaPluginPayload(anaFrame, fw, fh, token);
+    _figmaPluginPayload(anaFrame, fw, fh);
   }
 }
 
-async function _figmaPluginPayload(frame, fw, fh, token) {
+async function _figmaPluginPayload(frame, fw, fh) {
   try {
     const payload = JSON.stringify({ frame, width: fw, height: fh });
     const b64 = btoa(unescape(encodeURIComponent(payload)));
