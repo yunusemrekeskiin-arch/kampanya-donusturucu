@@ -1,63 +1,47 @@
-// api/claude.js — Vercel Edge Function
-// Claude API proxy — key tarayıcıda görünmez
+// api/claude.js — Vercel Serverless Function
+export default async function handler(req, res) {
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Api-Key');
 
-export const config = { runtime: 'edge' };
-
-export default async function handler(req) {
-  const cors = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, X-Api-Key',
-  };
-
-  if (req.method === 'OPTIONS') return new Response(null, { status: 200, headers: cors });
-  if (req.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: cors });
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const body = await req.json();
-    const { messages, model, max_tokens, system } = body;
-
-    // Key: önce request header'dan al, yoksa env'den
-    const apiKey = req.headers.get('x-api-key') || process.env.CLAUDE_API_KEY;
+    const { messages, model, max_tokens, system } = req.body;
+    const apiKey = req.headers['x-api-key'] || process.env.CLAUDE_API_KEY;
 
     if (!apiKey) {
-      return new Response(
-        JSON.stringify({ error: 'Claude API anahtarı bulunamadı. Lütfen Ayarlar > Entegrasyonlar kısmından API anahtarınızı girin.' }),
-        { status: 401, headers: { ...cors, 'Content-Type': 'application/json' } }
-      );
+      return res.status(401).json({ error: 'Claude API anahtarı bulunamadı. Ayarlar → Entegrasyonlar kısmından girin.' });
     }
 
-    const claudeBody = { model: model || 'claude-haiku-4-5-20251001', max_tokens: max_tokens || 1024, messages };
+    const claudeBody = {
+      model: model || 'claude-haiku-4-5-20251001',
+      max_tokens: max_tokens || 1024,
+      messages
+    };
     if (system) claudeBody.system = system;
 
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify(claudeBody)
     });
 
-    const data = await res.json();
+    const data = await response.json();
 
-    if (!res.ok) {
-      return new Response(
-        JSON.stringify({ error: data.error?.message || 'Claude API hatası: ' + res.status }),
-        { status: res.status, headers: { ...cors, 'Content-Type': 'application/json' } }
-      );
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data.error?.message || 'Claude API hatası: ' + response.status });
     }
 
-    return new Response(JSON.stringify(data), {
-      status: 200,
-      headers: { ...cors, 'Content-Type': 'application/json' }
-    });
+    return res.status(200).json(data);
 
   } catch (e) {
-    return new Response(
-      JSON.stringify({ error: e.message }),
-      { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } }
-    );
+    return res.status(500).json({ error: e.message });
   }
 }
