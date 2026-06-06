@@ -1339,6 +1339,23 @@ input[type="checkbox"] {
       <div class="s-card">
         <div class="s-card-title">API Maliyet Takibi</div>
         <div class="s-card-desc">Gerçek zamanlı token ve görsel başına maliyet hesabı.</div>
+
+        <!-- Açıklama -->
+        <div style="padding:10px 13px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:9px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.6">
+          <strong style="color:#fbbf24">ℹ️ Nasıl hesaplanır?</strong><br>
+          Bu veriler API response'larından alınan token sayılarına göre hesaplanır. Gerçek maliyetten küçük farklılıklar olabilir. Kesin tutarlar için kendi hesap panellerine bakabilirsin:<br>
+          <div style="display:flex;gap:10px;margin-top:8px">
+            <a href="https://console.anthropic.com/settings/usage" target="_blank"
+              style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(204,120,92,0.1);border:1px solid rgba(204,120,92,0.2);border-radius:6px;font-size:11px;font-weight:600;color:#CC785C;text-decoration:none">
+              Claude Kullanım Raporu ↗
+            </a>
+            <a href="https://platform.openai.com/usage" target="_blank"
+              style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(16,163,127,0.1);border:1px solid rgba(16,163,127,0.2);border-radius:6px;font-size:11px;font-weight:600;color:#10a37f;text-decoration:none">
+              OpenAI Kullanım Raporu ↗
+            </a>
+          </div>
+        </div>
+
         <div id="settingsMaliyetDetay"></div>
         <div style="display:flex;gap:8px;margin-top:10px">
           <button onclick="settingsMaliyetYukle()" style="padding:6px 12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:7px;color:#a5b4fc;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">↻ Yenile</button>
@@ -1391,7 +1408,8 @@ input[type="checkbox"] {
     <div class="hdr-status"><div class="hdr-dot"></div>Aktif</div>
 
     <!-- Maliyet Göstergesi -->
-    <div id="maliyetGosterge" onclick="maliyetDetay()" title="API Maliyeti — tıkla detay gör"
+    <div id="maliyetGosterge" onclick="maliyetDetay()" 
+      title="Tahmini maliyet — Gerçek tutar için console.anthropic.com ve platform.openai.com/usage adreslerine bakın"
       style="display:none;align-items:center;gap:6px;padding:5px 10px;background:rgba(255,255,255,0.04);
              border:1px solid rgba(255,255,255,0.08);border-radius:8px;cursor:pointer;transition:all 0.2s"
       onmouseover="this.style.background='rgba(99,102,241,0.1)'"
@@ -3914,7 +3932,8 @@ function maliyetDetay() {
   const toplam = ((veri.claude||0) + (veri.openai||0));
 
   let html = '<div style="padding:1rem;max-height:400px;overflow-y:auto">';
-  html += '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">📊 Bugünkü Maliyet — ' + bugun + '</div>';
+  html += '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">📊 Bugünkü Maliyet — ' + bugun + '</div>';
+  html += '<div style="font-size:11px;color:#475569;margin-bottom:12px">⚠️ Bu değerler tahminidir. Kesin tutar için: <a href="https://console.anthropic.com/settings/usage" target="_blank" style="color:#CC785C">Claude ↗</a> · <a href="https://platform.openai.com/usage" target="_blank" style="color:#10a37f">OpenAI ↗</a></div>';
   html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">';
   html += '<div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#818cf8;font-weight:600;margin-bottom:4px">CLAUDE</div><div style="font-size:16px;font-weight:700;color:#a5b4fc">$' + (veri.claude||0).toFixed(4) + '</div><div style="font-size:11px;color:#475569;margin-top:2px">' + _tlFormat(veri.claude||0) + '</div></div>';
   html += '<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:9px;padding:10px;text-align:center"><div style="font-size:10px;color:#4ade80;font-weight:600;margin-bottom:4px">OPENAI</div><div style="font-size:16px;font-weight:700;color:#4ade80">$' + (veri.openai||0).toFixed(4) + '</div><div style="font-size:11px;color:#475569;margin-top:2px">' + _tlFormat(veri.openai||0) + '</div></div>';
