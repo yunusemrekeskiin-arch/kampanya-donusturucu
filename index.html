@@ -2795,23 +2795,9 @@ function kampanyaApiKeySave(val) {
   }
 }
 
-// API key input'u sayfa yüklenince doldur
-(function _loadKampanyaApiKey() {
-  const saved = sessionStorage.getItem('claude_api_key') || '';
-  const inp = document.getElementById('kampanyaApiKey');
-  const st  = document.getElementById('kampanyaApiStatus');
-  if (inp && saved) {
-    inp.value = saved;
-    if (st) { st.textContent = '✅ Kaydedildi'; st.style.color = '#4ade80'; }
-  }
-  // showTable sonrası da güvenli olsun diye event'e de bağla
-  document.addEventListener('kampanyaPanelAcildi', function() {
-    const s = sessionStorage.getItem('claude_api_key') || '';
-    const i = document.getElementById('kampanyaApiKey');
-    const x = document.getElementById('kampanyaApiStatus');
-    if (i && s) { i.value = s; if(x){x.textContent='✅ Kaydedildi';x.style.color='#4ade80';} }
-  });
-})();
+// API key sayfa açılınca sessionStorage'dan yüklenir — input'lar kaldırıldı
+
+
 
 // ── ROZET SEÇİM DEĞİŞKENLERİ VE FONKSİYONU ─────────────────────
 let _rozetler = [];
@@ -5725,10 +5711,8 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
     if (m) { const s=document.getElementById('rozetModel'); if(s) s.value=m; }
     const ok = sessionStorage.getItem('openai_key');
     if (ok) {
-      // openaiApiKey input kaldırıldı — key sessionStorage'da
-      const st  = document.getElementById('openaiStatus');
-      if (inp) inp.value = ok;
-      if (st)  { st.textContent = '✓'; st.style.color = '#4ade80'; }
+      const st = document.getElementById('openaiStatus');
+      if (st) { st.textContent = '✓'; st.style.color = '#4ade80'; }
     }
   })();
 
