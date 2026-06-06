@@ -1170,7 +1170,18 @@ input[type="checkbox"] {
 #settingsPage .s-nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:2}
 #settingsPage .s-body{display:flex;min-height:calc(100vh - 57px);width:100%}
 #settingsPage .s-sidebar{width:220px;flex-shrink:0;padding:1.25rem 1rem;border-right:1px solid var(--border)}
-#settingsPage .s-content{flex:1;padding:2rem 2.5rem;overflow-y:auto;max-width:720px}
+#settingsPage .s-content{flex:1;padding:2rem 2rem;overflow-y:auto;display:flex;gap:2rem}
+#settingsPage .s-main{flex:1;min-width:0}
+#settingsPage .s-help{width:240px;flex-shrink:0}
+#settingsPage .s-help-card{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:10px;padding:14px;margin-bottom:10px;transition:all 0.2s}
+#settingsPage .s-help-title{font-size:12px;font-weight:700;color:#a5b4fc;margin-bottom:6px}
+#settingsPage .s-help-text{font-size:11px;color:var(--text3);line-height:1.6}
+@media(max-width:1100px){#settingsPage .s-help{display:none}}
+#settingsPage .s-main{flex:1;min-width:0}
+#settingsPage .s-help{width:220px;flex-shrink:0;position:sticky;top:1rem;align-self:flex-start}
+#settingsPage .s-help-card{background:rgba(99,102,241,0.05);border:0.5px solid rgba(99,102,241,0.15);border-radius:10px;padding:14px;font-size:12px;color:var(--text2);line-height:1.6;transition:all 0.2s;min-height:80px}
+#settingsPage .s-help-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px}
+#settingsPage .s-card[data-help]:hover{border-color:rgba(99,102,241,0.3)}
 #settingsPage .s-nav-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text2);margin-bottom:2px;transition:all 0.15s;font-weight:500;background:transparent}
 #settingsPage .s-nav-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
 #settingsPage .s-nav-item.active{background:rgba(99,102,241,0.1);color:#a5b4fc;font-weight:600}
@@ -1228,6 +1239,7 @@ input[type="checkbox"] {
   </div>
 
   <div class="s-content">
+    <div class="s-main" id="s-main-content">
 
     <!-- FİRMA PROFİLİ -->
     <div class="s-section active" id="section-firma">
@@ -1254,12 +1266,12 @@ input[type="checkbox"] {
           <input type="file" id="settingsLogoInput" accept="image/*" style="display:none" onchange="settingsLogoYukle(this)">
         </div>
         <div class="s-grid2">
-          <div class="s-field"><label class="s-lbl">Firma Adı</label><input class="s-inp" type="text" id="set-companyName" placeholder="Kesmar Market"></div>
-          <div class="s-field"><label class="s-lbl">Slogan</label><input class="s-inp" type="text" id="set-companySlogan" placeholder="Her evin ihtiyacı"></div>
-          <div class="s-field"><label class="s-lbl">Website</label><input class="s-inp" type="url" id="set-companyWebsite" placeholder="www.kesmar.com.tr"></div>
-          <div class="s-field"><label class="s-lbl">Telefon</label><input class="s-inp" type="text" id="set-companyPhone" placeholder="0212 000 00 00"></div>
+          <div class="s-field"><label class="s-lbl">Firma Adı</label><input class="s-inp" type="text" id="set-companyName" onfocus="settingsHelpGoster('set-companyName')" placeholder="Kesmar Market" onfocus="_settingsHelp('Firma Adı','Insert\'lerde ve Figma frame\'lerinde otomatik kullanılır.')"></div>
+          <div class="s-field"><label class="s-lbl">Slogan</label><input class="s-inp" type="text" id="set-companySlogan" onfocus="settingsHelpGoster('set-companySlogan')" placeholder="Her evin ihtiyacı" onfocus="_settingsHelp('Slogan','Kampanya insert\'lerinde alt başlık olarak kullanılabilir.')"></div>
+          <div class="s-field"><label class="s-lbl">Website</label><input class="s-inp" type="url" id="set-companyWebsite" onfocus="settingsHelpGoster('set-companyWebsite')" placeholder="www.kesmar.com.tr" onfocus="_settingsHelp('Website','Opsiyonel. Bazı insert şablonlarında gösterilir.')"></div>
+          <div class="s-field"><label class="s-lbl">Telefon</label><input class="s-inp" type="text" id="set-companyPhone" onfocus="settingsHelpGoster('set-companyPhone')" placeholder="0212 000 00 00" onfocus="_settingsHelp('Telefon','Opsiyonel iletişim bilgisi.')"></div>
         </div>
-        <div class="s-field"><label class="s-lbl">Adres</label><input class="s-inp" type="text" id="set-companyAddress" placeholder="İstanbul, Türkiye"></div>
+        <div class="s-field"><label class="s-lbl">Adres</label><input class="s-inp" type="text" id="set-companyAddress" onfocus="settingsHelpGoster('set-companyAddress')" placeholder="İstanbul, Türkiye"></div>
       </div>
     </div>
 
@@ -1312,7 +1324,7 @@ input[type="checkbox"] {
           <div class="s-step"><span class="s-step-n" style="background:rgba(204,120,92,0.2);color:#CC785C">3</span><span><strong style="color:var(--text)">sk-ant-api03-...</strong> ile başlayan anahtarı kopyala</span></div>
         </div>
         <div style="display:flex;gap:6px">
-          <input type="password" id="set-claudeKey" placeholder="sk-ant-api03-..." class="s-inp" style="flex:1;font-family:monospace" oninput="kampanyaApiKeySave(this.value)">
+          <input type="password" id="set-claudeKey" onfocus="settingsHelpGoster('set-claudeKey')" placeholder="sk-ant-api03-..." onfocus="_settingsHelp('Claude API Key','Fiyat listesi fotoğraflarını okumak için kullanılır. İlk $5 ücretsiz — console.anthropic.com\'dan al.')" class="s-inp" style="flex:1;font-family:monospace" oninput="kampanyaApiKeySave(this.value)">
           <button onclick="(function(){var i=document.getElementById('set-claudeKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
           
         </div>
@@ -1334,7 +1346,7 @@ input[type="checkbox"] {
           <div class="s-step"><span class="s-step-n" style="background:rgba(16,163,127,0.2);color:#10a37f">3</span><span><strong style="color:var(--text)">sk-...</strong> ile başlayan anahtarı kopyala</span></div>
         </div>
         <div style="display:flex;gap:6px">
-          <input type="password" id="set-openaiKey" placeholder="sk-..." class="s-inp" style="flex:1;font-family:monospace" oninput="sessionStorage.setItem('openai_key',this.value);_openaiKeyDurumGuncelle()">
+          <input type="password" id="set-openaiKey" onfocus="settingsHelpGoster('set-openaiKey')" placeholder="sk-..." onfocus="_settingsHelp('OpenAI API Key','gpt-image-1 ile rozet üretir. Rozet başına ~$0.04-0.08 tutar. platform.openai.com\'dan al.')" class="s-inp" style="flex:1;font-family:monospace" oninput="sessionStorage.setItem('openai_key',this.value);_openaiKeyDurumGuncelle()">
           <button onclick="(function(){var i=document.getElementById('set-openaiKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
           
         </div>
@@ -1347,8 +1359,8 @@ input[type="checkbox"] {
       <div class="s-card">
         <div class="s-card-title">Kampanya Varsayılanları</div>
         <div class="s-card-desc">Her yeni kampanyada bu değerler otomatik dolar.</div>
-        <div class="s-field"><label class="s-lbl">Geçerlilik Metni</label><input class="s-inp" type="text" id="set-campaignText" placeholder="Tarihleri arasında geçerlidir."></div>
-        <div class="s-field"><label class="s-lbl">Kampanya Alt Yazısı</label><textarea class="s-inp" id="set-campaignSubtext" rows="3" placeholder="*Kampanyamız stoklar dahilinde geçerlidir." style="resize:vertical;line-height:1.5"></textarea></div>
+        <div class="s-field"><label class="s-lbl">Geçerlilik Metni</label><input class="s-inp" type="text" id="set-campaignText" onfocus="settingsHelpGoster('set-campaignText')" placeholder="Tarihleri arasında geçerlidir." onfocus="_settingsHelp('Geçerlilik Metni','Her kampanyada otomatik dolar. Örnek: Tarihleri arasında geçerlidir.')"></div>
+        <div class="s-field"><label class="s-lbl">Kampanya Alt Yazısı</label><textarea class="s-inp" id="set-campaignSubtext" onfocus="settingsHelpGoster('set-campaignSubtext')" rows="3" placeholder="*Kampanyamız stoklar dahilinde geçerlidir." style="resize:vertical;line-height:1.5"></textarea></div>
       </div>
     </div>
 
@@ -1384,7 +1396,7 @@ input[type="checkbox"] {
         <div class="s-card-title">Dolar Kuru</div>
         <div class="s-card-desc">TL karşılığı hesaplamak için güncel kuru gir.</div>
         <div style="display:flex;align-items:center;gap:10px">
-          <input class="s-inp" type="number" id="set-tlKuru" placeholder="38.5" step="0.1" style="max-width:120px"
+          <input class="s-inp" type="number" id="set-tlKuru" onfocus="settingsHelpGoster('set-tlKuru')" onfocus="_settingsHelp('Dolar Kuru','Maliyet takibindeki TL karşılığı bu kur üzerinden hesaplanır. Güncel kuru girerek doğru takip yapabilirsin.')" placeholder="38.5" step="0.1" style="max-width:120px"
             oninput="localStorage.setItem('usd_try_kur',this.value);settingsMaliyetYukle()">
           <span style="font-size:13px;color:var(--text2)">₺ / $1</span>
           <a href="https://finance.yahoo.com/quote/USDTRY" target="_blank" style="font-size:11px;color:#a5b4fc;text-decoration:none">Güncel kur ↗</a>
@@ -1393,7 +1405,7 @@ input[type="checkbox"] {
         <div class="s-card-desc">Daha ucuz model seçerek maliyetini düşürebilirsin.</div>
         <div class="s-field">
           <label class="s-lbl">Claude Modeli</label>
-          <select id="set-claudeModel" class="s-inp" onchange="localStorage.setItem('rozet_model',this.value);_modelTahminiGoster(this.value)">
+          <select id="set-claudeModel" onfocus="settingsHelpGoster('set-claudeModel')" onfocus="_settingsHelp('Model Seçimi','Haiku en ucuz ve hızlı. Günlük kullanım için idealdir. Sonnet daha kaliteli ama 10x pahalı.')" class="s-inp" onchange="localStorage.setItem('rozet_model',this.value);_modelTahminiGoster(this.value)">
             <option value="claude-haiku-4-5-20251001">⚡ Claude Haiku 4.5 — En Ucuz ($0.8/$4 per 1M)</option>
             <option value="claude-sonnet-4-6">🎯 Claude Sonnet 4.6 — Dengeli ($3/$15 per 1M)</option>
             <option value="claude-opus-4-6">🚀 Claude Opus 4.6 — En İyi ($15/$75 per 1M)</option>
@@ -1472,10 +1484,29 @@ input[type="checkbox"] {
         </div>
       </div>
     </div>
-  </div>
-</div>
+    </div><!-- /s-main -->
 
-<div class="wrap">
+    <!-- Yardım Paneli -->
+    <div class="s-help" id="s-help-panel">
+      <div class="s-help-card">
+        <div class="s-help-title" id="s-help-title">💡 İpucu</div>
+        <div id="s-help-text" style="font-size:12px;color:var(--text2);line-height:1.6">Bir alana tıkla veya üzerine gel — burada açıklama göreceksin.</div>
+      </div>
+    </div>
+
+    </div><!-- /s-main -->
+
+    <!-- YARDIM PANELİ -->
+    <div class="s-help" id="settingsHelpPanel">
+      <div class="s-help-card" id="help-default">
+        <div class="s-help-title">💡 İpucu</div>
+        <div class="s-help-text">Bir alana tıklayın veya üzerine gelin, burada açıklama görünsün.</div>
+      </div>
+    </div>
+
+  </div><!-- /s-content -->
+</div><!-- /s-body -->
+</div><!-- /settingsPage -->
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('excel')">📂 <span data-i18n="tab_excel">Excel ile Yükle</span></button>
@@ -3982,6 +4013,47 @@ function maliyetDetay() {
   }
 }
 /* ── END MALİYET ──────────────────────────────────────────── */
+const _HELP_ICERIK = {
+  'set-companyName':    { title:'Firma Adı', text:'Insert\'lerde ve Figma frame\'lerinde görünür. Tam yasal isim yerine marka adı önerilir.' },
+  'set-companySlogan':  { title:'Slogan', text:'Kampanya insertlerinde opsiyonel kullanılır. Kısa ve akılda kalıcı olsun.' },
+  'set-companyWebsite': { title:'Website', text:'Şu an görsel olarak kullanılmıyor. İleride QR kod özelliğinde kullanılacak.' },
+  'set-companyPhone':   { title:'Telefon', text:'Insert alt bilgisinde opsiyonel olarak gösterilebilir.' },
+  'set-companyAddress': { title:'Adres', text:'Büyük format insertlerde alt bilgi için kullanılır.' },
+  'settingsLogoInput':  { title:'Firma Logosu', text:'PNG veya SVG, şeffaf arka planlı logo önerilir. Yüklenince ana renk otomatik çekilir.' },
+  'set-claudeKey':      { title:'Claude API Key', text:'console.anthropic.com\'dan alınır. Görsel analiz ve rozet prompt üretimi için gerekli. İlk $5 ücretsiz.' },
+  'set-openaiKey':      { title:'OpenAI API Key', text:'platform.openai.com\'dan alınır. gpt-image-1 ile rozet üretimi için gerekli. Rozet başına ~$0.04-0.08.' },
+  'set-campaignText':   { title:'Geçerlilik Metni', text:'Her kampanyanın alt kısmında görünür. Örnek: "Tarihleri arasında geçerlidir."' },
+  'set-campaignSubtext':{ title:'Kampanya Alt Yazısı', text:'Küçük punto yasal uyarı metni. Örnek: "*Stoklar dahilinde geçerlidir."' },
+  'set-claudeModel':    { title:'Model Seçimi', text:'Haiku en ucuz ve hızlı. Sonnet daha kaliteli analiz yapar ama 10x pahalı. Günlük kullanım için Haiku önerilir.' },
+  'set-tlKuru':         { title:'Dolar Kuru', text:'TL maliyet hesabı için kullanılır. finance.yahoo.com/quote/USDTRY adresinden güncel kuru kontrol et.' },
+};
+
+function settingsHelpGoster(id) {
+  const panel = document.getElementById('settingsHelpPanel');
+  if (!panel) return;
+  const data = _HELP_ICERIK[id];
+  if (!data) return;
+  panel.innerHTML = `
+    <div class="s-help-card">
+      <div class="s-help-title">${data.title}</div>
+      <div class="s-help-text">${data.text}</div>
+    </div>
+    <div class="s-help-card" style="background:rgba(16,185,129,0.05);border-color:rgba(16,185,129,0.15)">
+      <div class="s-help-title" style="color:#4ade80">✓ Hatırlatma</div>
+      <div class="s-help-text">Değişiklikler sağ üstteki "Kaydet" butonuna basınca uygulanır.</div>
+    </div>`;
+}
+
+function switchSettingsTab(tab) {
+  document.querySelectorAll('#settingsPage .s-nav-item').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('#settingsPage .s-section').forEach(function(el) { el.classList.remove('active'); });
+  const tabEl = document.getElementById('tab-' + tab);
+  const secEl = document.getElementById('section-' + tab);
+  if (tabEl) tabEl.classList.add('active');
+  if (secEl) secEl.classList.add('active');
+  if (tab === 'maliyet') settingsMaliyetYukle();
+}
+
 function toggleSettings() {
   const page = document.getElementById('settingsPage');
   if (!page) return;
@@ -4150,6 +4222,31 @@ function _modelTahminiGoster(model) {
   const t = tahminler[model] || tahminler['claude-haiku-4-5-20251001'];
   el.innerHTML = '📊 Ortalama işlem başına: <strong>' + t.islem + '</strong> · ' + t.gun + '<br>' + t.oneri;
 }
+
+function _settingsHelp(baslik, aciklama) {
+  const t = document.getElementById('s-help-title');
+  const tx = document.getElementById('s-help-text');
+  const c = document.querySelector('.s-help-card');
+  if (t) t.textContent = baslik;
+  if (tx) tx.textContent = aciklama;
+  if (c) { c.style.borderColor = 'rgba(99,102,241,0.3)'; c.style.background = 'rgba(99,102,241,0.07)'; }
+  setTimeout(function() {
+    if (c) { c.style.borderColor = ''; c.style.background = ''; }
+  }, 3000);
+}
+
+// Yardım içerikleri
+const _YARDIM = {
+  'firma-logo': ['Firma Logosu', 'PNG veya SVG yükle. Şeffaf arka planlı logo tercih edilir. Logo yüklenince marka rengi otomatik tespit edilir.'],
+  'firma-adi': ['Firma Adı', 'Insert\'lerde ve Figma frame\'lerinde otomatik kullanılır. Müşteri adı veya marka adını gir.'],
+  'firma-slogan': ['Slogan', 'Kampanya insert\'lerinde alt başlık olarak kullanılabilir.'],
+  'firma-website': ['Website', 'Opsiyonel. Bazı insert şablonlarında gösterilir.'],
+  'kampanya-metin': ['Geçerlilik Metni', 'Her kampanyada otomatik dolar. Örnek: "Tarihleri arasında geçerlidir."'],
+  'claude-key': ['Claude API Key', 'Fiyat listesi fotoğraflarını okumak ve rozet prompt\'u oluşturmak için kullanılır. İlk $5 ücretsiz — console.anthropic.com\'dan alabilirsin.'],
+  'openai-key': ['OpenAI API Key', 'gpt-image-1 modeli ile profesyonel kampanya rozetleri üretir. Rozet başına yaklaşık $0.04-0.08 tutar.'],
+  'model-sec': ['Model Seçimi', 'Haiku en ucuz ve hızlı. Sonnet daha kaliteli ama 10x pahalı. Günlük kullanım için Haiku idealdir.'],
+  'kur': ['Dolar Kuru', 'Maliyet takibindeki TL karşılığı bu kur üzerinden hesaplanır. Güncel kuru girerek doğru takip yapabilirsin.'],
+};
 
 function switchSettingsTab(tab) {
   // Tüm sidebar itemları temizle
@@ -4359,6 +4456,7 @@ function _apiKeyDurumGuncelle() {
 
 function _openaiKeyDurumGuncelle() {
   const key = sessionStorage.getItem('openai_key') || '';
+  const el = document.getElementById('openaiKeyStatus');
   if (!el) return;
   if (key) {
     el.textContent = '✅ Girildi — Rozet üretimi aktif';
