@@ -1169,19 +1169,10 @@ input[type="checkbox"] {
 <style>
 #settingsPage .s-nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:2}
 #settingsPage .s-body{display:flex;min-height:calc(100vh - 57px);width:100%}
-#settingsPage .s-sidebar{width:220px;flex-shrink:0;padding:1.25rem 1rem;border-right:1px solid var(--border)}
-#settingsPage .s-content{flex:1;padding:2rem 2rem;overflow-y:auto;display:flex;gap:2rem}
-#settingsPage .s-main{flex:1;min-width:0}
-#settingsPage .s-help{width:240px;flex-shrink:0}
-#settingsPage .s-help-card{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:10px;padding:14px;margin-bottom:10px;transition:all 0.2s}
-#settingsPage .s-help-title{font-size:12px;font-weight:700;color:#a5b4fc;margin-bottom:6px}
-#settingsPage .s-help-text{font-size:11px;color:var(--text3);line-height:1.6}
-@media(max-width:1100px){#settingsPage .s-help{display:none}}
-#settingsPage .s-main{flex:1;min-width:0}
+#settingsPage .s-sidebar{width:200px;flex-shrink:0;padding:1.25rem 1rem;border-right:1px solid var(--border)}
+#settingsPage .s-content{flex:1;padding:2rem;overflow-y:auto;display:flex;gap:1.5rem}
+#settingsPage .s-main{flex:1;min-width:0;max-width:680px}
 #settingsPage .s-help{width:220px;flex-shrink:0;position:sticky;top:1rem;align-self:flex-start}
-#settingsPage .s-help-card{background:rgba(99,102,241,0.05);border:0.5px solid rgba(99,102,241,0.15);border-radius:10px;padding:14px;font-size:12px;color:var(--text2);line-height:1.6;transition:all 0.2s;min-height:80px}
-#settingsPage .s-help-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px}
-#settingsPage .s-card[data-help]:hover{border-color:rgba(99,102,241,0.3)}
 #settingsPage .s-nav-item{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text2);margin-bottom:2px;transition:all 0.15s;font-weight:500;background:transparent}
 #settingsPage .s-nav-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
 #settingsPage .s-nav-item.active{background:rgba(99,102,241,0.1);color:#a5b4fc;font-weight:600}
@@ -1199,8 +1190,6 @@ input[type="checkbox"] {
 #settingsPage .s-save-btn{padding:9px 22px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif}
 #settingsPage .s-logo-box{width:90px;height:64px;border:1.5px dashed rgba(99,102,241,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(99,102,241,0.04);overflow:hidden;flex-shrink:0}
 #settingsPage .s-logo-box img{width:100%;height:100%;object-fit:contain}
-#settingsPage .s-swatch{width:26px;height:26px;border-radius:6px;cursor:pointer;border:2px solid transparent;flex-shrink:0}
-#settingsPage .s-swatch.active{border-color:var(--text);transform:scale(1.15)}
 #settingsPage .s-tag-warn{padding:9px 13px;background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px;display:flex;gap:8px}
 #settingsPage .s-tag-info{padding:9px 13px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:8px;font-size:12px;color:var(--text2);line-height:1.6;display:flex;gap:8px}
 #settingsPage .s-api-box{padding:14px;border-radius:10px;margin-bottom:12px}
@@ -1210,8 +1199,12 @@ input[type="checkbox"] {
 #settingsPage .s-step{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2);margin-bottom:5px}
 #settingsPage .s-step:last-child{margin-bottom:0}
 #settingsPage .s-step-n{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+#settingsPage .s-help-card{background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:10px;padding:14px;margin-bottom:10px}
+#settingsPage .s-help-title{font-size:12px;font-weight:700;color:#a5b4fc;margin-bottom:6px}
+#settingsPage .s-help-text{font-size:11px;color:var(--text3);line-height:1.6}
+@media(max-width:1100px){#settingsPage .s-help{display:none}}
+@media(max-width:768px){#settingsPage .s-body{flex-direction:column}#settingsPage .s-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:4px;padding:0.75rem}#settingsPage .s-nav-item{flex:1;min-width:100px;justify-content:center;font-size:11px}#settingsPage .s-section-lbl{display:none}#settingsPage .s-content{padding:1rem}#settingsPage .s-grid2{grid-template-columns:1fr}}
 </style>
-
 <div class="s-nav">
   <div style="display:flex;align-items:center;gap:10px">
     <button onclick="toggleSettings()" style="padding:6px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">← Geri</button>
@@ -1219,284 +1212,171 @@ input[type="checkbox"] {
   </div>
   <button class="s-save-btn" onclick="saveSettingsAll()">💾 Kaydet</button>
 </div>
-
 <div class="s-body">
   <div class="s-sidebar">
     <div class="s-section-lbl" style="margin-top:0">Genel</div>
-    <div class="s-nav-item active" id="tab-firma" onclick="switchSettingsTab('firma')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Firma Profili
-    </div>
-    <div class="s-nav-item" id="tab-entegrasyon" onclick="switchSettingsTab('entegrasyon')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Entegrasyonlar
-    </div>
-    <div class="s-nav-item" id="tab-kampanya" onclick="switchSettingsTab('kampanya')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Kampanya Varsayılanları
-    </div>
+    <div class="s-nav-item active" id="tab-firma" onclick="switchSettingsTab('firma')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Firma Profili</div>
+    <div class="s-nav-item" id="tab-entegrasyon" onclick="switchSettingsTab('entegrasyon')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Entegrasyonlar</div>
+    <div class="s-nav-item" id="tab-kampanya" onclick="switchSettingsTab('kampanya')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Kampanya</div>
     <div class="s-section-lbl">Kullanım</div>
-    <div class="s-nav-item" id="tab-maliyet" onclick="switchSettingsTab('maliyet')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>API Maliyeti
-    </div>
+    <div class="s-nav-item" id="tab-maliyet" onclick="switchSettingsTab('maliyet')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>API Maliyeti</div>
   </div>
-
   <div class="s-content">
-    <div class="s-main" id="s-main-content">
+    <div class="s-main">
 
-    <!-- FİRMA PROFİLİ -->
-    <div class="s-section active" id="section-firma">
-      <div class="s-card">
-        <div class="s-card-title">Firma Bilgileri</div>
-        <div class="s-card-desc">Bu bilgiler insert'lerde ve Figma frame'lerinde otomatik kullanılır.</div>
-        <div class="s-field">
-          <label class="s-lbl">Firma Logosu</label>
-          <div style="display:flex;align-items:center;gap:14px">
-            <div class="s-logo-box" id="settingsLogoBox" onclick="document.getElementById('settingsLogoInput').click()">
-              <img id="settingsLogoImg" src="" style="display:none">
-              <span id="settingsLogoPlaceholder" style="font-size:22px">🏪</span>
-            </div>
-            <div>
-              <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px">PNG, SVG, JPG — şeffaf arka plan önerilir</div>
-              <div style="display:flex;gap:6px;margin-top:4px;align-items:center">
-                <button onclick="document.getElementById('settingsLogoInput').click()" style="padding:5px 12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);border-radius:6px;color:#a5b4fc;font-size:11px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">Yükle</button>
-                <button onclick="settingsLogoSil()" style="padding:5px 10px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#f87171;font-size:11px;cursor:pointer;font-family:'Geist',sans-serif">Sil</button>
-                <div id="logoDominantRenk" style="display:none;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);flex-shrink:0" title="Logondan çekilen ana renk"></div>
-                <span id="logoDominantRenkTxt" style="font-size:10px;color:var(--text3)"></span>
+      <!-- FİRMA PROFİLİ -->
+      <div class="s-section active" id="section-firma">
+        <div class="s-card">
+          <div class="s-card-title">Firma Bilgileri</div>
+          <div class="s-card-desc">Bu bilgiler insert'lerde ve Figma frame'lerinde otomatik kullanılır.</div>
+          <div class="s-field">
+            <label class="s-lbl">Firma Logosu</label>
+            <div style="display:flex;align-items:center;gap:14px">
+              <div class="s-logo-box" id="settingsLogoBox" onclick="document.getElementById('settingsLogoInput').click()">
+                <img id="settingsLogoImg" src="" style="display:none">
+                <span id="settingsLogoPlaceholder" style="font-size:22px">🏪</span>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px">PNG, SVG, JPG — şeffaf arka plan önerilir</div>
+                <div style="display:flex;gap:6px;margin-top:4px;align-items:center">
+                  <button onclick="document.getElementById('settingsLogoInput').click()" style="padding:5px 12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);border-radius:6px;color:#a5b4fc;font-size:11px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">Yükle</button>
+                  <button onclick="settingsLogoSil()" style="padding:5px 10px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#f87171;font-size:11px;cursor:pointer;font-family:'Geist',sans-serif">Sil</button>
+                  <div id="logoDominantRenk" style="display:none;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);flex-shrink:0"></div>
+                </div>
               </div>
             </div>
+            <input type="file" id="settingsLogoInput" accept="image/*" style="display:none" onchange="settingsLogoYukle(this)">
           </div>
-          <input type="file" id="settingsLogoInput" accept="image/*" style="display:none" onchange="settingsLogoYukle(this)">
-        </div>
-        <div class="s-grid2">
-          <div class="s-field"><label class="s-lbl">Firma Adı</label><input class="s-inp" type="text" id="set-companyName" onfocus="settingsHelpGoster('set-companyName')" placeholder="Kesmar Market" onfocus="_settingsHelp('Firma Adı','Insert\'lerde ve Figma frame\'lerinde otomatik kullanılır.')"></div>
-          <div class="s-field"><label class="s-lbl">Slogan</label><input class="s-inp" type="text" id="set-companySlogan" onfocus="settingsHelpGoster('set-companySlogan')" placeholder="Her evin ihtiyacı" onfocus="_settingsHelp('Slogan','Kampanya insert\'lerinde alt başlık olarak kullanılabilir.')"></div>
-          <div class="s-field"><label class="s-lbl">Website</label><input class="s-inp" type="url" id="set-companyWebsite" onfocus="settingsHelpGoster('set-companyWebsite')" placeholder="www.kesmar.com.tr" onfocus="_settingsHelp('Website','Opsiyonel. Bazı insert şablonlarında gösterilir.')"></div>
-          <div class="s-field"><label class="s-lbl">Telefon</label><input class="s-inp" type="text" id="set-companyPhone" onfocus="settingsHelpGoster('set-companyPhone')" placeholder="0212 000 00 00" onfocus="_settingsHelp('Telefon','Opsiyonel iletişim bilgisi.')"></div>
-        </div>
-        <div class="s-field"><label class="s-lbl">Adres</label><input class="s-inp" type="text" id="set-companyAddress" onfocus="settingsHelpGoster('set-companyAddress')" placeholder="İstanbul, Türkiye"></div>
-      </div>
-    </div>
-
-    <!-- MARKA & RENKLER -->
-    <!-- ENTEGRASYONLAR -->
-    <div class="s-section" id="section-entegrasyon">
-      <div class="s-card" style="border-color:rgba(99,102,241,0.2);background:rgba(99,102,241,0.03)">
-        <div style="display:flex;gap:10px;margin-bottom:12px">
-          <span style="font-size:20px">⚡</span>
-          <div>
-            <div class="s-card-title">Neden bu API anahtarlarına ihtiyaç var?</div>
-            <div class="s-card-desc" style="margin:0">Kampix, yapay zeka özelliklerini güçlendirmek için iki harici servis kullanır.</div>
+          <div class="s-grid2">
+            <div class="s-field"><label class="s-lbl">Firma Adı</label><input class="s-inp" type="text" id="set-companyName" placeholder="Kesmar Market" onfocus="settingsHelpGoster('set-companyName')"></div>
+            <div class="s-field"><label class="s-lbl">Slogan</label><input class="s-inp" type="text" id="set-companySlogan" placeholder="Her evin ihtiyacı" onfocus="settingsHelpGoster('set-companySlogan')"></div>
+            <div class="s-field"><label class="s-lbl">Website</label><input class="s-inp" type="url" id="set-companyWebsite" placeholder="www.kesmar.com.tr" onfocus="settingsHelpGoster('set-companyWebsite')"></div>
+            <div class="s-field"><label class="s-lbl">Telefon</label><input class="s-inp" type="text" id="set-companyPhone" placeholder="0212 000 00 00" onfocus="settingsHelpGoster('set-companyPhone')"></div>
           </div>
-        </div>
-        <div class="s-grid2" style="margin-bottom:12px">
-          <div style="padding:10px 12px;background:rgba(204,120,92,0.06);border:1px solid rgba(204,120,92,0.15);border-radius:8px">
-            <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
-              <div style="width:22px;height:22px;background:#CC785C;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">C</div>
-              <span style="font-size:12px;font-weight:700;color:var(--text)">Claude</span>
-            </div>
-            <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:5px">Görsel analiz · Rozet prompt üretimi</div>
-            <div style="font-size:11px;color:#CC785C;font-weight:600">İlk $5 ücretsiz · ~$0.001/işlem</div>
-          </div>
-          <div style="padding:10px 12px;background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.15);border-radius:8px">
-            <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
-              <div style="width:22px;height:22px;background:#10a37f;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">O</div>
-              <span style="font-size:12px;font-weight:700;color:var(--text)">OpenAI</span>
-            </div>
-            <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:5px">gpt-image-1 · Rozet üretimi</div>
-            <div style="font-size:11px;color:#10a37f;font-weight:600">Rozet başına ~$0.04-0.08</div>
-          </div>
-        </div>
-        <div class="s-tag-info"><span>🔒</span><div><strong style="color:var(--text)">Güvenli:</strong> Anahtarlar oturum bazlıdır, tarayıcı kapanınca silinir.</div></div>
-      </div>
-
-      <div class="s-tag-warn"><span>⚠️</span><div><strong style="color:#fbbf24">Not:</strong> Tarayıcıyı kapattığında anahtarlar silinir, tekrar girmen gerekir.</div></div>
-
-      <div class="s-api-box claude">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div style="width:28px;height:28px;background:#CC785C;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">C</div>
-            <div><div style="font-size:13px;font-weight:700;color:var(--text)">Claude API Key</div><div style="font-size:11px;color:var(--text3)">Görsel analiz · Rozet prompt</div></div>
-          </div>
-          <a href="https://console.anthropic.com" target="_blank" style="padding:4px 10px;background:rgba(204,120,92,0.12);border:1px solid rgba(204,120,92,0.25);border-radius:6px;font-size:11px;font-weight:600;color:#CC785C;text-decoration:none">Key Al ↗</a>
-        </div>
-        <div class="s-steps">
-          <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px">📖 Nasıl alınır?</div>
-          <div class="s-step"><span class="s-step-n" style="background:rgba(204,120,92,0.2);color:#CC785C">1</span><span><strong style="color:var(--text)">console.anthropic.com</strong> adresine git</span></div>
-          <div class="s-step"><span class="s-step-n" style="background:rgba(204,120,92,0.2);color:#CC785C">2</span><span>API Keys → Create Key</span></div>
-          <div class="s-step"><span class="s-step-n" style="background:rgba(204,120,92,0.2);color:#CC785C">3</span><span><strong style="color:var(--text)">sk-ant-api03-...</strong> ile başlayan anahtarı kopyala</span></div>
-        </div>
-        <div style="display:flex;gap:6px">
-          <input type="password" id="set-claudeKey" onfocus="settingsHelpGoster('set-claudeKey')" placeholder="sk-ant-api03-..." onfocus="_settingsHelp('Claude API Key','Fiyat listesi fotoğraflarını okumak için kullanılır. İlk $5 ücretsiz — console.anthropic.com\'dan al.')" class="s-inp" style="flex:1;font-family:monospace" oninput="kampanyaApiKeySave(this.value)">
-          <button onclick="(function(){var i=document.getElementById('set-claudeKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
-          
-        </div>
-        <div id="claudeKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">Girilmedi — Claude özellikleri devre dışı</div>
-      </div>
-
-      <div class="s-api-box openai">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div style="width:28px;height:28px;background:#10a37f;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">O</div>
-            <div><div style="font-size:13px;font-weight:700;color:var(--text)">OpenAI API Key</div><div style="font-size:11px;color:var(--text3)">gpt-image-1 · Rozet üretimi</div></div>
-          </div>
-          <a href="https://platform.openai.com/api-keys" target="_blank" style="padding:4px 10px;background:rgba(16,163,127,0.12);border:1px solid rgba(16,163,127,0.25);border-radius:6px;font-size:11px;font-weight:600;color:#10a37f;text-decoration:none">Key Al ↗</a>
-        </div>
-        <div class="s-steps">
-          <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px">📖 Nasıl alınır?</div>
-          <div class="s-step"><span class="s-step-n" style="background:rgba(16,163,127,0.2);color:#10a37f">1</span><span><strong style="color:var(--text)">platform.openai.com</strong> adresine git</span></div>
-          <div class="s-step"><span class="s-step-n" style="background:rgba(16,163,127,0.2);color:#10a37f">2</span><span>API Keys → Create new secret key</span></div>
-          <div class="s-step"><span class="s-step-n" style="background:rgba(16,163,127,0.2);color:#10a37f">3</span><span><strong style="color:var(--text)">sk-...</strong> ile başlayan anahtarı kopyala</span></div>
-        </div>
-        <div style="display:flex;gap:6px">
-          <input type="password" id="set-openaiKey" onfocus="settingsHelpGoster('set-openaiKey')" placeholder="sk-..." onfocus="_settingsHelp('OpenAI API Key','gpt-image-1 ile rozet üretir. Rozet başına ~$0.04-0.08 tutar. platform.openai.com\'dan al.')" class="s-inp" style="flex:1;font-family:monospace" oninput="sessionStorage.setItem('openai_key',this.value);_openaiKeyDurumGuncelle()">
-          <button onclick="(function(){var i=document.getElementById('set-openaiKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
-          
-        </div>
-        <div id="openaiKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">Girilmedi — Rozet üretimi devre dışı</div>
-      </div>
-    </div>
-
-    <!-- KAMPANYA VARSAYILANLARI -->
-    <div class="s-section" id="section-kampanya">
-      <div class="s-card">
-        <div class="s-card-title">Kampanya Varsayılanları</div>
-        <div class="s-card-desc">Her yeni kampanyada bu değerler otomatik dolar.</div>
-        <div class="s-field"><label class="s-lbl">Geçerlilik Metni</label><input class="s-inp" type="text" id="set-campaignText" onfocus="settingsHelpGoster('set-campaignText')" placeholder="Tarihleri arasında geçerlidir." onfocus="_settingsHelp('Geçerlilik Metni','Her kampanyada otomatik dolar. Örnek: Tarihleri arasında geçerlidir.')"></div>
-        <div class="s-field"><label class="s-lbl">Kampanya Alt Yazısı</label><textarea class="s-inp" id="set-campaignSubtext" onfocus="settingsHelpGoster('set-campaignSubtext')" rows="3" placeholder="*Kampanyamız stoklar dahilinde geçerlidir." style="resize:vertical;line-height:1.5"></textarea></div>
-      </div>
-    </div>
-
-    <!-- API MALİYETİ -->
-    <div class="s-section" id="section-maliyet">
-      <div class="s-card">
-        <div class="s-card-title">API Maliyet Takibi</div>
-        <div class="s-card-desc">Gerçek zamanlı token ve görsel başına maliyet hesabı.</div>
-
-        <!-- Açıklama -->
-        <div style="padding:10px 13px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:9px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.6">
-          <strong style="color:#fbbf24">ℹ️ Nasıl hesaplanır?</strong><br>
-          Bu veriler API response'larından alınan token sayılarına göre hesaplanır. Gerçek maliyetten küçük farklılıklar olabilir. Kesin tutarlar için kendi hesap panellerine bakabilirsin:<br>
-          <div style="display:flex;gap:10px;margin-top:8px">
-            <a href="https://console.anthropic.com/settings/usage" target="_blank"
-              style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(204,120,92,0.1);border:1px solid rgba(204,120,92,0.2);border-radius:6px;font-size:11px;font-weight:600;color:#CC785C;text-decoration:none">
-              Claude Kullanım Raporu ↗
-            </a>
-            <a href="https://platform.openai.com/usage" target="_blank"
-              style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:rgba(16,163,127,0.1);border:1px solid rgba(16,163,127,0.2);border-radius:6px;font-size:11px;font-weight:600;color:#10a37f;text-decoration:none">
-              OpenAI Kullanım Raporu ↗
-            </a>
-          </div>
-        </div>
-
-        <div id="settingsMaliyetDetay"></div>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <button onclick="settingsMaliyetYukle()" style="padding:6px 12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:7px;color:#a5b4fc;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">↻ Yenile</button>
-          <button onclick="if(confirm('Tüm maliyet verisi silinsin mi?')){Object.keys(localStorage).filter(k=>k.startsWith('insertmill_maliyet')).forEach(k=>localStorage.removeItem(k));settingsMaliyetYukle()}" style="padding:6px 12px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:7px;color:#f87171;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">🗑 Temizle</button>
+          <div class="s-field"><label class="s-lbl">Adres</label><input class="s-inp" type="text" id="set-companyAddress" placeholder="İstanbul, Türkiye" onfocus="settingsHelpGoster('set-companyAddress')"></div>
         </div>
       </div>
-      <div class="s-card">
-        <div class="s-card-title">Dolar Kuru</div>
-        <div class="s-card-desc">TL karşılığı hesaplamak için güncel kuru gir.</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <input class="s-inp" type="number" id="set-tlKuru" onfocus="settingsHelpGoster('set-tlKuru')" onfocus="_settingsHelp('Dolar Kuru','Maliyet takibindeki TL karşılığı bu kur üzerinden hesaplanır. Güncel kuru girerek doğru takip yapabilirsin.')" placeholder="38.5" step="0.1" style="max-width:120px"
-            oninput="localStorage.setItem('usd_try_kur',this.value);settingsMaliyetYukle()">
-          <span style="font-size:13px;color:var(--text2)">₺ / $1</span>
-          <a href="https://finance.yahoo.com/quote/USDTRY" target="_blank" style="font-size:11px;color:#a5b4fc;text-decoration:none">Güncel kur ↗</a>
-        </div>
-      </div>
-        <div class="s-card-desc">Daha ucuz model seçerek maliyetini düşürebilirsin.</div>
-        <div class="s-field">
-          <label class="s-lbl">Claude Modeli</label>
-          <select id="set-claudeModel" onfocus="settingsHelpGoster('set-claudeModel')" onfocus="_settingsHelp('Model Seçimi','Haiku en ucuz ve hızlı. Günlük kullanım için idealdir. Sonnet daha kaliteli ama 10x pahalı.')" class="s-inp" onchange="localStorage.setItem('rozet_model',this.value);_modelTahminiGoster(this.value)">
-            <option value="claude-haiku-4-5-20251001">⚡ Claude Haiku 4.5 — En Ucuz ($0.8/$4 per 1M)</option>
-            <option value="claude-sonnet-4-6">🎯 Claude Sonnet 4.6 — Dengeli ($3/$15 per 1M)</option>
-            <option value="claude-opus-4-6">🚀 Claude Opus 4.6 — En İyi ($15/$75 per 1M)</option>
-          </select>
-        </div>
-        <div id="modelMaliyetTahmini" style="padding:10px 13px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:8px;font-size:12px;color:#a5b4fc;line-height:1.6"></div>
-      </div>
-    </div>
 
-  </div>
-</div>
-</div>
-
-<div class="hdr">
-  <div class="hdr-brand" style="gap:0">
-    <div style="display:flex;align-items:center;gap:4px">
-      <span style="font-size:0"><svg height="22" viewBox="0 0 180 22" style="overflow:visible"><text y="18" font-family="'Geist','Inter',sans-serif" font-size="20" font-weight="900" letter-spacing="-0.06em"><tspan fill="white">insert</tspan><tspan fill="#818cf8">mill</tspan><tspan font-size="8" fill="#f97316" dy="-10">●</tspan></text></svg>
-    </div>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div style="display:flex;gap:2px;background:rgba(255,255,255,0.06);border-radius:8px;padding:3px;">
-      <button id="btn-tr" onclick="setLang('tr')" style="padding:3px 10px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;background:rgba(99,102,241,0.8);color:white;font-family:inherit;transition:all 0.2s">TR</button>
-      <button id="btn-en" onclick="setLang('en')" style="padding:3px 10px;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:#64748B;font-family:inherit;transition:all 0.2s">EN</button>
-    </div>
-    <div class="tema-btns">
-      <button class="tema-btn" onclick="setTema('gece')" title="Gece Modu" id="btn-gece">🌙</button>
-      <button class="tema-btn active" onclick="setTema('gunduz')" title="Gündüz Modu" id="btn-gunduz">☀️</button>
-      <button class="tema-btn" onclick="setTema('goz')" title="Göz Filtresi" id="btn-goz">🟡</button>
-    </div>
-    <div class="hdr-status"><div class="hdr-dot"></div>Aktif</div>
-
-    <!-- Maliyet Göstergesi -->
-    <div id="maliyetGosterge" onclick="maliyetDetay()" 
-      title="Tahmini maliyet — Gerçek tutar için console.anthropic.com ve platform.openai.com/usage adreslerine bakın"
-      style="display:none;align-items:center;gap:6px;padding:5px 10px;background:rgba(255,255,255,0.04);
-             border:1px solid rgba(255,255,255,0.08);border-radius:8px;cursor:pointer;transition:all 0.2s"
-      onmouseover="this.style.background='rgba(99,102,241,0.1)'"
-      onmouseout="this.style.background='rgba(255,255,255,0.04)'">
-      <span style="font-size:12px">💰</span>
-    </div>
-
-    <!-- Maliyet Uyarı Barı -->
-
-    <!-- Settings Butonu -->
-    <button onclick="toggleSettings()" title="Firma Profili & Ayarlar"
-      style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,255,255,0.06);
-             border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;font-size:12px;
-             font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.2s"
-      onmouseover="this.style.background='rgba(99,102,241,0.15)';this.style.color='#a5b4fc'"
-      onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#94a3b8'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Ayarlar
-    </button>
-    <div id="authArea" style="display:flex;align-items:center;">
-      <button id="loginBtn" onclick="signInWithGoogle()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;color:white;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;">
-        <svg width="14" height="14" viewBox="0 0 24 24"><path fill="white" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="white" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="white" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="white" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Giriş Yap
-      </button>
-      <div id="userMenu" style="display:none;position:relative;">
-        <button onclick="toggleUserMenu()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit;color:white;transition:all 0.2s;">
-          <img id="userAvatar" src="" style="width:24px;height:24px;border-radius:50%;object-fit:cover;">
-          <span id="userName" style="font-size:13px;font-weight:500;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-          <span style="font-size:10px;color:#64748B;">▼</span>
-        </button>
-        <div id="userDropdown" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#1a1f2e;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:6px;min-width:220px;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:9999;">
-          <div style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:4px;">
-            <div id="userEmail" style="font-size:12px;color:#64748B;"></div>
-            <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
-              <span style="font-size:11px;color:#64748B;">Afiş Kredisi:</span>
-              <span id="userCredits" style="font-size:12px;font-weight:700;color:#818cf8;">500 / 500</span>
+      <!-- ENTEGRASYONLAR -->
+      <div class="s-section" id="section-entegrasyon">
+        <div class="s-card" style="border-color:rgba(99,102,241,0.2);background:rgba(99,102,241,0.03)">
+          <div style="display:flex;gap:10px;margin-bottom:12px">
+            <span style="font-size:20px">⚡</span>
+            <div>
+              <div class="s-card-title">Neden bu API anahtarlarına ihtiyaç var?</div>
+              <div class="s-card-desc" style="margin:0">Insertmill, yapay zeka özelliklerini güçlendirmek için iki harici servis kullanır.</div>
             </div>
           </div>
-          <div onclick="signOut()" style="padding:8px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:#f87171;display:flex;align-items:center;gap:8px;transition:background 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.background='transparent'">
-            🚪 Çıkış Yap
+          <div class="s-grid2" style="margin-bottom:12px">
+            <div style="padding:10px 12px;background:rgba(204,120,92,0.06);border:1px solid rgba(204,120,92,0.15);border-radius:8px">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><div style="width:22px;height:22px;background:#CC785C;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">C</div><span style="font-size:12px;font-weight:700;color:var(--text)">Claude</span></div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:5px">Görsel analiz · Rozet prompt üretimi</div>
+              <div style="font-size:11px;color:#CC785C;font-weight:600">İlk $5 ücretsiz · ~$0.001/işlem</div>
+            </div>
+            <div style="padding:10px 12px;background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.15);border-radius:8px">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><div style="width:22px;height:22px;background:#10a37f;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">O</div><span style="font-size:12px;font-weight:700;color:var(--text)">OpenAI</span></div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:5px">gpt-image-1 · Rozet üretimi</div>
+              <div style="font-size:11px;color:#10a37f;font-weight:600">Rozet başına ~$0.04-0.08</div>
+            </div>
+          </div>
+          <div class="s-tag-info"><span>🔒</span><div><strong style="color:var(--text)">Güvenli:</strong> Anahtarlar oturum bazlıdır, tarayıcı kapanınca silinir.</div></div>
+        </div>
+        <div class="s-tag-warn"><span>⚠️</span><div><strong style="color:#fbbf24">Not:</strong> Tarayıcıyı kapattığında anahtarlar silinir, tekrar girmen gerekir.</div></div>
+        <div class="s-api-box claude">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;background:#CC785C;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">C</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">Claude API Key</div><div style="font-size:11px;color:var(--text3)">Görsel analiz · Rozet prompt</div></div></div>
+            <a href="https://console.anthropic.com" target="_blank" style="padding:4px 10px;background:rgba(204,120,92,0.12);border:1px solid rgba(204,120,92,0.25);border-radius:6px;font-size:11px;font-weight:600;color:#CC785C;text-decoration:none">Key Al ↗</a>
+          </div>
+          <div class="s-steps">
+            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px">📖 Nasıl alınır?</div>
+            <div class="s-step"><span class="s-step-n" style="background:rgba(204,120,92,0.2);color:#CC785C">1</span><span><strong style="color:var(--text)">console.anthropic.com</strong> adresine git</span></div>
+            <div class="s-step"><span class="s-step-n" style="background:rgba(204,120,92,0.2);color:#CC785C">2</span><span>API Keys → Create Key</span></div>
+            <div class="s-step"><span class="s-step-n" style="background:rgba(204,120,92,0.2);color:#CC785C">3</span><span><strong style="color:var(--text)">sk-ant-api03-...</strong> ile başlayan anahtarı kopyala</span></div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <input type="password" id="set-claudeKey" placeholder="sk-ant-api03-..." class="s-inp" style="flex:1;font-family:monospace" oninput="kampanyaApiKeySave(this.value)" onfocus="settingsHelpGoster('set-claudeKey')">
+            <button onclick="(function(){var i=document.getElementById('set-claudeKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
+          </div>
+          <div id="claudeKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">Girilmedi — Claude özellikleri devre dışı</div>
+        </div>
+        <div class="s-api-box openai">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;background:#10a37f;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">O</div><div><div style="font-size:13px;font-weight:700;color:var(--text)">OpenAI API Key</div><div style="font-size:11px;color:var(--text3)">gpt-image-1 · Rozet üretimi</div></div></div>
+            <a href="https://platform.openai.com/api-keys" target="_blank" style="padding:4px 10px;background:rgba(16,163,127,0.12);border:1px solid rgba(16,163,127,0.25);border-radius:6px;font-size:11px;font-weight:600;color:#10a37f;text-decoration:none">Key Al ↗</a>
+          </div>
+          <div class="s-steps">
+            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px">📖 Nasıl alınır?</div>
+            <div class="s-step"><span class="s-step-n" style="background:rgba(16,163,127,0.2);color:#10a37f">1</span><span><strong style="color:var(--text)">platform.openai.com</strong> adresine git</span></div>
+            <div class="s-step"><span class="s-step-n" style="background:rgba(16,163,127,0.2);color:#10a37f">2</span><span>API Keys → Create new secret key</span></div>
+            <div class="s-step"><span class="s-step-n" style="background:rgba(16,163,127,0.2);color:#10a37f">3</span><span><strong style="color:var(--text)">sk-...</strong> ile başlayan anahtarı kopyala</span></div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <input type="password" id="set-openaiKey" placeholder="sk-..." class="s-inp" style="flex:1;font-family:monospace" oninput="sessionStorage.setItem('openai_key',this.value);_openaiKeyDurumGuncelle()" onfocus="settingsHelpGoster('set-openaiKey')">
+            <button onclick="(function(){var i=document.getElementById('set-openaiKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
+          </div>
+          <div id="openaiKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">Girilmedi — Rozet üretimi devre dışı</div>
+        </div>
+      </div>
+
+      <!-- KAMPANYA VARSAYILANLARI -->
+      <div class="s-section" id="section-kampanya">
+        <div class="s-card">
+          <div class="s-card-title">Kampanya Varsayılanları</div>
+          <div class="s-card-desc">Her yeni kampanyada bu değerler otomatik dolar.</div>
+          <div class="s-field"><label class="s-lbl">Geçerlilik Metni</label><input class="s-inp" type="text" id="set-campaignText" placeholder="Tarihleri arasında geçerlidir." onfocus="settingsHelpGoster('set-campaignText')"></div>
+          <div class="s-field"><label class="s-lbl">Kampanya Alt Yazısı</label><textarea class="s-inp" id="set-campaignSubtext" rows="3" placeholder="*Kampanyamız stoklar dahilinde geçerlidir." style="resize:vertical;line-height:1.5" onfocus="settingsHelpGoster('set-campaignSubtext')"></textarea></div>
+        </div>
+      </div>
+
+      <!-- API MALİYETİ -->
+      <div class="s-section" id="section-maliyet">
+        <div class="s-card">
+          <div class="s-card-title">API Maliyet Takibi</div>
+          <div class="s-card-desc">Gerçek zamanlı token ve görsel başına maliyet hesabı.</div>
+          <div id="settingsMaliyetDetay"></div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button onclick="settingsMaliyetYukle()" style="padding:6px 12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:7px;color:#a5b4fc;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">↻ Yenile</button>
+            <button onclick="if(confirm('Tüm maliyet verisi silinsin mi?')){Object.keys(localStorage).filter(k=>k.startsWith('insertmill_maliyet')).forEach(k=>localStorage.removeItem(k));settingsMaliyetYukle()}" style="padding:6px 12px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:7px;color:#f87171;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">🗑 Temizle</button>
+          </div>
+        </div>
+        <div class="s-card">
+          <div class="s-card-title">Model Seçimi</div>
+          <div class="s-card-desc">Daha ucuz model seçerek maliyetini düşürebilirsin.</div>
+          <div class="s-field">
+            <label class="s-lbl">Claude Modeli</label>
+            <select id="set-claudeModel" class="s-inp" onfocus="settingsHelpGoster('set-claudeModel')" onchange="localStorage.setItem('rozet_model',this.value);_modelTahminiGoster(this.value)">
+              <option value="claude-haiku-4-5-20251001">⚡ Claude Haiku 4.5 — En Ucuz ($0.8/$4 per 1M)</option>
+              <option value="claude-sonnet-4-6">🎯 Claude Sonnet 4.6 — Dengeli ($3/$15 per 1M)</option>
+              <option value="claude-opus-4-6">🚀 Claude Opus 4.6 — En İyi ($15/$75 per 1M)</option>
+            </select>
+          </div>
+          <div id="modelMaliyetTahmini" style="padding:10px 13px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.15);border-radius:8px;font-size:12px;color:#a5b4fc;line-height:1.6"></div>
+        </div>
+        <div class="s-card">
+          <div class="s-card-title">Dolar Kuru</div>
+          <div class="s-card-desc">TL karşılığı hesaplamak için güncel kuru gir.</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <input class="s-inp" type="number" id="set-tlKuru" placeholder="38.5" step="0.1" style="max-width:120px" onfocus="settingsHelpGoster('set-tlKuru')" oninput="localStorage.setItem('usd_try_kur',this.value);settingsMaliyetYukle()">
+            <span style="font-size:13px;color:var(--text2)">₺ / $1</span>
+            <a href="https://finance.yahoo.com/quote/USDTRY" target="_blank" style="font-size:11px;color:#a5b4fc;text-decoration:none">Güncel kur ↗</a>
           </div>
         </div>
       </div>
-    </div>
+
     </div><!-- /s-main -->
 
     <!-- YARDIM PANELİ -->
     <div class="s-help" id="settingsHelpPanel">
-      <div class="s-help-card" id="help-default">
+      <div class="s-help-card">
         <div class="s-help-title">💡 İpucu</div>
-        <div class="s-help-text">Bir alana tıklayın veya üzerine gelin, burada açıklama görünsün.</div>
+        <div class="s-help-text">Bir alana tıklayın — burada açıklama görünsün.</div>
       </div>
     </div>
 
   </div><!-- /s-content -->
 </div><!-- /s-body -->
 </div><!-- /settingsPage -->
+
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('excel')">📂 <span data-i18n="tab_excel">Excel ile Yükle</span></button>
