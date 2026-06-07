@@ -4307,7 +4307,7 @@ function loadSettingsValues() {
     if (ph)  ph.style.display = 'none';
   }
 
-  // API key'leri
+  // API key'leri — önce sessionStorage'dan, yoksa Supabase'den gelmiş olabilir
   const ck = sessionStorage.getItem('claude_api_key') || '';
   const ok = sessionStorage.getItem('openai_key') || '';
   // Kur
@@ -4317,6 +4317,8 @@ function loadSettingsValues() {
   if (document.getElementById('set-claudeKey')) {
     document.getElementById('set-claudeKey').value = ck;
     _claudeKeyDurumGuncelle();
+    // Input'a da ANTHROPIC_API_KEY'i güncelle
+    if (ck) ANTHROPIC_API_KEY = ck;
   }
   if (document.getElementById('set-openaiKey')) {
     document.getElementById('set-openaiKey').value = ok;
@@ -5160,8 +5162,18 @@ async function updateUI(user) {
   const settings = await _supabaseAyarYukle();
   if (settings) {
     // API key'leri sessionStorage'a yükle (tarayıcıda geçici, ekrana yansımaz)
-    if (settings.claude_api_key) { sessionStorage.setItem('claude_api_key', settings.claude_api_key); ANTHROPIC_API_KEY = settings.claude_api_key; }
-    if (settings.openai_api_key) sessionStorage.setItem('openai_key', settings.openai_api_key);
+    if (settings.claude_api_key) {
+      sessionStorage.setItem('claude_api_key', settings.claude_api_key);
+      ANTHROPIC_API_KEY = settings.claude_api_key;
+      // Ayarlar açıksa input'u da güncelle
+      const inp = document.getElementById('set-claudeKey');
+      if (inp) { inp.value = settings.claude_api_key; }
+    }
+    if (settings.openai_api_key) {
+      sessionStorage.setItem('openai_key', settings.openai_api_key);
+      const inp = document.getElementById('set-openaiKey');
+      if (inp) { inp.value = settings.openai_api_key; }
+    }
     // Firma bilgilerini yükle
     if (settings.company_name || settings.logo_base64) {
       const cp = JSON.parse(localStorage.getItem('companyProfile') || '{}');
