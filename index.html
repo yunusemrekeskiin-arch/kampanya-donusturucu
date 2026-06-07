@@ -2445,7 +2445,7 @@ imageDropZone.addEventListener('dragleave', () => imageDropZone.classList.remove
 imageDropZone.addEventListener('drop', e => { e.preventDefault(); imageDropZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) handleImage(e.dataTransfer.files[0]); });
 imageInput.addEventListener('change', e => { if (e.target.files[0]) handleImage(e.target.files[0]); });
 
-function handleImage(file) {
+async function handleImage(file) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const base64 = e.target.result;
@@ -2489,7 +2489,7 @@ Rules:
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Api-Key': ANTHROPIC_API_KEY,
+        ...(await _getAuthHeader()),
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -2838,6 +2838,41 @@ document.addEventListener('input', (e) => {
 });
 
 // ── KAMPANYA API KEY ────────────────────────────────────────────
+// ── SUPABASE AYAR KAYIT/YÜKLEMESİ ─────────────────────────────
+// Key'leri sessionStorage yerine Supabase'e kaydeder
+async function _supabaseAyarKaydet(data) {
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) return false;
+    const { error } = await _supa.from('user_settings').upsert({
+      user_id: session.user.id,
+      ...data
+    }, { onConflict: 'user_id' });
+    return !error;
+  } catch(e) { return false; }
+}
+
+async function _supabaseAyarYukle() {
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) return null;
+    const { data } = await _supa.from('user_settings')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .single();
+    return data;
+  } catch(e) { return null; }
+}
+
+// Proxy'ye istek atarken JWT token'ı gönder (kimlik kanıtı)
+async function _getAuthHeader() {
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (session) return { 'Authorization': 'Bearer ' + session.access_token };
+  } catch(e) {}
+  return {};
+}
+
 function kampanyaApiKeySave(val) {
   const trimmed = val.trim();
   if (trimmed) {
@@ -2845,7 +2880,7 @@ function kampanyaApiKeySave(val) {
     const st = document.getElementById('kampanyaApiStatus');
     if (st) { st.textContent = '✅ Kaydedildi'; st.style.color = '#4ade80'; }
   } else {
-    localStorage.removeItem('claude_api_key');
+    sessionStorage.removeItem('claude_api_key');
     const st = document.getElementById('kampanyaApiStatus');
     if (st) { st.textContent = 'Girilmedi'; st.style.color = 'var(--text3)'; }
   }
@@ -4289,7 +4324,7 @@ function loadSettingsValues() {
   }
 }
 
-function saveSettingsAll() {
+async function saveSettingsAll() {
   const cp = JSON.parse(localStorage.getItem('companyProfile') || '{}');
   cp.name          = document.getElementById('set-companyName')?.value.trim() || cp.name;
   cp.slogan        = document.getElementById('set-companySlogan')?.value.trim() || cp.slogan;
@@ -4298,20 +4333,44 @@ function saveSettingsAll() {
   cp.address       = document.getElementById('set-companyAddress')?.value.trim() || cp.address;
   cp.campaignText  = document.getElementById('set-campaignText')?.value.trim() || cp.campaignText;
   cp.campaignSubtext = document.getElementById('set-campaignSubtext')?.value.trim() || cp.campaignSubtext;
-  cp.color         = document.getElementById('set-primaryColor')?.value || cp.color;
-  cp.secondaryColor = document.getElementById('set-secondaryColor')?.value || cp.secondaryColor;
 
   localStorage.setItem('companyProfile', JSON.stringify(cp));
   companyProfile = cp;
+
+  // API key'leri sessionStorage'a al
+  const claudeKey = document.getElementById('set-claudeKey')?.value.trim();
+  const openaiKey = document.getElementById('set-openaiKey')?.value.trim();
+  if (claudeKey) sessionStorage.setItem('claude_api_key', claudeKey);
+  if (openaiKey) sessionStorage.setItem('openai_key', openaiKey);
+
+  // Supabase'e kaydet — her şey bulutta güvenli saklansın
+  const supabaseData = {
+    company_name: cp.name,
+    company_slogan: cp.slogan,
+    company_website: cp.website,
+    company_phone: cp.phone,
+    company_address: cp.address,
+    campaign_text: cp.campaignText,
+    campaign_subtext: cp.campaignSubtext,
+    brand_color: cp.color,
+    claude_model: localStorage.getItem('rozet_model') || 'claude-haiku-4-5-20251001',
+    usd_try_kur: parseFloat(localStorage.getItem('usd_try_kur') || '38.5'),
+  };
+  if (claudeKey) supabaseData.claude_api_key = claudeKey;
+  if (openaiKey) supabaseData.openai_api_key = openaiKey;
+  if (cp.logoBase64) supabaseData.logo_base64 = cp.logoBase64;
+
+  const saved = await _supabaseAyarKaydet(supabaseData);
 
   // Uygula
   if (cp.color) _afisClr = cp.color;
   if (cp.campaignText) { const el = document.getElementById('arasindaText'); if(el) el.value = cp.campaignText; }
   updateCompanyHeader();
   _apiKeyDurumGuncelle();
+
   const btn = document.querySelector('#settingsPage .s-save-btn');
   if (btn) {
-    btn.textContent = '✅ Kaydedildi!';
+    btn.textContent = saved ? '✅ Kaydedildi!' : '✅ Yerel kaydedildi';
     btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
   }
   setTimeout(function() {
@@ -5089,13 +5148,35 @@ function showApp(user) {
   updateUI(user);
 }
 
-function updateUI(user) {
+async function updateUI(user) {
   document.getElementById('loginBtn').style.display = 'none';
   document.getElementById('userMenu').style.display = 'flex';
   const name = user.user_metadata?.full_name || user.email;
   document.getElementById('userName').textContent = name;
   if(document.getElementById('userNameDrop')) document.getElementById('userNameDrop').textContent = name;
   document.getElementById('userEmail').textContent = user.email;
+
+  // Supabase'den kayıtlı ayarları yükle
+  const settings = await _supabaseAyarYukle();
+  if (settings) {
+    // API key'leri sessionStorage'a yükle (tarayıcıda geçici, ekrana yansımaz)
+    if (settings.claude_api_key) { sessionStorage.setItem('claude_api_key', settings.claude_api_key); ANTHROPIC_API_KEY = settings.claude_api_key; }
+    if (settings.openai_api_key) sessionStorage.setItem('openai_key', settings.openai_api_key);
+    // Firma bilgilerini yükle
+    if (settings.company_name || settings.logo_base64) {
+      const cp = JSON.parse(localStorage.getItem('companyProfile') || '{}');
+      if (settings.company_name) cp.name = settings.company_name;
+      if (settings.company_slogan) cp.slogan = settings.company_slogan;
+      if (settings.brand_color) { cp.color = settings.brand_color; _afisClr = settings.brand_color; }
+      if (settings.logo_base64) cp.logoBase64 = settings.logo_base64;
+      if (settings.claude_model) localStorage.setItem('rozet_model', settings.claude_model);
+      if (settings.usd_try_kur) localStorage.setItem('usd_try_kur', settings.usd_try_kur);
+      localStorage.setItem('companyProfile', JSON.stringify(cp));
+      companyProfile = cp;
+      updateCompanyHeader();
+    }
+    _apiKeyDurumGuncelle();
+  }
 
   // Kayıtlı avatar varsa uygula, yoksa Google fotoğrafı
   const savedAvatar = localStorage.getItem('insertmill_avatar');
