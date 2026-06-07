@@ -1426,14 +1426,33 @@ input[type="checkbox"] {
 
     <!-- Kullanıcı -->
     <button id="loginBtn" onclick="signInWithGoogle()" style="display:none;align-items:center;gap:6px;padding:6px 12px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:8px;color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">Giriş Yap</button>
-    <div id="userMenu" style="display:none;align-items:center;gap:8px;flex-shrink:0">
-      <img id="userAvatar" src="" style="width:32px;height:32px;border-radius:50%;border:2px solid rgba(99,102,241,0.4)">
-      <div style="display:flex;flex-direction:column;gap:1px">
-        <span id="userName" style="font-size:12px;color:var(--text);font-weight:600;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-        <span id="userEmail" style="font-size:10px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+    <div id="userMenu" style="display:none;align-items:center;gap:8px;position:relative;flex-shrink:0">
+      <button onclick="document.getElementById('userDropdown').style.display=document.getElementById('userDropdown').style.display==='block'?'none':'block'" style="display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;padding:0">
+        <img id="userAvatar" src="" style="width:32px;height:32px;border-radius:50%;border:2px solid rgba(99,102,241,0.4)">
+        <span id="userName" style="font-size:12px;color:var(--text);font-weight:600;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div id="userDropdown" style="display:none;position:absolute;top:calc(100% + 10px);right:0;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:12px;min-width:280px;box-shadow:0 8px 32px rgba(0,0,0,0.3);z-index:200">
+        <div style="display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:10px">
+          <div id="userAvatarDrop" style="width:40px;height:40px;border-radius:50%;border:2px solid rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0"></div>
+          <div>
+            <div id="userNameDrop" style="font-size:13px;font-weight:600;color:var(--text)"></div>
+            <div id="userEmail" style="font-size:11px;color:var(--text3)"></div>
+          </div>
+        </div>
+
+        <!-- Avatar seçici -->
+        <div style="margin-bottom:10px">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Avatar Seç</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px" id="avatarPickerGrid"></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-top:8px;border-top:1px solid var(--border)">
+          <span style="font-size:11px;color:var(--text3)">Kredi</span>
+          <span id="userCredits" style="font-size:11px;color:#a5b4fc;background:rgba(99,102,241,0.1);padding:2px 8px;border-radius:20px;border:1px solid rgba(99,102,241,0.2)"></span>
+        </div>
+        <button onclick="signOut()" style="width:100%;padding:7px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;color:#f87171;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">Çıkış Yap</button>
       </div>
-      <span id="userCredits" style="font-size:11px;color:#a5b4fc;background:rgba(99,102,241,0.1);padding:2px 8px;border-radius:20px;border:1px solid rgba(99,102,241,0.2)"></span>
-      <button onclick="signOut()" style="padding:5px 10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:7px;color:#f87171;font-size:11px;cursor:pointer;font-family:'Geist',sans-serif">Çıkış</button>
     </div>
   </div>
 </div>
@@ -5057,8 +5076,12 @@ function showApp(user) {
 function updateUI(user) {
   document.getElementById('loginBtn').style.display = 'none';
   document.getElementById('userMenu').style.display = 'flex';
-  document.getElementById('userAvatar').src = user.user_metadata?.avatar_url || '';
-  document.getElementById('userName').textContent = user.user_metadata?.full_name || user.email;
+  const avatar = user.user_metadata?.avatar_url || '';
+  const name = user.user_metadata?.full_name || user.email;
+  document.getElementById('userAvatar').src = avatar;
+  document.getElementById('userName').textContent = name;
+  if(document.getElementById('userAvatarDrop')) document.getElementById('userAvatarDrop').src = avatar;
+  if(document.getElementById('userNameDrop')) document.getElementById('userNameDrop').textContent = name;
   document.getElementById('userEmail').textContent = user.email;
   // Kredi sistemi - localStorage'dan oku
   const credits = localStorage.getItem('afisKredisi') || '500';
@@ -5175,7 +5198,54 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ── ARAMA & FİLTRE ────────────────────────────────────────────
+// Avatar Picker
+const _AVATARLAR = [
+  { name:'Uzay Kedi',    emoji:'🐱', bg:'#1a1a2e', accent:'#6366f1' },
+  { name:'Ninja Panda',  emoji:'🐼', bg:'#0f2027', accent:'#10b981' },
+  { name:'Roket Adam',   emoji:'🚀', bg:'#1a0a2e', accent:'#8b5cf6' },
+  { name:'Viking Tilki', emoji:'🦊', bg:'#2d1b00', accent:'#f97316' },
+  { name:'Siber Köpek',  emoji:'🐶', bg:'#0a1628', accent:'#3b82f6' },
+  { name:'Lazer Baykuş', emoji:'🦉', bg:'#1a2e0f', accent:'#84cc16' },
+  { name:'Disko Kaplan', emoji:'🐯', bg:'#2e0a0a', accent:'#ef4444' },
+  { name:'Turbo Penguen',emoji:'🐧', bg:'#0f0f1a', accent:'#a78bfa' },
+];
+
+function _avatarPickerInit() {
+  const grid = document.getElementById('avatarPickerGrid');
+  if (!grid || grid.children.length > 0) return;
+  const saved = localStorage.getItem('insertmill_avatar');
+
+  _AVATARLAR.forEach(function(av) {
+    const el = document.createElement('div');
+    const isSelected = saved === av.name;
+    el.style.cssText = `cursor:pointer;border-radius:10px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;background:${av.bg};border:1.5px solid ${isSelected ? av.accent : 'transparent'};transition:all 0.15s`;
+    el.title = av.name;
+    el.innerHTML = `<span style="font-size:24px;line-height:1">${av.emoji}</span><span style="font-size:9px;color:rgba(255,255,255,0.6);text-align:center;line-height:1.2">${av.name.split(' ')[0]}</span>`;
+    el.onclick = function() {
+      grid.querySelectorAll('div').forEach(function(d){ d.style.border='1.5px solid transparent'; });
+      el.style.border = `1.5px solid ${av.accent}`;
+      localStorage.setItem('insertmill_avatar', av.name);
+      _avatarUygula(av);
+    };
+    el.onmouseover = function(){ el.style.transform='scale(1.08)'; };
+    el.onmouseout  = function(){ el.style.transform='scale(1)'; };
+    grid.appendChild(el);
+    if (isSelected) _avatarUygula(av);
+  });
+}
+
+function _avatarUygula(av) {
+  const navAvatar = document.getElementById('userAvatar');
+  const dropAvatar = document.getElementById('userAvatarDrop');
+  if (navAvatar) { navAvatar.src=''; navAvatar.style.background=av.bg; navAvatar.style.fontSize='18px'; navAvatar.style.display='flex'; navAvatar.style.alignItems='center'; navAvatar.style.justifyContent='center'; navAvatar.textContent=av.emoji; }
+  if (dropAvatar) { dropAvatar.style.background=av.bg; dropAvatar.textContent=av.emoji; }
+}
+
+// Dropdown açılınca picker'ı başlat
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('#userMenu button');
+  if (btn) setTimeout(_avatarPickerInit, 50);
+});
 let filterText = '';
 let filterMarka = '';
 
