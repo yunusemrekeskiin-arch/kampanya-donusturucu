@@ -2980,7 +2980,7 @@ async function _supabaseAyarYukle() {
     const { data } = await _supa.from('user_settings')
       .select('company_name,company_slogan,company_website,company_phone,company_address,campaign_text,campaign_subtext,brand_color,logo_base64,claude_model,usd_try_kur,claude_api_key,openai_api_key')
       .eq('user_id', session.user.id)
-      .single();
+      .maybeSingle();
     if (!data) return null;
     // Anahtarları frontend bellekte tutma — sadece var/yok bilgisi yeterli
     const masked = { ...data,
@@ -5216,26 +5216,34 @@ function showOnboarding() {
 
 async function showApp(user) {
   document.getElementById('onboarding').classList.add('hidden');
-  await updateUI(user);
+  try { await updateUI(user); } catch(e) { console.warn('updateUI hatası:', e); }
 
   // API key kontrolü — kısa gecikme ile DOM stabilize olsun
   setTimeout(async function() {
-    const settings = await _supabaseAyarYukle();
-    const claudeVar = settings?.claude_api_key && settings.claude_api_key !== '';
-    const openaiVar = settings?.openai_api_key && settings.openai_api_key !== '';
-    if (!claudeVar || !openaiVar) {
-      _apiKeyKurulumGoster(settings);
+    try {
+      const settings = await _supabaseAyarYukle();
+      const claudeVar = !!(settings?.claude_api_key);
+      const openaiVar = !!(settings?.openai_api_key);
+      if (!claudeVar || !openaiVar) {
+        _apiKeyKurulumGoster(settings);
+      }
+    } catch(e) {
+      // Hata olsa bile aktivasyon ekranını göster
+      _apiKeyKurulumGoster(null);
     }
-  }, 300);
+  }, 400);
 }
 
 async function updateUI(user) {
   document.getElementById('loginBtn').style.display = 'none';
   document.getElementById('userMenu').style.display = 'flex';
   const name = user.user_metadata?.full_name || user.email;
-  document.getElementById('userName').textContent = name;
-  if(document.getElementById('userNameDrop')) document.getElementById('userNameDrop').textContent = name;
-  document.getElementById('userEmail').textContent = user.email;
+  const elUserName = document.getElementById('userName');
+  const elUserNameDrop = document.getElementById('userNameDrop');
+  const elUserEmail = document.getElementById('userEmail');
+  if (elUserName) elUserName.textContent = name;
+  if (elUserNameDrop) elUserNameDrop.textContent = name;
+  if (elUserEmail) elUserEmail.textContent = user.email;
 
   // Supabase'den kayıtlı ayarları yükle
   const settings = await _supabaseAyarYukle();
