@@ -1384,62 +1384,150 @@ input[type="checkbox"] {
 </div><!-- /settingsPage -->
 
 <!-- ── API KEY KURULUM MODALI ── -->
-<div id="apiKeySetupModal" style="display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center">
-  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:2rem;width:480px;max-width:95vw;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
-    <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:32px;margin-bottom:8px">🔑</div>
-      <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px">API Anahtarlarını Bağla</div>
-      <div style="font-size:13px;color:var(--text3);line-height:1.5">insertmill'i kullanmak için Claude ve OpenAI anahtarlarını bir kez gir.<br>Bundan sonra otomatik hatırlanır.</div>
+<!-- ── AKTİVASYON EKRANI ── -->
+<div id="apiKeySetupModal" style="display:none;position:fixed;inset:0;z-index:9990;background:#0F1117;overflow-y:auto">
+  <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem">
+
+    <!-- Logo -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:2.5rem">
+      <div style="width:44px;height:44px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 8px 24px rgba(99,102,241,0.4)">🏷️</div>
+      <span style="font-size:20px;font-weight:700;color:#fff">Insertmill</span>
     </div>
 
-    <!-- Claude Key -->
-    <div style="margin-bottom:1rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="width:24px;height:24px;background:#CC785C;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">C</div>
-          <span style="font-size:13px;font-weight:600;color:var(--text)">Claude API Key</span>
+    <!-- Kart -->
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:2.5rem;width:100%;max-width:520px;box-shadow:0 24px 64px rgba(0,0,0,0.4)">
+
+      <!-- Başlık -->
+      <div style="text-align:center;margin-bottom:2rem">
+        <div style="font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:10px">
+          Neredeyse hazırsın! 🎉
         </div>
-        <a href="https://console.anthropic.com" target="_blank" style="font-size:11px;color:#CC785C;text-decoration:none">Al ↗</a>
-      </div>
-      <div style="display:flex;gap:6px">
-        <input type="password" id="setup-claudeKey" placeholder="sk-ant-api03-..." 
-          style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:monospace;outline:none"
-          oninput="document.getElementById('setup-claude-status').textContent=''">
-        <button onclick="(function(){var i=document.getElementById('setup-claudeKey');i.type=i.type==='password'?'text':'password'})()" style="padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer">👁</button>
-      </div>
-      <div id="setup-claude-status" style="font-size:11px;margin-top:5px;min-height:16px"></div>
-    </div>
-
-    <!-- OpenAI Key -->
-    <div style="margin-bottom:1.5rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="width:24px;height:24px;background:#10a37f;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">O</div>
-          <span style="font-size:13px;font-weight:600;color:var(--text)">OpenAI API Key</span>
+        <div style="font-size:14px;color:#64748b;line-height:1.7">
+          Insertmill, rozet üretmek için iki yapay zeka servisi kullanıyor.<br>
+          Her ikisi de <strong style="color:#94a3b8">ücretsiz hesap</strong> açmana izin veriyor.<br>
+          Toplamda <strong style="color:#94a3b8">~3 dakika</strong> sürer, bir kez yaparsın.
         </div>
-        <a href="https://platform.openai.com/api-keys" target="_blank" style="font-size:11px;color:#10a37f;text-decoration:none">Al ↗</a>
       </div>
-      <div style="display:flex;gap:6px">
-        <input type="password" id="setup-openaiKey" placeholder="sk-..." 
-          style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:monospace;outline:none"
-          oninput="document.getElementById('setup-openai-status').textContent=''">
-        <button onclick="(function(){var i=document.getElementById('setup-openaiKey');i.type=i.type==='password'?'text':'password'})()" style="padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer">👁</button>
+
+      <!-- Adım göstergesi -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:2rem">
+        <div id="setup-step1-ind" style="flex:1;height:3px;border-radius:2px;background:linear-gradient(90deg,#6366f1,#8b5cf6);transition:all 0.3s"></div>
+        <div id="setup-step2-ind" style="flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.08);transition:all 0.3s"></div>
       </div>
-      <div id="setup-openai-status" style="font-size:11px;margin-top:5px;min-height:16px"></div>
-    </div>
 
-    <div style="display:flex;gap:8px">
-      <button onclick="_apiKeyKurulumKaydet()" id="setup-save-btn"
-        style="flex:1;padding:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif">
-        Kaydet ve Başla →
-      </button>
-      <button onclick="document.getElementById('apiKeySetupModal').style.display='none'"
-        style="padding:12px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:var(--text3);font-size:13px;cursor:pointer;font-family:'Geist',sans-serif">
-        Şimdi değil
-      </button>
-    </div>
+      <!-- ADIM 1: Claude -->
+      <div id="setup-step1">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,#CC785C,#e8956b);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0">C</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:#fff">Claude — Görsel Analiz</div>
+              <div style="font-size:12px;color:#64748b">Rozetini analiz edip prompt oluşturuyor</div>
+            </div>
+          </div>
+          <div style="font-size:11px;font-weight:600;color:#4ade80;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:20px;border:1px solid rgba(34,197,94,0.2)">Ücretsiz $5</div>
+        </div>
 
-    <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text3)">🔒 Anahtarlar şifreli saklanır — sadece sen görebilirsin</div>
+        <!-- Nasıl alınır -->
+        <div style="background:rgba(204,120,92,0.06);border:1px solid rgba(204,120,92,0.15);border-radius:12px;padding:14px;margin-bottom:14px">
+          <div style="font-size:11px;font-weight:700;color:#CC785C;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px">Nasıl alınır?</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <div style="width:20px;height:20px;background:rgba(204,120,92,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#CC785C;flex-shrink:0;margin-top:1px">1</div>
+              <div style="font-size:13px;color:#cbd5e1"><a href="https://console.anthropic.com" target="_blank" style="color:#e8956b;font-weight:600;text-decoration:none">console.anthropic.com</a> adresine git ve ücretsiz hesap aç</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <div style="width:20px;height:20px;background:rgba(204,120,92,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#CC785C;flex-shrink:0;margin-top:1px">2</div>
+              <div style="font-size:13px;color:#cbd5e1">Sol menüden <strong style="color:#fff">API Keys</strong> → <strong style="color:#fff">Create Key</strong> butonuna bas</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <div style="width:20px;height:20px;background:rgba(204,120,92,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#CC785C;flex-shrink:0;margin-top:1px">3</div>
+              <div style="font-size:13px;color:#cbd5e1">Oluşan kodu kopyala, aşağıya yapıştır</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input type="password" id="setup-claudeKey" placeholder="sk-ant-api03-... ile başlayan kodu buraya yapıştır"
+            style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:13px;color:#fff;font-family:monospace;outline:none;transition:border-color 0.2s"
+            onfocus="this.style.borderColor='rgba(204,120,92,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"
+            oninput="document.getElementById('setup-claude-status').textContent='';document.getElementById('setup-claude-status').style.color=''">
+          <button onclick="(function(){var i=document.getElementById('setup-claudeKey');i.type=i.type==='password'?'text':'password'})()"
+            style="padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#64748b;cursor:pointer;font-size:14px">👁</button>
+          <button onclick="_setupTest('claude')"
+            style="padding:10px 18px;background:rgba(204,120,92,0.15);border:1px solid rgba(204,120,92,0.3);border-radius:10px;color:#CC785C;font-size:12px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif;white-space:nowrap;transition:all 0.2s"
+            onmouseover="this.style.background='rgba(204,120,92,0.25)'" onmouseout="this.style.background='rgba(204,120,92,0.15)'">Test Et</button>
+        </div>
+        <div id="setup-claude-status" style="font-size:12px;min-height:18px;padding-left:2px"></div>
+
+        <button id="setup-step1-next" onclick="_setupNext()"
+          style="width:100%;margin-top:1.25rem;padding:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#475569;font-size:14px;font-weight:700;cursor:not-allowed;font-family:'Geist',sans-serif;transition:all 0.3s"
+          disabled>
+          İleri → OpenAI kurulumu
+        </button>
+        <div style="text-align:center;margin-top:10px">
+          <button onclick="_setupAtla()" style="background:none;border:none;color:#334155;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif;text-decoration:underline">Şimdi değil, sonra ayarlayayım</button>
+        </div>
+      </div>
+
+      <!-- ADIM 2: OpenAI -->
+      <div id="setup-step2" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,#10a37f,#1cc99e);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0">O</div>
+            <div>
+              <div style="font-size:15px;font-weight:700;color:#fff">OpenAI — Rozet Üretimi</div>
+              <div style="font-size:12px;color:#64748b">gpt-image-1 ile profesyonel rozet üretiyor</div>
+            </div>
+          </div>
+          <div style="font-size:11px;font-weight:600;color:#fbbf24;background:rgba(251,191,36,0.1);padding:3px 10px;border-radius:20px;border:1px solid rgba(251,191,36,0.2)">~$0.05/rozet</div>
+        </div>
+
+        <div style="background:rgba(16,163,127,0.06);border:1px solid rgba(16,163,127,0.15);border-radius:12px;padding:14px;margin-bottom:14px">
+          <div style="font-size:11px;font-weight:700;color:#10a37f;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px">Nasıl alınır?</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <div style="width:20px;height:20px;background:rgba(16,163,127,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#10a37f;flex-shrink:0;margin-top:1px">1</div>
+              <div style="font-size:13px;color:#cbd5e1"><a href="https://platform.openai.com/api-keys" target="_blank" style="color:#1cc99e;font-weight:600;text-decoration:none">platform.openai.com/api-keys</a> adresine git ve ücretsiz hesap aç</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <div style="width:20px;height:20px;background:rgba(16,163,127,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#10a37f;flex-shrink:0;margin-top:1px">2</div>
+              <div style="font-size:13px;color:#cbd5e1"><strong style="color:#fff">Create new secret key</strong> butonuna tıkla</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <div style="width:20px;height:20px;background:rgba(16,163,127,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#10a37f;flex-shrink:0;margin-top:1px">3</div>
+              <div style="font-size:13px;color:#cbd5e1">Oluşan kodu kopyala, aşağıya yapıştır</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input type="password" id="setup-openaiKey" placeholder="sk-... ile başlayan kodu buraya yapıştır"
+            style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;font-size:13px;color:#fff;font-family:monospace;outline:none;transition:border-color 0.2s"
+            onfocus="this.style.borderColor='rgba(16,163,127,0.6)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"
+            oninput="document.getElementById('setup-openai-status').textContent='';document.getElementById('setup-openai-status').style.color=''">
+          <button onclick="(function(){var i=document.getElementById('setup-openaiKey');i.type=i.type==='password'?'text':'password'})()"
+            style="padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#64748b;cursor:pointer;font-size:14px">👁</button>
+          <button onclick="_setupTest('openai')"
+            style="padding:10px 18px;background:rgba(16,163,127,0.15);border:1px solid rgba(16,163,127,0.3);border-radius:10px;color:#10a37f;font-size:12px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif;white-space:nowrap;transition:all 0.2s"
+            onmouseover="this.style.background='rgba(16,163,127,0.25)'" onmouseout="this.style.background='rgba(16,163,127,0.15)'">Test Et</button>
+        </div>
+        <div id="setup-openai-status" style="font-size:12px;min-height:18px;padding-left:2px"></div>
+
+        <button id="setup-step2-next" onclick="_apiKeyKurulumKaydet()"
+          style="width:100%;margin-top:1.25rem;padding:14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#475569;font-size:14px;font-weight:700;cursor:not-allowed;font-family:'Geist',sans-serif;transition:all 0.3s"
+          disabled>
+          Insertmill'i Başlat 🚀
+        </button>
+        <div style="text-align:center;margin-top:10px">
+          <button onclick="_setupAtla()" style="background:none;border:none;color:#334155;font-size:12px;cursor:pointer;font-family:'Geist',sans-serif;text-decoration:underline">Şimdi değil, sonra ayarlayayım</button>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:1.5rem;font-size:11px;color:#334155">
+        🔒 Bilgilerin şifreli saklanır ve sadece sana aittir
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1457,17 +1545,7 @@ input[type="checkbox"] {
   </div>
 
   <div style="display:flex;align-items:center;gap:8px">
-    <!-- Dil seçici -->
-    <div class="lang-switcher" style="display:flex;gap:2px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:2px">
-      
-    </div>
 
-    <!-- Tema seçici -->
-    <div style="display:flex;gap:2px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:2px">
-      <button onclick="setTema('gece')" title="Gece" style="padding:4px 8px;border:none;border-radius:6px;cursor:pointer;background:rgba(99,102,241,0.3);font-size:12px">🌙</button>
-      <button onclick="setTema('gunduz')" title="Gündüz" style="padding:4px 8px;border:none;border-radius:6px;cursor:pointer;background:transparent;font-size:12px">☀️</button>
-      <button onclick="setTema('goz')" title="Göz dostu" style="padding:4px 8px;border:none;border-radius:6px;cursor:pointer;background:transparent;font-size:12px">🟡</button>
-    </div>
 
     <div class="hdr-status"><div class="hdr-dot"></div>Aktif</div>
 
@@ -5319,35 +5397,88 @@ window.addEventListener('DOMContentLoaded', () => {
 function _apiKeyKurulumGoster(settings) {
   const modal = document.getElementById('apiKeySetupModal');
   if (!modal) return;
-  modal.style.display = 'flex';
-  if (settings?.claude_api_key) {
-    document.getElementById('setup-claude-status').textContent = '✅ Zaten kayıtlı';
-    document.getElementById('setup-claude-status').style.color = '#4ade80';
+  modal.style.display = 'block';
+  // Her iki key de zaten varsa gösterme
+  if (settings?.claude_api_key && settings?.openai_api_key) {
+    modal.style.display = 'none';
+    return;
   }
-  if (settings?.openai_api_key) {
-    document.getElementById('setup-openai-status').textContent = '✅ Zaten kayıtlı';
-    document.getElementById('setup-openai-status').style.color = '#4ade80';
+  // Claude varsa adım 2'den başla
+  if (settings?.claude_api_key) {
+    _setupNext();
   }
 }
 
+function _setupTest(tip) {
+  const key = tip === 'claude'
+    ? (document.getElementById('setup-claudeKey')?.value || '').trim()
+    : (document.getElementById('setup-openaiKey')?.value || '').trim();
+  const statusEl = document.getElementById('setup-' + tip + '-status');
+  const nextBtn = document.getElementById(tip === 'claude' ? 'setup-step1-next' : 'setup-step2-next');
+
+  if (!key || key.length < 10) {
+    if (statusEl) { statusEl.textContent = 'Önce kodu yapıştırman gerekiyor'; statusEl.style.color = '#f87171'; }
+    return;
+  }
+  if (tip === 'claude' && !key.startsWith('sk-ant')) {
+    if (statusEl) { statusEl.textContent = 'Bu Claude kodu gibi görünmüyor — sk-ant-api03-... ile başlamalı'; statusEl.style.color = '#f87171'; }
+    return;
+  }
+  if (tip === 'openai' && !key.startsWith('sk-')) {
+    if (statusEl) { statusEl.textContent = 'Bu OpenAI kodu gibi görünmüyor — sk- ile başlamalı'; statusEl.style.color = '#f87171'; }
+    return;
+  }
+
+  if (statusEl) { statusEl.textContent = '⏳ Kontrol ediliyor...'; statusEl.style.color = '#fbbf24'; }
+  if (nextBtn) { nextBtn.disabled = true; }
+
+  var testFn = tip === 'claude'
+    ? fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 10, messages: [{ role: 'user', content: 'Hi' }] })
+      })
+    : fetch('https://api.openai.com/v1/models', { headers: { 'Authorization': 'Bearer ' + key } });
+
+  testFn.then(function(res) { return res.json().then(function(data) { return { ok: res.ok, data: data }; }); })
+  .then(function(result) {
+    if (result.ok) {
+      if (statusEl) { statusEl.textContent = '✅ Harika, çalışıyor! Devam edebilirsin.'; statusEl.style.color = '#4ade80'; }
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.style.background = 'linear-gradient(135deg,#6366f1,#8b5cf6)';
+        nextBtn.style.borderColor = 'transparent';
+        nextBtn.style.color = '#fff';
+        nextBtn.style.cursor = 'pointer';
+      }
+    } else {
+      var msg = result.data?.error?.message || ('HTTP ' + (result.data.status || ''));
+      if (statusEl) { statusEl.textContent = 'Geçersiz kod: ' + msg; statusEl.style.color = '#f87171'; }
+      if (nextBtn) { nextBtn.disabled = true; }
+    }
+  })
+  .catch(function(e) {
+    if (statusEl) { statusEl.textContent = 'Bağlantı hatası, tekrar dene'; statusEl.style.color = '#f87171'; }
+  });
+}
+
+function _setupNext() {
+  document.getElementById('setup-step1').style.display = 'none';
+  document.getElementById('setup-step2').style.display = 'block';
+  document.getElementById('setup-step1-ind').style.background = 'linear-gradient(90deg,#6366f1,#8b5cf6)';
+  document.getElementById('setup-step2-ind').style.background = 'linear-gradient(90deg,#6366f1,#8b5cf6)';
+}
+
+function _setupAtla() {
+  document.getElementById('apiKeySetupModal').style.display = 'none';
+}
+
 async function _apiKeyKurulumKaydet() {
-  const btn = document.getElementById('setup-save-btn');
+  const btn = document.getElementById('setup-step2-next');
+  if (btn) { btn.textContent = '⏳ Kaydediliyor...'; btn.disabled = true; }
+
   const claudeKey = document.getElementById('setup-claudeKey')?.value.trim();
   const openaiKey = document.getElementById('setup-openaiKey')?.value.trim();
-
-  if (claudeKey && !claudeKey.startsWith('sk-ant')) {
-    document.getElementById('setup-claude-status').textContent = '❌ sk-ant-api03-... ile başlamalı';
-    document.getElementById('setup-claude-status').style.color = '#f87171';
-    return;
-  }
-  if (openaiKey && !openaiKey.startsWith('sk-')) {
-    document.getElementById('setup-openai-status').textContent = '❌ sk- ile başlamalı';
-    document.getElementById('setup-openai-status').style.color = '#f87171';
-    return;
-  }
-
-  btn.textContent = '⏳ Kaydediliyor...';
-  btn.disabled = true;
 
   const data = {};
   if (claudeKey && claudeKey !== '__EXISTS__') data.claude_api_key = claudeKey;
@@ -5356,21 +5487,15 @@ async function _apiKeyKurulumKaydet() {
   const ok = await _supabaseAyarKaydet(data);
 
   if (ok) {
-    if (claudeKey) { document.getElementById('setup-claude-status').textContent = '✅ Kaydedildi!'; document.getElementById('setup-claude-status').style.color = '#4ade80'; }
-    if (openaiKey) { document.getElementById('setup-openai-status').textContent = '✅ Kaydedildi!'; document.getElementById('setup-openai-status').style.color = '#4ade80'; }
-    btn.textContent = '✅ Hazır! Yönlendiriliyor...';
-    btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+    if (btn) { btn.textContent = '✅ Kaydedildi!'; }
     setTimeout(function() {
       document.getElementById('apiKeySetupModal').style.display = 'none';
       _apiKeyDurumGuncelle();
-    }, 1200);
+    }, 800);
   } else {
-    btn.textContent = '❌ Hata — tekrar dene';
-    btn.style.background = 'linear-gradient(135deg,#dc2626,#ef4444)';
-    setTimeout(function() { btn.textContent = 'Kaydet ve Başla →'; btn.style.background = ''; btn.disabled = false; }, 2000);
+    if (btn) { btn.textContent = 'Hata oluştu, tekrar dene'; btn.disabled = false; btn.style.background = 'rgba(239,68,68,0.2)'; }
   }
 }
-
 
 
 
