@@ -991,6 +991,176 @@ input[type="checkbox"] {
 .rozet-toast{position:fixed;bottom:2rem;right:2rem;padding:10px 18px;border-radius:10px;background:#1e2538;border:1px solid rgba(99,102,241,0.3);color:#a5b4fc;font-size:13px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.4);z-index:9999;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none}
 .rozet-toast.goster{opacity:1;transform:translateY(0)}
 @media(max-width:600px){.rozet-secici{grid-template-columns:1fr 1fr}.rozet-metin-grid{grid-template-columns:1fr 1fr}}
+
+/* ═══════════════════════════════════════════════════════
+   KAPSAMLI MOBİL RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+
+/* Genel touch scrolling */
+* { -webkit-tap-highlight-color: transparent; }
+html, body { overflow-x: hidden; }
+
+/* ── 640px altı: Tablo → Kart görünümü ── */
+@media(max-width:640px) {
+
+  /* Header */
+  .hdr { padding:0 0.875rem; height:56px; }
+  .hdr-icon { width:30px; height:30px; font-size:15px; }
+  .hdr-title { font-size:13px; }
+  #userName { display:none; }
+
+  /* User dropdown → tam genişlik bottom sheet */
+  #userDropdown {
+    position:fixed !important;
+    top:auto !important;
+    bottom:0 !important;
+    left:0 !important;
+    right:0 !important;
+    border-radius:20px 20px 0 0 !important;
+    min-width:unset !important;
+    width:100% !important;
+    max-height:85vh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    box-shadow:0 -8px 40px rgba(0,0,0,0.5) !important;
+    padding:8px 8px 32px !important;
+  }
+  #userDropdown::before {
+    content:'';
+    display:block;
+    width:36px; height:4px;
+    background:rgba(255,255,255,0.15);
+    border-radius:2px;
+    margin:0 auto 12px;
+  }
+
+  /* Wrap */
+  .wrap { padding:0.75rem; }
+
+  /* Tabs */
+  .tabs { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; white-space:nowrap; display:flex; }
+  .tabs::-webkit-scrollbar { display:none; }
+  .tab { flex-shrink:0; padding:8px 14px; font-size:12px; }
+
+  /* Kartlar */
+  .card { border-radius:12px; }
+  .card-body { padding:1rem; }
+  .card-hdr { padding:0.875rem 1rem; flex-wrap:wrap; gap:8px; }
+
+  /* TABLO → KART GÖRÜNÜMÜ */
+  .tbl-wrap { overflow-x:unset !important; }
+  .tbl-wrap table,
+  .tbl-wrap thead,
+  .tbl-wrap tbody,
+  .tbl-wrap tr,
+  .tbl-wrap td,
+  .tbl-wrap th { display:block !important; width:100% !important; }
+  .tbl-wrap thead { display:none !important; }
+  .tbl-wrap tbody tr {
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    margin-bottom:8px;
+    padding:10px 12px;
+    position:relative;
+  }
+  .tbl-wrap tbody tr:hover td { background:transparent; }
+  .tbl-wrap td {
+    padding:3px 0 !important;
+    border-bottom:none !important;
+    font-size:13px;
+    display:flex !important;
+    align-items:center;
+    gap:6px;
+  }
+  .tbl-wrap td::before {
+    content:attr(data-label);
+    font-size:10px;
+    font-weight:700;
+    color:var(--text3);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    min-width:56px;
+    flex-shrink:0;
+  }
+  /* Checkbox ve drag handle gizle */
+  .tbl-wrap td:first-child,
+  .tbl-wrap td:nth-child(2) { display:none !important; }
+  /* Fiyat sağa değil sola */
+  .price { text-align:left !important; }
+  /* Sil butonu sağ üst köşe */
+  .tbl-wrap td:last-child {
+    position:absolute;
+    top:8px; right:8px;
+    width:auto !important;
+    padding:0 !important;
+    border:none;
+  }
+  .tbl-wrap td:last-child::before { display:none; }
+
+  /* inp-row (yeni satır giriş) — gizle mobilde */
+  .inp-row { display:none !important; }
+
+  /* Action bar */
+  .action-bar { flex-wrap:wrap; gap:6px; }
+  .action-bar .btn { flex:1; min-width:120px; font-size:12px; padding:8px 10px; }
+
+  /* Export bar */
+  .export-bar { flex-direction:column; }
+  .export-bar .btn { width:100%; justify-content:center; }
+
+  /* Badge Studio */
+  #aiAsistanPanel .card-hdr { flex-direction:column; align-items:flex-start; }
+  #aiAsistanPanel .card-hdr button { width:100%; justify-content:center; }
+  #badgeDropZone { flex-direction:column; text-align:center; }
+  #badgeDropZone button { width:100%; margin-top:8px; }
+
+  /* Üretilen rozetler grid */
+  #rozetlerGrid { grid-template-columns:1fr 1fr !important; }
+
+  /* Settings */
+  #settingsPage .s-nav-item { min-width:80px !important; font-size:11px !important; padding:6px 8px !important; }
+  .s-api-box { padding:1rem !important; }
+  .s-grid2 { grid-template-columns:1fr !important; }
+
+  /* Aktivasyon ekranı */
+  #apiKeySetupModal > div { padding:1.25rem 1rem 2rem !important; }
+  #apiKeySetupModal .kart { padding:1.5rem 1.25rem !important; }
+
+  /* Boyut seçici */
+  [name="rozetBoyut"] + * { font-size:11px; }
+
+  /* Prompt textarea */
+  #badgePrompt { font-size:13px !important; }
+
+  /* Butonlar büyük touch target */
+  .btn { min-height:44px; }
+
+  /* Yardım ve şirket butonları */
+  .help-btn { width:44px; height:44px; bottom:12px; right:12px; }
+  .company-btn { width:44px; height:44px; bottom:64px; right:12px; }
+
+  /* Maliyet bar */
+  #maliyetUyariBar { font-size:11px; padding:6px 1rem; }
+}
+
+/* ── 480px altı: Daha sıkışık ── */
+@media(max-width:480px) {
+  .hdr-icon { display:none; }
+  .tabs { gap:0; }
+  .tab { padding:8px 10px; font-size:11px; }
+  #rozetlerGrid { grid-template-columns:1fr !important; }
+  .card-hdr h3 { font-size:12px; }
+  #apiKeySetupModal > div > div { padding:1.25rem 1rem !important; }
+}
+
+/* ── Touch scroll her yerde ── */
+@media(max-width:768px) {
+  body { -webkit-overflow-scrolling:touch; }
+  .tbl-wrap, .afis-panel-controls, #settingsPage .s-content,
+  #userDropdown, #apiKeySetupModal { -webkit-overflow-scrolling:touch; }
+}
+
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
 </head>
@@ -2810,14 +2980,14 @@ function renderTable() {
     tr.innerHTML = `
       <td style="text-align:center;width:36px"><div class="cb-wrap"><input type="checkbox" ${isChecked?'checked':''} onchange="toggleRow(${idx},this.checked)"></div></td>
       <td style="text-align:center;width:30px"><span class="drag-handle" title="Sürükle">⋮⋮</span></td>
-      <td style="text-align:center">${imgCell}</td>
-      <td><div class="marka" contenteditable="true" onblur="updateField(${idx},'marka',this.innerText)">${esc(r.marka)}</div></td>
-      <td contenteditable="true" style="color:#CBD5E1" onblur="updateField(${idx},'urun',this.innerText)">${esc(r.urun)}</td>
-      <td><input type="text" value="${esc(r.fiyat)}" placeholder="0,00"
-           style="border:none;background:transparent;width:100%;text-align:right;font-weight:700;color:#818cf8;font-size:13px;outline:none;font-family:inherit;"
+      <td data-label="Görsel" style="text-align:center">${imgCell}</td>
+      <td data-label="Marka"><div class="marka" contenteditable="true" onblur="updateField(${idx},'marka',this.innerText)">${esc(r.marka)}</div></td>
+      <td data-label="Ürün" contenteditable="true" style="color:#CBD5E1" onblur="updateField(${idx},'urun',this.innerText)">${esc(r.urun)}</td>
+      <td data-label="Fiyat"><input type="text" value="${esc(r.fiyat)}" placeholder="0,00"
+           style="border:none;background:transparent;width:100%;font-weight:700;color:#818cf8;font-size:13px;outline:none;font-family:inherit;"
            oninput="updateField(${idx},'fiyat',this.value)"></td>
-      <td class="tarih-c">${esc(r.tarih)}</td>
-      <td class="arasinda-c">${esc(r.arasinda)}</td>
+      <td data-label="Tarih" class="tarih-c">${esc(r.tarih)}</td>
+      <td data-label="Geçerli" class="arasinda-c">${esc(r.arasinda)}</td>
       <td style="text-align:center;white-space:nowrap"><button class="btn-del" title="Afis" onclick="openAfis(${idx})" style="margin-right:3px">&#x1F5BC;&#xFE0F;</button><button class="btn-del" onclick="deleteRow(${idx})">&#x2715;</button></td>
     `;
     tbody.appendChild(tr);
