@@ -1393,6 +1393,66 @@ input[type="checkbox"] {
 </div><!-- /s-body -->
 </div><!-- /settingsPage -->
 
+<!-- ── API KEY KURULUM MODALI ── -->
+<div id="apiKeySetupModal" style="display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:2rem;width:480px;max-width:95vw;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:32px;margin-bottom:8px">🔑</div>
+      <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px">API Anahtarlarını Bağla</div>
+      <div style="font-size:13px;color:var(--text3);line-height:1.5">insertmill'i kullanmak için Claude ve OpenAI anahtarlarını bir kez gir.<br>Bundan sonra otomatik hatırlanır.</div>
+    </div>
+
+    <!-- Claude Key -->
+    <div style="margin-bottom:1rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:24px;height:24px;background:#CC785C;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">C</div>
+          <span style="font-size:13px;font-weight:600;color:var(--text)">Claude API Key</span>
+        </div>
+        <a href="https://console.anthropic.com" target="_blank" style="font-size:11px;color:#CC785C;text-decoration:none">Al ↗</a>
+      </div>
+      <div style="display:flex;gap:6px">
+        <input type="password" id="setup-claudeKey" placeholder="sk-ant-api03-..." 
+          style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:monospace;outline:none"
+          oninput="document.getElementById('setup-claude-status').textContent=''">
+        <button onclick="(function(){var i=document.getElementById('setup-claudeKey');i.type=i.type==='password'?'text':'password'})()" style="padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer">👁</button>
+      </div>
+      <div id="setup-claude-status" style="font-size:11px;margin-top:5px;min-height:16px"></div>
+    </div>
+
+    <!-- OpenAI Key -->
+    <div style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:24px;height:24px;background:#10a37f;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">O</div>
+          <span style="font-size:13px;font-weight:600;color:var(--text)">OpenAI API Key</span>
+        </div>
+        <a href="https://platform.openai.com/api-keys" target="_blank" style="font-size:11px;color:#10a37f;text-decoration:none">Al ↗</a>
+      </div>
+      <div style="display:flex;gap:6px">
+        <input type="password" id="setup-openaiKey" placeholder="sk-..." 
+          style="flex:1;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:monospace;outline:none"
+          oninput="document.getElementById('setup-openai-status').textContent=''">
+        <button onclick="(function(){var i=document.getElementById('setup-openaiKey');i.type=i.type==='password'?'text':'password'})()" style="padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text3);cursor:pointer">👁</button>
+      </div>
+      <div id="setup-openai-status" style="font-size:11px;margin-top:5px;min-height:16px"></div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button onclick="_apiKeyKurulumKaydet()" id="setup-save-btn"
+        style="flex:1;padding:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif">
+        Kaydet ve Başla →
+      </button>
+      <button onclick="document.getElementById('apiKeySetupModal').style.display='none'"
+        style="padding:12px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:var(--text3);font-size:13px;cursor:pointer;font-family:'Geist',sans-serif">
+        Şimdi değil
+      </button>
+    </div>
+
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text3)">🔒 Anahtarlar şifreli saklanır — sadece sen görebilirsin</div>
+  </div>
+</div>
+
 <div class="hdr">
   <div class="hdr-brand" style="gap:0">
     <div style="display:flex;align-items:center;gap:4px">
@@ -5128,9 +5188,16 @@ function showOnboarding() {
   document.getElementById('userMenu').style.display = 'none';
 }
 
-function showApp(user) {
+async function showApp(user) {
   document.getElementById('onboarding').classList.add('hidden');
-  updateUI(user);
+  await updateUI(user);
+
+  // API key'ler Supabase'de var mı kontrol et
+  const settings = await _supabaseAyarYukle();
+  if (!settings?.claude_api_key || !settings?.openai_api_key) {
+    // Key eksik — API key kurulum modalını göster
+    _apiKeyKurulumGoster(settings);
+  }
 }
 
 async function updateUI(user) {
@@ -5299,6 +5366,61 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 // Avatar Picker
+function _apiKeyKurulumGoster(settings) {
+  const modal = document.getElementById('apiKeySetupModal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  if (settings?.claude_api_key) {
+    document.getElementById('setup-claude-status').textContent = '✅ Zaten kayıtlı';
+    document.getElementById('setup-claude-status').style.color = '#4ade80';
+  }
+  if (settings?.openai_api_key) {
+    document.getElementById('setup-openai-status').textContent = '✅ Zaten kayıtlı';
+    document.getElementById('setup-openai-status').style.color = '#4ade80';
+  }
+}
+
+async function _apiKeyKurulumKaydet() {
+  const btn = document.getElementById('setup-save-btn');
+  const claudeKey = document.getElementById('setup-claudeKey')?.value.trim();
+  const openaiKey = document.getElementById('setup-openaiKey')?.value.trim();
+
+  if (claudeKey && !claudeKey.startsWith('sk-ant')) {
+    document.getElementById('setup-claude-status').textContent = '❌ sk-ant-api03-... ile başlamalı';
+    document.getElementById('setup-claude-status').style.color = '#f87171';
+    return;
+  }
+  if (openaiKey && !openaiKey.startsWith('sk-')) {
+    document.getElementById('setup-openai-status').textContent = '❌ sk- ile başlamalı';
+    document.getElementById('setup-openai-status').style.color = '#f87171';
+    return;
+  }
+
+  btn.textContent = '⏳ Kaydediliyor...';
+  btn.disabled = true;
+
+  const data = {};
+  if (claudeKey) data.claude_api_key = claudeKey;
+  if (openaiKey) data.openai_api_key = openaiKey;
+
+  const ok = await _supabaseAyarKaydet(data);
+
+  if (ok) {
+    if (claudeKey) { document.getElementById('setup-claude-status').textContent = '✅ Kaydedildi!'; document.getElementById('setup-claude-status').style.color = '#4ade80'; }
+    if (openaiKey) { document.getElementById('setup-openai-status').textContent = '✅ Kaydedildi!'; document.getElementById('setup-openai-status').style.color = '#4ade80'; }
+    btn.textContent = '✅ Hazır! Yönlendiriliyor...';
+    btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+    setTimeout(function() {
+      document.getElementById('apiKeySetupModal').style.display = 'none';
+      _apiKeyDurumGuncelle();
+    }, 1200);
+  } else {
+    btn.textContent = '❌ Hata — tekrar dene';
+    btn.style.background = 'linear-gradient(135deg,#dc2626,#ef4444)';
+    setTimeout(function() { btn.textContent = 'Kaydet ve Başla →'; btn.style.background = ''; btn.disabled = false; }, 2000);
+  }
+}
+
 const _AVATARLAR = [
   { name:'Uzay Kedi',    emoji:'🐱', bg:'#1a1a2e', accent:'#6366f1' },
   { name:'Ninja Panda',  emoji:'🐼', bg:'#0f2027', accent:'#10b981' },
