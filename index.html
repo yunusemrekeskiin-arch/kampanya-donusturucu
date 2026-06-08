@@ -1223,19 +1223,7 @@ input[type="checkbox"] {
       <div class="s-nav-item" id="tab-maliyet" onclick="switchSettingsTab('maliyet')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>API Maliyeti</div>
     </div>
 
-    <!-- Alt: Tema + Dil -->
-    <div style="padding-top:1rem;border-top:1px solid var(--border);margin-top:1rem">
-      <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">Görünüm</div>
-      <div style="display:flex;gap:4px;margin-bottom:8px">
-        <button onclick="setTema('gece')" id="s-tema-gece" title="Gece" style="flex:1;padding:6px 4px;border:1px solid rgba(99,102,241,0.3);border-radius:7px;background:rgba(99,102,241,0.15);font-size:13px;cursor:pointer">🌙</button>
-        <button onclick="setTema('gunduz')" id="s-tema-gunduz" title="Gündüz" style="flex:1;padding:6px 4px;border:1px solid var(--border);border-radius:7px;background:transparent;font-size:13px;cursor:pointer">☀️</button>
-        <button onclick="setTema('goz')" id="s-tema-goz" title="Göz dostu" style="flex:1;padding:6px 4px;border:1px solid var(--border);border-radius:7px;background:transparent;font-size:13px;cursor:pointer">🟡</button>
-      </div>
-      <div style="display:flex;gap:4px">
-        <button onclick="setLang('tr')" id="s-lang-tr" style="flex:1;padding:5px 4px;border:1px solid rgba(99,102,241,0.3);border-radius:7px;background:rgba(99,102,241,0.15);font-size:11px;font-weight:700;color:#a5b4fc;cursor:pointer;font-family:'Geist',sans-serif">TR</button>
-        <button onclick="setLang('en')" id="s-lang-en" style="flex:1;padding:5px 4px;border:1px solid var(--border);border-radius:7px;background:transparent;font-size:11px;font-weight:700;color:var(--text3);cursor:pointer;font-family:'Geist',sans-serif">EN</button>
-      </div>
-    </div>
+
   </div>
   <div class="s-content">
     <div class="s-main">
@@ -1471,8 +1459,7 @@ input[type="checkbox"] {
   <div style="display:flex;align-items:center;gap:8px">
     <!-- Dil seçici -->
     <div class="lang-switcher" style="display:flex;gap:2px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:2px">
-      <button onclick="setLang('tr')" id="lang-tr" style="padding:4px 10px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;background:rgba(99,102,241,0.3);color:#a5b4fc">TR</button>
-      <button onclick="setLang('en')" id="lang-en" style="padding:4px 10px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;background:transparent;color:#475569">EN</button>
+      
     </div>
 
     <!-- Tema seçici -->
@@ -1493,14 +1480,7 @@ input[type="checkbox"] {
       <span style="font-size:12px">💰</span>
     </div>
 
-    <!-- Settings Butonu -->
-    <button onclick="toggleSettings()" title="Ayarlar"
-      style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#94a3b8;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.2s"
-      onmouseover="this.style.background='rgba(99,102,241,0.15)';this.style.color='#a5b4fc'"
-      onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#94a3b8'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Ayarlar
-    </button>
+
 
     <!-- Kullanıcı -->
     <button id="loginBtn" onclick="signInWithGoogle()" style="display:none;align-items:center;gap:6px;padding:6px 12px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:8px;color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">Giriş Yap</button>
@@ -1519,7 +1499,22 @@ input[type="checkbox"] {
             <div id="userEmail" style="font-size:11px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
           </div>
         </div>
-        <!-- Menü öğeleri -->
+        <!-- Tema + Dil -->
+        <div style="padding:10px 12px 8px">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">Tema</div>
+          <div style="display:flex;gap:4px;margin-bottom:10px">
+            <button onclick="setTema('gece')" id="dd-tema-gece" title="Gece" style="flex:1;padding:7px 4px;border-radius:8px;border:1px solid transparent;background:rgba(99,102,241,0.15);font-size:14px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🌙</button>
+            <button onclick="setTema('gunduz')" id="dd-tema-gunduz" title="Gündüz" style="flex:1;padding:7px 4px;border-radius:8px;border:1px solid transparent;background:rgba(255,255,255,0.04);font-size:14px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">☀️</button>
+            <button onclick="setTema('goz')" id="dd-tema-goz" title="Göz dostu" style="flex:1;padding:7px 4px;border-radius:8px;border:1px solid transparent;background:rgba(255,255,255,0.04);font-size:14px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🟡</button>
+          </div>
+          <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px">Dil</div>
+          <div style="display:flex;gap:4px">
+            <button onclick="setLang('tr')" id="dd-lang-tr" style="flex:1;padding:6px 4px;border-radius:8px;border:1px solid rgba(99,102,241,0.3);background:rgba(99,102,241,0.15);font-size:11px;font-weight:700;color:#a5b4fc;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s">TR</button>
+            <button onclick="setLang('en')" id="dd-lang-en" style="flex:1;padding:6px 4px;border-radius:8px;border:1px solid transparent;background:rgba(255,255,255,0.04);font-size:11px;font-weight:700;color:var(--text3);cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s">EN</button>
+          </div>
+        </div>
+        <div style="height:1px;background:var(--border);margin:2px 6px"></div>
+        <!-- Ayarlar -->
         <div style="padding:4px 0">
           <button onclick="toggleSettings();toggleUserDropdown()" style="width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;background:transparent;border:none;border-radius:8px;color:var(--text2);font-size:13px;cursor:pointer;font-family:'Geist',sans-serif;text-align:left;transition:background 0.15s" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -3620,8 +3615,14 @@ function setTema(tema) {
   document.documentElement.setAttribute('data-tema', tema === 'gece' ? '' : tema);
   document.body.style.background = '';
   localStorage.setItem('tema', tema);
-  document.querySelectorAll('.tema-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('btn-' + tema)?.classList.add('active');
+  // Dropdown butonlarını güncelle
+  ['gece','gunduz','goz'].forEach(function(t) {
+    var btn = document.getElementById('dd-tema-' + t);
+    if (!btn) return;
+    var isActive = t === tema;
+    btn.style.background = isActive ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.04)';
+    btn.style.border = isActive ? '1px solid rgba(99,102,241,0.5)' : '1px solid transparent';
+  });
 }
 
 // Sayfa açılınca kayıtlı temayı yükle
@@ -3911,10 +3912,19 @@ function setLang(lang) {
   document.title = lang === 'en' ? 'Insertmill' : 'Insertmill';
 
   // Dil butonlarını güncelle
-  document.getElementById('btn-tr').style.background = lang === 'tr' ? 'rgba(99,102,241,0.8)' : 'transparent';
-  document.getElementById('btn-tr').style.color = lang === 'tr' ? 'white' : '#64748B';
-  document.getElementById('btn-en').style.background = lang === 'en' ? 'rgba(99,102,241,0.8)' : 'transparent';
-  document.getElementById('btn-en').style.color = lang === 'en' ? 'white' : '#64748B';
+  // Dropdown dil butonlarını güncelle
+  var btnTr = document.getElementById('dd-lang-tr');
+  var btnEn = document.getElementById('dd-lang-en');
+  if (btnTr) {
+    btnTr.style.background = lang === 'tr' ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.04)';
+    btnTr.style.color = lang === 'tr' ? '#a5b4fc' : 'var(--text3)';
+    btnTr.style.border = lang === 'tr' ? '1px solid rgba(99,102,241,0.4)' : '1px solid transparent';
+  }
+  if (btnEn) {
+    btnEn.style.background = lang === 'en' ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.04)';
+    btnEn.style.color = lang === 'en' ? '#a5b4fc' : 'var(--text3)';
+    btnEn.style.border = lang === 'en' ? '1px solid rgba(99,102,241,0.4)' : '1px solid transparent';
+  }
 }
 
 /* ── DOLAR/TL KURU ────────────────────────────────────────── */
