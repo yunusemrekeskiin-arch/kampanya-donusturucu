@@ -235,27 +235,31 @@ body, .card, .field input, table, td, th, .inp-row input, .hdr, .tabs, .tab, .up
   .ob-features { display:none; }
   .ob-nav { padding:1rem 1.25rem; }
 
-  /* Settings mobil */
-  #settingsPage .s-body { flex-direction:column; min-height:unset; }
+  /* Settings mobil — block layout */
+  #settingsPage .s-body    { display:block !important; }
   #settingsPage .s-sidebar {
-    width:100%; border-right:none; border-bottom:1px solid var(--border);
-    padding:0.5rem 0.75rem; display:flex; flex-wrap:nowrap; gap:2px;
+    width:100% !important; min-height:unset !important;
+    border-right:none; border-bottom:1px solid var(--border);
+    padding:0.5rem 0.75rem;
+    display:flex !important; flex-direction:row !important;
+    flex-wrap:nowrap; gap:2px;
     overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
-    flex-shrink:0;
   }
   #settingsPage .s-sidebar::-webkit-scrollbar { display:none; }
   #settingsPage .s-nav-item {
-    padding:8px 12px; font-size:12px; flex-shrink:0;
-    justify-content:center; text-align:center; min-width:auto; white-space:nowrap;
-    margin-bottom:0;
+    flex-shrink:0 !important; white-space:nowrap !important;
+    min-width:auto !important; padding:8px 12px !important;
+    font-size:12px !important; margin-bottom:0 !important;
   }
   #settingsPage .s-section-lbl { display:none; }
-  #settingsPage .s-content { padding:1rem 0.875rem; overflow-y:unset; justify-content:flex-start; }
-  #settingsPage .s-main { max-width:100%; }
-  #settingsPage .s-grid2 { grid-template-columns:1fr; }
-  #settingsPage .s-nav { padding:0.75rem 1rem; }
-  #settingsPage .s-card { padding:1rem; }
-  #settingsPage .s-api-box { padding:12px; }
+  #settingsPage .s-content {
+    display:block !important; padding:1rem 0.875rem !important;
+    overflow-y:visible !important;
+  }
+  #settingsPage .s-main { width:100% !important; max-width:100% !important; }
+  #settingsPage .s-grid2 { grid-template-columns:1fr !important; }
+  #settingsPage .s-nav { padding:0.75rem 1rem !important; }
+  #settingsPage .s-card { padding:1rem !important; }
 
   /* Ana tablo mobil */
   .tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
