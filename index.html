@@ -4489,13 +4489,13 @@ async function _apiKeyDurumGuncelle() {
   // Status alanlarını sıfırla — "Girildi" yazmamalı, sadece test sonrası güncellenmeli
   const claudeStatus = document.getElementById('claudeKeyStatus');
   if (claudeStatus && !claudeStatus.dataset.tested) {
-    claudeStatus.textContent = 'Anahtar değiştirmek için yeni anahtar gir ve Test Et';
-    claudeStatus.style.color = 'var(--text3)';
+    claudeStatus.textContent = ck ? '✓ Aktif — değiştirmek için yeni anahtar gir' : 'Anahtarını gir ve Test Et’e bas';
+    claudeStatus.style.color = ck ? '#4ade80' : 'var(--text3)';
   }
   const openaiStatus = document.getElementById('openaiKeyStatus');
   if (openaiStatus && !openaiStatus.dataset.tested) {
-    openaiStatus.textContent = 'Anahtar değiştirmek için yeni anahtar gir ve Test Et';
-    openaiStatus.style.color = 'var(--text3)';
+    openaiStatus.textContent = ok ? '✓ Aktif — değiştirmek için yeni anahtar gir' : 'Anahtarını gir ve Test Et’e bas';
+    openaiStatus.style.color = ok ? '#4ade80' : 'var(--text3)';
   }
 }
 
