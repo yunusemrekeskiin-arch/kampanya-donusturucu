@@ -2939,7 +2939,7 @@ async function kampanyaUret() {
 
     const res = await fetch('/api/claude', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Api-Key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      headers: { 'Content-Type': 'application/json', ...(await _getAuthHeader()) },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, messages: [{ role: 'user', content: msgContent }] })
     });
 
@@ -3050,8 +3050,7 @@ Sadece JSON formatında yanıt ver, başka hiçbir şey yazma:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Api-Key': key,
-          'anthropic-version': '2023-06-01'
+          ...(await _getAuthHeader())
         },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
@@ -3323,7 +3322,7 @@ async function testApiKey() {
   try {
     const res = await fetch('/api/claude', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Api-Key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      headers: { 'Content-Type': 'application/json', ...(await _getAuthHeader()) },
       body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 10, messages: [{ role: 'user', content: 'hi' }] })
     });
     if (res.ok) { showKeyStatus('✅ Bağlantı başarılı! Görsel yükleyebilirsin.', 'success'); }
@@ -5721,7 +5720,7 @@ const BadgeStudio = (() => {
   let _seciliUrl = null;
 
   const _claudeKey = () => '' || '';
-  const _openaiKey = () => '' || '';
+  const _openaiKey = () => 'supabase'; // Key Supabase'de — proxy JWT ile çekiyor
 
   /* ── Durum ─────────────────────────────────────────── */
   function _durum(html, tip) {
@@ -5797,12 +5796,13 @@ const BadgeStudio = (() => {
   /* ── Claude Analiz ──────────────────────────────────── */
   async function _claudeAnalizEt() {
     try {
+      const { data: { session } } = await _supa.auth.getSession();
+      const authToken = session?.access_token || '';
       const res = await fetch('/api/claude', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Api-Key': _claudeKey(),
-          'anthropic-version': '2023-06-01'
+          'Authorization': 'Bearer ' + authToken
         },
         body: JSON.stringify({
           model: localStorage.getItem('rozet_model') || 'claude-opus-4-7',
@@ -5942,8 +5942,9 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
   const _COOLDOWN_MS = 10000; // 10 saniye
 
   async function uret() {
-    const openaiKey = _openaiKey();
-    if (!openaiKey) { _durum('error','error'); return; }
+    // Key kontrolü — Supabase'den geliyor, sadece giriş yapılmış mı kontrol et
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) { _durum('Giriş yapman gerekiyor.', 'error'); return; }
 
     // Cooldown kontrolü
     const simdi = Date.now();
@@ -6003,7 +6004,7 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Api-Key': openaiKey
+          'Authorization': 'Bearer ' + session.access_token
         },
         body: body
       });
