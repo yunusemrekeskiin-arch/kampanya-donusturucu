@@ -5218,12 +5218,15 @@ async function showApp(user) {
   document.getElementById('onboarding').classList.add('hidden');
   await updateUI(user);
 
-  // API key'ler Supabase'de var mı kontrol et
-  const settings = await _supabaseAyarYukle();
-  if (!settings?.claude_api_key || !settings?.openai_api_key) {
-    // Key eksik — API key kurulum modalını göster
-    _apiKeyKurulumGoster(settings);
-  }
+  // API key kontrolü — kısa gecikme ile DOM stabilize olsun
+  setTimeout(async function() {
+    const settings = await _supabaseAyarYukle();
+    const claudeVar = settings?.claude_api_key && settings.claude_api_key !== '';
+    const openaiVar = settings?.openai_api_key && settings.openai_api_key !== '';
+    if (!claudeVar || !openaiVar) {
+      _apiKeyKurulumGoster(settings);
+    }
+  }, 300);
 }
 
 async function updateUI(user) {
