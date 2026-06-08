@@ -1295,7 +1295,7 @@ input[type="checkbox"] {
               <div style="font-size:11px;color:#10a37f;font-weight:600">Rozet başına ~$0.04-0.08</div>
             </div>
           </div>
-          <div class="s-tag-info"><span>🔒</span><div><strong style="color:var(--text)">Güvenli:</strong> Anahtarlar oturum bazlıdır, tarayıcı kapanınca silinir.</div></div>
+  
         </div>
         <div class="s-tag-info"><span>🔒</span><div><strong style="color:var(--text)">Kalıcı:</strong> Anahtarlar Supabase hesabına şifreli kaydedilir. Bir kez girmen yeterli.</div></div>
         <div class="s-api-box claude">
@@ -4476,26 +4476,26 @@ async function _apiKeyDurumGuncelle() {
     }
   }
 
-  // Supabase'de kayıtlı anahtar varsa input'a placeholder göster
+  // Input placeholder'ları sade tut
   // Status sadece "Test Et" sonrası güncellenir — burada sadece input hint ver
   const claudeInp = document.getElementById('set-claudeKey');
   const openaiInp = document.getElementById('set-openaiKey');
   if (claudeInp && !claudeInp.value) {
-    claudeInp.placeholder = ck ? '••••••••••••••• (kayıtlı anahtar var)' : 'sk-ant-api03-...';
+    claudeInp.placeholder = 'sk-ant-api03-...';
   }
   if (openaiInp && !openaiInp.value) {
-    openaiInp.placeholder = ok ? '••••••••••••••• (kayıtlı anahtar var)' : 'sk-...';
+    openaiInp.placeholder = 'sk-...';
   }
   // Status alanlarını sıfırla — "Girildi" yazmamalı, sadece test sonrası güncellenmeli
   const claudeStatus = document.getElementById('claudeKeyStatus');
   if (claudeStatus && !claudeStatus.dataset.tested) {
-    claudeStatus.textContent = ck ? 'Kayıtlı anahtar mevcut — Test Et ile doğrula' : 'Anahtar girilmedi';
-    claudeStatus.style.color = ck ? '#94a3b8' : 'var(--text3)';
+    claudeStatus.textContent = 'Anahtar değiştirmek için yeni anahtar gir ve Test Et';
+    claudeStatus.style.color = 'var(--text3)';
   }
   const openaiStatus = document.getElementById('openaiKeyStatus');
   if (openaiStatus && !openaiStatus.dataset.tested) {
-    openaiStatus.textContent = ok ? 'Kayıtlı anahtar mevcut — Test Et ile doğrula' : 'Anahtar girilmedi';
-    openaiStatus.style.color = ok ? '#94a3b8' : 'var(--text3)';
+    openaiStatus.textContent = 'Anahtar değiştirmek için yeni anahtar gir ve Test Et';
+    openaiStatus.style.color = 'var(--text3)';
   }
 }
 
