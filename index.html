@@ -2902,10 +2902,16 @@ async function _supabaseAyarYukle() {
     const { data: { session } } = await _supa.auth.getSession();
     if (!session) return null;
     const { data } = await _supa.from('user_settings')
-      .select('*')
+      .select('company_name,company_slogan,company_website,company_phone,company_address,campaign_text,campaign_subtext,brand_color,logo_base64,claude_model,usd_try_kur,claude_api_key,openai_api_key')
       .eq('user_id', session.user.id)
       .single();
-    return data;
+    if (!data) return null;
+    // Anahtarları frontend bellekte tutma — sadece var/yok bilgisi yeterli
+    const masked = { ...data,
+      claude_api_key:  data.claude_api_key  ? '__EXISTS__' : '',
+      openai_api_key:  data.openai_api_key  ? '__EXISTS__' : '',
+    };
+    return masked;
   } catch(e) { return null; }
 }
 
@@ -4352,8 +4358,9 @@ async function saveSettingsAll() {
     claude_model: localStorage.getItem('rozet_model') || 'claude-haiku-4-5-20251001',
     usd_try_kur: parseFloat(localStorage.getItem('usd_try_kur') || '38.5'),
   };
-  if (claudeKey) supabaseData.claude_api_key = claudeKey;
-  if (openaiKey) supabaseData.openai_api_key = openaiKey;
+  // Sadece gerçek bir anahtar girilmişse kaydet (masked '__EXISTS__' değilse)
+  if (claudeKey && claudeKey !== '__EXISTS__') supabaseData.claude_api_key = claudeKey;
+  if (openaiKey && openaiKey !== '__EXISTS__') supabaseData.openai_api_key = openaiKey;
   if (cp.logoBase64) supabaseData.logo_base64 = cp.logoBase64;
 
   const saved = await _supabaseAyarKaydet(supabaseData);
@@ -4381,8 +4388,9 @@ async function testApiKey(tip) {
     ? (document.getElementById('set-claudeKey')?.value || '').trim()
     : (document.getElementById('set-openaiKey')?.value || '').trim();
 
+  if (statusEl) { delete statusEl.dataset.tested; }
   if (!key || key.trim().length < 10) {
-    if (statusEl) { statusEl.textContent = '❌ Önce bir anahtar girmek gerekiyor 😅'; statusEl.style.color = '#f87171'; }
+    if (statusEl) { statusEl.textContent = '❌ Önce geçerli bir anahtar gir'; statusEl.style.color = '#f87171'; }
     return;
   }
 
@@ -4434,11 +4442,16 @@ async function testApiKey(tip) {
 
     if (ok) {
       if (statusEl) {
-        statusEl.textContent = '✅ Geçerli — ' + (tip === 'claude' ? 'Claude' : 'OpenAI') + ' aktif. Kaydet butonuna basarak kaydet.';
+        statusEl.textContent = '✅ Test başarılı — Kaydet butonuna basarak kaydet.';
         statusEl.style.color = '#4ade80';
+        statusEl.dataset.tested = 'ok';
       }
     } else {
-      if (statusEl) { statusEl.textContent = '❌ Geçersiz anahtar: ' + hata; statusEl.style.color = '#f87171'; }
+      if (statusEl) {
+        statusEl.textContent = '❌ Geçersiz anahtar: ' + hata;
+        statusEl.style.color = '#f87171';
+        statusEl.dataset.tested = 'fail';
+      }
     }
   } catch(e) {
     if (statusEl) { statusEl.textContent = '❌ Bağlanamadım, internet bağlantını kontrol eder misin? ' + e.message; statusEl.style.color = '#f87171'; }
@@ -4463,10 +4476,27 @@ async function _apiKeyDurumGuncelle() {
     }
   }
 
+  // Supabase'de kayıtlı anahtar varsa input'a placeholder göster
+  // Status sadece "Test Et" sonrası güncellenir — burada sadece input hint ver
+  const claudeInp = document.getElementById('set-claudeKey');
+  const openaiInp = document.getElementById('set-openaiKey');
+  if (claudeInp && !claudeInp.value) {
+    claudeInp.placeholder = ck ? '••••••••••••••• (kayıtlı anahtar var)' : 'sk-ant-api03-...';
+  }
+  if (openaiInp && !openaiInp.value) {
+    openaiInp.placeholder = ok ? '••••••••••••••• (kayıtlı anahtar var)' : 'sk-...';
+  }
+  // Status alanlarını sıfırla — "Girildi" yazmamalı, sadece test sonrası güncellenmeli
   const claudeStatus = document.getElementById('claudeKeyStatus');
-  if (claudeStatus) { claudeStatus.textContent = ck ? '✅ Girildi — Claude aktif' : 'Girilmedi — Claude devre dışı'; claudeStatus.style.color = ck ? '#4ade80' : 'var(--text3)'; }
+  if (claudeStatus && !claudeStatus.dataset.tested) {
+    claudeStatus.textContent = ck ? 'Kayıtlı anahtar mevcut — Test Et ile doğrula' : 'Anahtar girilmedi';
+    claudeStatus.style.color = ck ? '#94a3b8' : 'var(--text3)';
+  }
   const openaiStatus = document.getElementById('openaiKeyStatus');
-  if (openaiStatus) { openaiStatus.textContent = ok ? '✅ Girildi — Rozet aktif' : 'Girilmedi — Rozet devre dışı'; openaiStatus.style.color = ok ? '#4ade80' : 'var(--text3)'; }
+  if (openaiStatus && !openaiStatus.dataset.tested) {
+    openaiStatus.textContent = ok ? 'Kayıtlı anahtar mevcut — Test Et ile doğrula' : 'Anahtar girilmedi';
+    openaiStatus.style.color = ok ? '#94a3b8' : 'var(--text3)';
+  }
 }
 
 
@@ -5305,8 +5335,8 @@ async function _apiKeyKurulumKaydet() {
   btn.disabled = true;
 
   const data = {};
-  if (claudeKey) data.claude_api_key = claudeKey;
-  if (openaiKey) data.openai_api_key = openaiKey;
+  if (claudeKey && claudeKey !== '__EXISTS__') data.claude_api_key = claudeKey;
+  if (openaiKey && openaiKey !== '__EXISTS__') data.openai_api_key = openaiKey;
 
   const ok = await _supabaseAyarKaydet(data);
 
