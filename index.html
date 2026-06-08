@@ -1310,7 +1310,7 @@ input[type="checkbox"] {
             <div class="s-step"><span class="s-step-n" style="background:rgba(204,120,92,0.2);color:#CC785C">3</span><span><strong style="color:var(--text)">sk-ant-api03-...</strong> ile başlayan anahtarı kopyala</span></div>
           </div>
           <div style="display:flex;gap:6px">
-            <input type="password" id="set-claudeKey" placeholder="sk-ant-api03-..." class="s-inp" style="flex:1;font-family:monospace" oninput="kampanyaApiKeySave(this.value)" onfocus="settingsHelpGoster('set-claudeKey')">
+            <input type="password" id="set-claudeKey" placeholder="sk-ant-api03-..." class="s-inp" style="flex:1;font-family:monospace" onfocus="settingsHelpGoster('set-claudeKey')">
             <button onclick="(function(){var i=document.getElementById('set-claudeKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
           </div>
           <div id="claudeKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">Girilmedi — Claude özellikleri devre dışı</div>
@@ -1327,7 +1327,7 @@ input[type="checkbox"] {
             <div class="s-step"><span class="s-step-n" style="background:rgba(16,163,127,0.2);color:#10a37f">3</span><span><strong style="color:var(--text)">sk-...</strong> ile başlayan anahtarı kopyala</span></div>
           </div>
           <div style="display:flex;gap:6px">
-            <input type="password" id="set-openaiKey" placeholder="sk-..." class="s-inp" style="flex:1;font-family:monospace" oninput="_openaiKeyDurumGuncelle()" onfocus="settingsHelpGoster('set-openaiKey')">
+            <input type="password" id="set-openaiKey" placeholder="sk-..." class="s-inp" style="flex:1;font-family:monospace" onfocus="settingsHelpGoster('set-openaiKey')">
             <button onclick="(function(){var i=document.getElementById('set-openaiKey');i.type=i.type==='password'?'text':'password'})()" style="padding:7px 10px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:7px;color:var(--text3);cursor:pointer">👁</button>
           </div>
           <div id="openaiKeyStatus" style="margin-top:6px;font-size:11px;color:var(--text3)">Girilmedi — Rozet üretimi devre dışı</div>
@@ -4307,24 +4307,14 @@ function loadSettingsValues() {
     if (ph)  ph.style.display = 'none';
   }
 
-  // API key'leri — önce sessionStorage'dan, yoksa Supabase'den gelmiş olabilir
-  const ck = '' || '';
-  const ok = '' || '';
+  // API key'leri input'lara gösterme — Supabase'de güvenli saklı
   // Kur
   const kur = localStorage.getItem('usd_try_kur') || '38.5';
   if (document.getElementById('set-tlKuru')) document.getElementById('set-tlKuru').value = kur;
-
-  if (document.getElementById('set-claudeKey')) {
-    document.getElementById('set-claudeKey').value = ck;
-    _claudeKeyDurumGuncelle();
-    // Input'a da ANTHROPIC_API_KEY'i güncelle
-    if (ck) ANTHROPIC_API_KEY = ck;
-  }
-  if (document.getElementById('set-openaiKey')) {
-    document.getElementById('set-openaiKey').value = ok;
-    _openaiKeyDurumGuncelle();
-  }
+  // Durumu async güncelle
+  _apiKeyDurumGuncelle();
 }
+
 
 async function saveSettingsAll() {
   const cp = JSON.parse(localStorage.getItem('companyProfile') || '{}');
