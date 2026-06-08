@@ -6113,11 +6113,28 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
 
       if (!res.ok) {
         const err = await res.json().catch(function(){return {};});
-        const errMsg = err.error?.message || '';
-        if (errMsg.includes('quota') || errMsg.includes('billing') || errMsg.includes('limit')) {
-          throw new Error('Görünüşe göre OpenAI bakiyen biraz yorgun (veya bitmiş) 🪫 platform.openai.com/billing adresinden kontrol edebilirsin.');
+        // Tam hata mesajı: önce serverless'tan gelen detail, sonra openai_error, sonra generic
+        const errMsg = err.error || '';
+        const errCode = err.openai_error?.code || '';
+        const errType = err.openai_error?.type || '';
+
+        // Bilinen hata kodları
+        if (errMsg.includes('quota') || errMsg.includes('billing') || errMsg.includes('limit') || errCode === 'insufficient_quota') {
+          throw new Error('OpenAI bakiyen bitti veya yetersiz 🪫 — platform.openai.com/billing adresinden kontrol et.');
         }
-        throw new Error(errMsg || 'OpenAI ile bağlantı kurulamadı, tekrar dener misin? (HTTP ' + res.status + ')');
+        if (errMsg.includes('not found') || errMsg.includes('model') || errCode === 'model_not_found') {
+          throw new Error('gpt-image-1 modeline erişimin yok. Bu model özel erişim gerektiriyor — hesabının onaylı olması lazım. Alternatif: dall-e-3 modeline geçmeyi dene.');
+        }
+        if (errMsg.includes('invalid_api_key') || errCode === 'invalid_api_key' || res.status === 401) {
+          throw new Error('OpenAI API anahtarı geçersiz. Ayarlar → Entegrasyonlar'dan güncelle.');
+        }
+        if (errMsg.includes('content_policy') || errType === 'image_generation_user_error') {
+          throw new Error('Prompt içerik politikasına takıldı. Promptu biraz düzenleyip tekrar dene.');
+        }
+
+        // Bilinmeyen 400 — tam mesajı göster
+        const detay = errMsg ? errMsg : ('HTTP ' + res.status + (errCode ? ' · ' + errCode : ''));
+        throw new Error('OpenAI hatası: ' + detay);
       }
 
       const data = await res.json();
