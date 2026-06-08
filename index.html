@@ -5098,7 +5098,24 @@ async function signInWithGoogle() {
 
   try {
     const redirectTo = window.location.origin + window.location.pathname;
-    const { error } = await _supa.auth.signInWithOAuth({
+
+    // Zaman aşımı: 8 saniyede yönlendirme olmazsa hata göster
+    const _timeout = setTimeout(function() {
+      btn.disabled = false;
+      btn.style.opacity = '';
+      btn.style.cursor = '';
+      btnText.textContent = 'Google ile Giriş Yap';
+      if (errorDiv) {
+        errorDiv.innerHTML =
+          '⚠️ Yönlendirme gerçekleşmedi. Olası nedenler:<br>' +
+          '<strong>1)</strong> <a href="https://supabase.com/dashboard/project/_/auth/providers" target="_blank" style="color:#6366f1">Supabase → Auth → Providers</a> → Google etkin mi?<br>' +
+          '<strong>2)</strong> <a href="https://supabase.com/dashboard/project/_/auth/url-configuration" target="_blank" style="color:#6366f1">Redirect URLs</a> listesinde <code>' + redirectTo + '</code> var mı?<br>' +
+          '<strong>3)</strong> Pop-up engelleyici mi var? Tarayıcı adres çubuğunu kontrol et.';
+        errorDiv.style.display = 'block';
+      }
+    }, 8000);
+
+    const { data, error } = await _supa.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: redirectTo,
@@ -5108,7 +5125,14 @@ async function signInWithGoogle() {
         }
       }
     });
-    if (error) throw error;
+
+    if (error) { clearTimeout(_timeout); throw error; }
+
+    // Supabase v2: data.url döndürür — otomatik redirect çalışmadıysa manuel yönlendir
+    if (data?.url) {
+      clearTimeout(_timeout);
+      window.location.href = data.url;
+    }
     // Başarılı - yönlendirme bekleniyor
   } catch(err) {
     console.error('Giriş hatası:', err);
@@ -5117,15 +5141,16 @@ async function signInWithGoogle() {
     btn.style.cursor = '';
     btnText.textContent = 'Google ile Giriş Yap';
     let msg = err.message || 'Bilinmeyen hata';
-    if (msg.includes('redirect') || msg.includes('URL')) {
-      msg = '⚠️ Bu URL Supabase\'de kayıtlı değil. <strong>' + window.location.origin + '</strong> adresini Supabase → Authentication → URL Configuration → Redirect URLs\'e ekle.';
-    } else if (msg.includes('fetch') || msg.includes('network')) {
+    if (msg.includes('redirect') || msg.includes('URL') || msg.includes('not allowed')) {
+      msg = `⚠️ Bu URL Supabase'de kayıtlı değil.<br><strong>${window.location.origin}</strong> adresini<br>Supabase → Auth → URL Configuration → Redirect URLs'e ekle.`;
+    } else if (msg.includes('provider') || msg.includes('Google')) {
+      msg = 'Google OAuth ayarlanmamış. Supabase Auth Providers Google etkinleştir.';
+    } else if (msg.includes('fetch') || msg.includes('network') || msg.includes('Failed')) {
       msg = '🌐 Bağlantı hatası. İnternet bağlantını kontrol et.';
     } else {
       msg = '❌ Giriş başarısız: ' + msg;
     }
-    errorDiv.innerHTML = msg;
-    errorDiv.style.display = 'block';
+    if (errorDiv) { errorDiv.innerHTML = msg; errorDiv.style.display = 'block'; }
   }
 }
 
@@ -5149,17 +5174,35 @@ document.addEventListener('click', (e) => {
 });
 
 async function initAuth() {
-  const { data: { session } } = await _supa.auth.getSession();
-  if (session) {
-    showApp(session.user);
-  } else {
+  // _supa null ise (Supabase CDN yüklenemedi) — hata göster ve dur
+  if (!_supa) {
     showOnboarding();
+    const errDiv = document.getElementById('loginError');
+    if (errDiv) {
+      errDiv.innerHTML = '⚠️ Supabase bağlantısı kurulamadı. İnternet bağlantını kontrol et veya sayfayı yenile.';
+      errDiv.style.display = 'block';
+    }
+    const btn = document.getElementById('googleLoginBtn');
+    if (btn) btn.disabled = true;
+    return;
   }
 
-  _supa.auth.onAuthStateChange((event, session) => {
-    if (session) showApp(session.user);
-    else showOnboarding();
-  });
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (session) {
+      showApp(session.user);
+    } else {
+      showOnboarding();
+    }
+
+    _supa.auth.onAuthStateChange((event, session) => {
+      if (session) showApp(session.user);
+      else showOnboarding();
+    });
+  } catch(e) {
+    console.error('initAuth hatası:', e);
+    showOnboarding();
+  }
 }
 
 function showOnboarding() {
@@ -6126,7 +6169,7 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
           throw new Error('gpt-image-1 modeline erişimin yok. Bu model özel erişim gerektiriyor — hesabının onaylı olması lazım. Alternatif: dall-e-3 modeline geçmeyi dene.');
         }
         if (errMsg.includes('invalid_api_key') || errCode === 'invalid_api_key' || res.status === 401) {
-          throw new Error('OpenAI API anahtarı geçersiz. Ayarlar → Entegrasyonlar'dan güncelle.');
+          throw new Error('OpenAI API anahtari gecersiz. Ayarlar -> Entegrasyonlar\'dan guncelle.');
         }
         if (errMsg.includes('content_policy') || errType === 'image_generation_user_error') {
           throw new Error('Prompt içerik politikasına takıldı. Promptu biraz düzenleyip tekrar dene.');
