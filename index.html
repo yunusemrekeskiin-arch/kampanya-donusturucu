@@ -236,13 +236,26 @@ body, .card, .field input, table, td, th, .inp-row input, .hdr, .tabs, .tab, .up
   .ob-nav { padding:1rem 1.25rem; }
 
   /* Settings mobil */
-  #settingsPage .s-body { flex-direction:column; }
-  #settingsPage .s-sidebar { width:100%; border-right:none; border-bottom:1px solid var(--border); padding:0.75rem; display:flex; flex-wrap:wrap; gap:4px; }
-  #settingsPage .s-nav-item { padding:6px 10px; font-size:12px; flex:1; min-width:120px; justify-content:center; text-align:center; }
+  #settingsPage .s-body { flex-direction:column; min-height:unset; }
+  #settingsPage .s-sidebar {
+    width:100%; border-right:none; border-bottom:1px solid var(--border);
+    padding:0.5rem 0.75rem; display:flex; flex-wrap:nowrap; gap:2px;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    flex-shrink:0;
+  }
+  #settingsPage .s-sidebar::-webkit-scrollbar { display:none; }
+  #settingsPage .s-nav-item {
+    padding:8px 12px; font-size:12px; flex-shrink:0;
+    justify-content:center; text-align:center; min-width:auto; white-space:nowrap;
+    margin-bottom:0;
+  }
   #settingsPage .s-section-lbl { display:none; }
-  #settingsPage .s-content { padding:1.25rem 1rem; }
+  #settingsPage .s-content { padding:1rem 0.875rem; overflow-y:unset; justify-content:flex-start; }
+  #settingsPage .s-main { max-width:100%; }
   #settingsPage .s-grid2 { grid-template-columns:1fr; }
   #settingsPage .s-nav { padding:0.75rem 1rem; }
+  #settingsPage .s-card { padding:1rem; }
+  #settingsPage .s-api-box { padding:12px; }
 
   /* Ana tablo mobil */
   .tbl-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
@@ -1104,10 +1117,8 @@ html, body { overflow-x: hidden; }
   /* Üretilen rozetler grid */
   #rozetlerGrid { grid-template-columns:1fr 1fr !important; }
 
-  /* Settings */
-  #settingsPage .s-nav-item { min-width:80px !important; font-size:11px !important; padding:6px 8px !important; }
-  .s-api-box { padding:1rem !important; }
-  .s-grid2 { grid-template-columns:1fr !important; }
+  /* Settings 640px */
+  #settingsPage .s-api-box { padding:10px !important; }
 
   /* Aktivasyon ekranı */
   #apiKeySetupModal > div { padding:1.25rem 1rem 2rem !important; }
@@ -1323,7 +1334,7 @@ html, body { overflow-x: hidden; }
 <!-- ── SETTINGS SAYFASI ── -->
 <div id="settingsPage" style="display:none;position:fixed;inset:0;z-index:9999;font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);overflow-y:auto">
 <style>
-#settingsPage .s-nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:2}
+#settingsPage .s-nav{display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:2}
 #settingsPage .s-body{display:flex;min-height:calc(100vh - 57px);width:100%}
 #settingsPage .s-sidebar{width:200px;flex-shrink:0;padding:1.25rem 1rem;border-right:1px solid var(--border);min-height:calc(100vh - 57px)}
 #settingsPage .s-content{flex:1;padding:2rem;overflow-y:auto;display:flex;justify-content:center}
