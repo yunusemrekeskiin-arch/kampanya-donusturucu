@@ -1797,6 +1797,28 @@ input[type="checkbox"] {
           <button onclick="BadgeStudio.gorselSil()" style="padding:3px 8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#fca5a5;font-size:11px;cursor:pointer;font-family:'Geist',sans-serif">X</button>
         </div>
 
+        <!-- Boyut + Adet — her zaman gorunur -->
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;margin-bottom:2px;flex-wrap:wrap;padding:10px 14px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px">
+          <div style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:0.05em">Boyut:</div>
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
+            <input type="radio" name="rozetBoyut" value="1024x1024" checked style="accent-color:#6366f1"> 1024×1024
+          </label>
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
+            <input type="radio" name="rozetBoyut" value="1024x1536" style="accent-color:#6366f1"> 1024×1536
+          </label>
+          <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
+            <input type="radio" name="rozetBoyut" value="1536x1024" style="accent-color:#6366f1"> 1536×1024
+          </label>
+          <div style="width:1px;height:16px;background:var(--border);margin:0 4px"></div>
+          <div style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:0.05em">Adet:</div>
+          <select id="rozetAdet" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:4px 8px;font-size:12px;color:var(--text);font-family:'Geist',sans-serif;outline:none">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3" selected>3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
+
         <!-- Durum -->
         <div id="badgeDurum" style="display:none;margin-top:10px;padding:10px 14px;border-radius:10px;font-size:13px;border:1px solid transparent"></div>
 
@@ -1847,26 +1869,7 @@ input[type="checkbox"] {
             <div style="font-size:11px;color:var(--text3);margin-top:4px">&#9998; Promptu duzenleyebilirsin — ne kadar detayli o kadar iyi sonuc</div>
           </div>
 
-          <!-- Boyut Secimi -->
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap">
-            <div style="font-size:11px;color:var(--text3);font-weight:600">Boyut:</div>
-            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
-              <input type="radio" name="rozetBoyut" value="1024x1024" checked style="accent-color:#6366f1"> 1024x1024
-            </label>
-            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
-              <input type="radio" name="rozetBoyut" value="1024x1792" style="accent-color:#6366f1"> 1024x1792
-            </label>
-            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text2)">
-              <input type="radio" name="rozetBoyut" value="1792x1024" style="accent-color:#6366f1"> 1792x1024
-            </label>
-            <div style="font-size:11px;color:var(--text3);font-weight:600;margin-left:8px">Adet:</div>
-            <select id="rozetAdet" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:7px;padding:4px 8px;font-size:12px;color:var(--text);font-family:'Geist',sans-serif;outline:none">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3" selected>3</option>
-              <option value="4">4</option>
-            </select>
-          </div>
+          <!-- Boyut Secimi buradan tasindi — asagida her zaman gorunur -->
 
           <!-- Uretilen Rozetler -->
           <div id="rozetSonuclarWrap" style="display:none">
