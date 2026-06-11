@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: Inter, Arial, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0 0 6px;
+    }
+    p {
+      margin: 0 0 12px;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    textarea {
+      width: 100%;
+      height: 190px;
+      resize: vertical;
+      border: 1px solid rgba(129,140,248,0.35);
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(255,255,255,0.04);
+      color: #e2e8f0;
+      font: 11px ui-monospace, SFMono-Regular, Consolas, monospace;
+      outline: none;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    button {
+      flex: 1;
+      border: 0;
+      border-radius: 9px;
+      padding: 10px 12px;
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg,#6366f1,#8b5cf6);
+    }
+    button.secondary {
+      flex: 0 0 auto;
+      color: #cbd5e1;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    #status {
+      min-height: 18px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Insertmill Frame Builder</h1>
+  <p>Insertmill'den kopyaladigin Figma payload kodunu buraya yapistir, sonra frame'i olustur.</p>
+  <textarea id="payload" placeholder="Insertmill payload kodunu buraya yapistir..."></textarea>
+  <div class="row">
+    <button id="create">Frame Olustur</button>
+    <button class="secondary" id="clear">Temizle</button>
+  </div>
+  <div id="status"></div>
+
+  <script>
+    const payload = document.getElementById('payload');
+    const status = document.getElementById('status');
+
+    document.getElementById('create').onclick = () => {
+      const value = payload.value.trim();
+      if (!value) {
+        status.textContent = 'Once payload kodunu yapistir.';
+        status.style.color = '#fbbf24';
+        return;
+      }
+      status.textContent = 'Frame olusturuluyor...';
+      status.style.color = '#a5b4fc';
+      parent.postMessage({ pluginMessage: { type: 'create-frame', payload: value } }, '*');
+    };
+
+    document.getElementById('clear').onclick = () => {
+      payload.value = '';
+      status.textContent = '';
+    };
+
+    onmessage = (event) => {
+      const msg = event.data.pluginMessage || {};
+      if (msg.type === 'status') {
+        status.textContent = msg.message;
+        status.style.color = msg.ok ? '#4ade80' : '#f87171';
+      }
+    };
+  </script>
+</body>
+</html>
