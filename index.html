@@ -2304,7 +2304,7 @@ html, body { overflow-x: hidden; }
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         Dashboard
       </button>
-      <button class="app-nav-item" onclick="appGo('kampanyalar')" data-app-nav="kampanyalar" data-label="Kampanyalar" aria-label="Kampanyalar">
+      <button class="app-nav-item" onclick="kampanyalarSayfasiAc()" data-app-nav="kampanyalar" data-label="Kampanyalar" aria-label="Kampanyalar">
         <svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
         Kampanyalar
       </button>
@@ -2841,6 +2841,9 @@ html, body { overflow-x: hidden; }
           <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
           <div style="flex:1"></div>
           <button class="btn btn-ghost" onclick="window.print()">🖨 Yazdır</button>
+          <button onclick="kampanyaKaydetModal()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif">
+            💾 Kampanyayı Kaydet
+          </button>
         </div>
 
         <div id="sheetsStatus"></div>
@@ -2851,6 +2854,51 @@ html, body { overflow-x: hidden; }
 
 </div>
   </main>
+</div>
+
+<!-- ── KAMPANYA KAYDET MODALI ── -->
+<div id="kampanyaKaydetModalEl" style="display:none;position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);align-items:center;justify-content:center">
+  <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.75rem;width:420px;max-width:95vw;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
+    <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px">💾 Kampanyayı Kaydet</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:1.25rem">Bu kampanya Supabase'e kaydedilecek — her yerden erişebilirsin.</div>
+    <div style="margin-bottom:1rem">
+      <label style="display:block;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px">Kampanya Adı</label>
+      <input id="kampanyaAdiInput" type="text" placeholder="Örn: Mayıs 2025 Et Kampanyası"
+        style="width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);font-family:'Geist',sans-serif;outline:none;box-sizing:border-box"
+        onkeydown="if(event.key==='Enter')kampanyaKaydetOnayla()">
+    </div>
+    <div id="kampanyaKaydetStatus" style="font-size:12px;min-height:18px;margin-bottom:10px"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="kampanyaKaydetOnayla()" id="kampanyaKaydetBtn"
+        style="flex:1;padding:11px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:9px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif">
+        Kaydet
+      </button>
+      <button onclick="document.getElementById('kampanyaKaydetModalEl').style.display='none'"
+        style="padding:11px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;color:var(--text3);font-size:13px;cursor:pointer;font-family:'Geist',sans-serif">
+        İptal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── KAMPANYALAR SAYFASI ── -->
+<div id="kampanyalarSayfasi" style="display:none;position:fixed;inset:0;z-index:9980;background:var(--bg);overflow-y:auto">
+  <div style="max-width:900px;margin:0 auto;padding:2rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <div>
+        <div style="font-size:22px;font-weight:700;color:var(--text)">Kampanyalar</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:2px">Kaydedilmiş kampanyalarını yönet</div>
+      </div>
+      <button onclick="kampanyalarSayfasiKapat()" style="padding:7px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">← Geri</button>
+    </div>
+    <div id="kampanyaListesi" style="display:flex;flex-direction:column;gap:10px">
+      <div style="text-align:center;padding:3rem;color:var(--text3)">
+        <div style="font-size:32px;margin-bottom:8px">📂</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz kaydedilmiş kampanya yok</div>
+        <div style="font-size:12px;margin-top:4px">Ürün tablosunu doldurup "Kampanyayı Kaydet" butonuna bas</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Context Menu -->
@@ -7225,6 +7273,96 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 // Avatar Picker
+// ── KAMPANYA KAYDET/YÜKLEMESİ ──────────────────────────────────
+function kampanyaKaydetModal() {
+  if (!rows || rows.length === 0) { alert('Önce ürün tablosunu doldur!'); return; }
+  const modal = document.getElementById('kampanyaKaydetModalEl');
+  modal.style.display = 'flex';
+  document.getElementById('kampanyaAdiInput').value = '';
+  document.getElementById('kampanyaKaydetStatus').textContent = '';
+  setTimeout(function(){ document.getElementById('kampanyaAdiInput').focus(); }, 100);
+}
+
+async function kampanyaKaydetOnayla() {
+  const ad = document.getElementById('kampanyaAdiInput').value.trim();
+  if (!ad) { document.getElementById('kampanyaKaydetStatus').textContent = '⚠️ Kampanya adı girilmedi'; document.getElementById('kampanyaKaydetStatus').style.color='#f87171'; return; }
+  const btn = document.getElementById('kampanyaKaydetBtn');
+  btn.textContent = '⏳ Kaydediliyor...'; btn.disabled = true;
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Giriş yapman gerekiyor');
+    const { error } = await _supa.from('campaigns').insert({ user_id: session.user.id, name: ad, products: rows });
+    if (error) throw new Error(error.message);
+    document.getElementById('kampanyaKaydetStatus').textContent = '✅ Kaydedildi!';
+    document.getElementById('kampanyaKaydetStatus').style.color = '#4ade80';
+    btn.textContent = '✅ Kaydedildi!';
+    btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+    setTimeout(function() { document.getElementById('kampanyaKaydetModalEl').style.display='none'; btn.textContent='Kaydet'; btn.style.background=''; btn.disabled=false; }, 1200);
+  } catch(e) {
+    document.getElementById('kampanyaKaydetStatus').textContent = '❌ ' + e.message;
+    document.getElementById('kampanyaKaydetStatus').style.color = '#f87171';
+    btn.textContent = 'Kaydet'; btn.style.background = ''; btn.disabled = false;
+  }
+}
+
+async function kampanyalarYukle() {
+  const liste = document.getElementById('kampanyaListesi');
+  if (!liste) return;
+  liste.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3)">⏳ Yükleniyor...</div>';
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Giriş yapman gerekiyor');
+    const { data, error } = await _supa.from('campaigns').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false });
+    if (error) throw new Error(error.message);
+    if (!data || data.length === 0) {
+      liste.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">📂</div><div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz kampanya yok</div><div style="font-size:12px;margin-top:4px">Tabloyu doldurup "Kampanyayı Kaydet" butonuna bas</div></div>';
+      return;
+    }
+    liste.innerHTML = data.map(function(k) {
+      const tarih = new Date(k.created_at).toLocaleDateString('tr-TR', {day:'numeric',month:'long',year:'numeric'});
+      const urunSayisi = (k.products||[]).length;
+      return '<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:12px">' +
+        '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px">' + k.name + '</div>' +
+        '<div style="font-size:12px;color:var(--text3)">' + urunSayisi + ' ürün · ' + tarih + '</div></div>' +
+        '<div style="display:flex;gap:6px;flex-shrink:0">' +
+        '<button onclick="kampanyaAc(\'' + k.id + '\')" style="padding:7px 14px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:8px;color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Geist\',sans-serif">Aç</button>' +
+        '<button onclick="kampanyaSil(\'' + k.id + '\',this)" style="padding:7px 10px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:8px;color:#f87171;font-size:12px;cursor:pointer;font-family:\'Geist\',sans-serif">🗑</button>' +
+        '</div></div>';
+    }).join('');
+  } catch(e) {
+    liste.innerHTML = '<div style="text-align:center;padding:2rem;color:#f87171">❌ ' + e.message + '</div>';
+  }
+}
+
+async function kampanyaAc(id) {
+  try {
+    const { data, error } = await _supa.from('campaigns').select('*').eq('id', id).single();
+    if (error) throw new Error(error.message);
+    rows = data.products || [];
+    showTable();
+    kampanyalarSayfasiKapat();
+  } catch(e) { alert('Kampanya açılamadı: ' + e.message); }
+}
+
+async function kampanyaSil(id, btn) {
+  if (!confirm('Bu kampanya silinsin mi?')) return;
+  btn.textContent = '⏳'; btn.disabled = true;
+  try {
+    const { error } = await _supa.from('campaigns').delete().eq('id', id);
+    if (error) throw new Error(error.message);
+    btn.closest('div[style*="border-radius:12px"]').remove();
+  } catch(e) { alert('Silinemedi: ' + e.message); btn.textContent='🗑'; btn.disabled=false; }
+}
+
+function kampanyalarSayfasiAc() {
+  document.getElementById('kampanyalarSayfasi').style.display = 'block';
+  kampanyalarYukle();
+}
+
+function kampanyalarSayfasiKapat() {
+  document.getElementById('kampanyalarSayfasi').style.display = 'none';
+}
+
 function _apiKeyKurulumGoster(settings) {
   const modal = document.getElementById('apiKeySetupModal');
   if (!modal) return;
