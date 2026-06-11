@@ -11,6 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -44,6 +45,18 @@
   --badge-bg: rgba(99,102,241,0.15);
   --badge-color: #818cf8;
   --badge-border: rgba(99,102,241,0.2);
+  --figma-panel-bg: rgba(99,102,241,0.07);
+  --figma-panel-border: rgba(129,140,248,0.22);
+  --figma-panel-shadow: rgba(99,102,241,0.10);
+  --figma-chip-ok-bg: rgba(99,102,241,0.11);
+  --figma-chip-ok-border: rgba(129,140,248,0.24);
+  --figma-chip-ok-label: #a5b4fc;
+  --figma-chip-warn-bg: rgba(236,72,153,0.08);
+  --figma-chip-warn-border: rgba(236,72,153,0.22);
+  --figma-chip-warn-label: #f9a8d4;
+  --figma-score-ok: #8bdebd;
+  --figma-score-mid: #c4b5fd;
+  --figma-score-bad: #f0a8c8;
   --shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
@@ -75,6 +88,18 @@
   --badge-bg: #EEF2FF;
   --badge-color: #4F46E5;
   --badge-border: #C7D2FE;
+  --figma-panel-bg: #FFFFFF;
+  --figma-panel-border: #D9E4EE;
+  --figma-panel-shadow: rgba(15,23,42,0.06);
+  --figma-chip-ok-bg: #FFFFFF;
+  --figma-chip-ok-border: #D8E2EC;
+  --figma-chip-ok-label: #475569;
+  --figma-chip-warn-bg: #FFF7ED;
+  --figma-chip-warn-border: #FED7AA;
+  --figma-chip-warn-label: #C2410C;
+  --figma-score-ok: #059669;
+  --figma-score-mid: #7C3AED;
+  --figma-score-bad: #D97706;
   --shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
@@ -106,8 +131,100 @@
   --badge-bg: rgba(240,180,40,0.12);
   --badge-color: #F0B429;
   --badge-border: rgba(240,180,40,0.25);
+  --figma-panel-bg: rgba(240,180,40,0.07);
+  --figma-panel-border: rgba(240,180,40,0.22);
+  --figma-panel-shadow: rgba(0,0,0,0.18);
+  --figma-chip-ok-bg: rgba(240,180,40,0.10);
+  --figma-chip-ok-border: rgba(240,180,40,0.24);
+  --figma-chip-ok-label: #F0B429;
+  --figma-chip-warn-bg: rgba(190,90,60,0.12);
+  --figma-chip-warn-border: rgba(190,90,60,0.26);
+  --figma-chip-warn-label: #E9A36D;
+  --figma-score-ok: #D9B85C;
+  --figma-score-mid: #F0B429;
+  --figma-score-bad: #E9A36D;
   --shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
+
+[data-tema="graphite"] {
+  --bg: #141414;
+  --bg2: #1F1F1F;
+  --border: #333333;
+  --border2: #2A2A2A;
+  --text: #F4F4F5;
+  --text2: #D4D4D8;
+  --text3: #A1A1AA;
+  --text4: #71717A;
+  --hdr-bg: #151515;
+  --hdr-border: #2B2B2B;
+  --card-bg: #242424;
+  --input-bg: #181818;
+  --input-border: #3A3A3A;
+  --upload-bg: #202020;
+  --upload-border: #383838;
+  --tab-bg: #242424;
+  --tab-border: #383838;
+  --thead-bg: #1D1D1D;
+  --row-hover: #2A2A2A;
+  --row-border: #303030;
+  --price-color: #A78BFA;
+  --marka-color: #F4F4F5;
+  --tarih-color: #A1A1AA;
+  --arasinda-color: #71717A;
+  --badge-bg: rgba(167,139,250,0.14);
+  --badge-color: #C4B5FD;
+  --badge-border: rgba(167,139,250,0.24);
+  --figma-panel-bg: #202020;
+  --figma-panel-border: #353535;
+  --figma-panel-shadow: rgba(0,0,0,0.28);
+  --figma-chip-ok-bg: #252525;
+  --figma-chip-ok-border: #3A3A3A;
+  --figma-chip-ok-label: #D4D4D8;
+  --figma-chip-warn-bg: rgba(245,158,11,0.10);
+  --figma-chip-warn-border: rgba(245,158,11,0.24);
+  --figma-chip-warn-label: #FBBF24;
+  --figma-score-ok: #86EFAC;
+  --figma-score-mid: #C4B5FD;
+  --figma-score-bad: #FBBF24;
+  --shadow: 0 14px 34px rgba(0,0,0,0.34);
+}
+
+[data-tema="graphite"] .hdr{box-shadow:0 1px 0 rgba(255,255,255,0.04)}
+[data-tema="graphite"] .card,
+[data-tema="graphite"] .upload,
+[data-tema="graphite"] .tabs,
+[data-tema="graphite"] .ctx-menu,
+[data-tema="graphite"] .afis-modal,
+[data-tema="graphite"] .company-modal,
+[data-tema="graphite"] .help-modal{box-shadow:0 18px 46px rgba(0,0,0,0.24)}
+[data-tema="graphite"] .figma-control-group{background:#242424!important;border-color:#383838!important;box-shadow:0 18px 42px rgba(0,0,0,.22)!important}
+[data-tema="graphite"] .figma-control-head{border-bottom-color:#333!important}
+[data-tema="graphite"] .figma-control-title{color:#F4F4F5!important}
+[data-tema="graphite"] .figma-control-sub{color:#A1A1AA!important}
+[data-tema="graphite"] .figma-control-group label{color:#D4D4D8!important}
+[data-tema="graphite"] .figma-control-group select,
+[data-tema="graphite"] .figma-control-group input{background:#181818!important;border-color:#3A3A3A!important;color:#F4F4F5!important}
+[data-tema="graphite"] .figma-flow-tabs,
+[data-tema="graphite"] .figma-flow-summary{background:#242424!important;border-color:#383838!important}
+[data-tema="graphite"] .figma-flow-summary-title{color:#F4F4F5!important}
+[data-tema="graphite"] .figma-flow-summary-line{color:#A1A1AA!important}
+[data-tema="graphite"] .figma-price-preview{background:#1E1E1E!important;border-color:#383838!important}
+[data-tema="graphite"] .figma-price-preview-card{background:#101010!important;border-color:#333!important}
+[data-tema="graphite"] .figma-price-preview-copy strong{color:#F4F4F5!important}
+[data-tema="graphite"] .figma-price-preview-copy span{color:#A1A1AA!important}
+[data-tema="graphite"] #figmaOnKontrol{background:#242424!important;border-color:#383838!important;box-shadow:0 18px 42px rgba(0,0,0,.22)!important}
+[data-tema="graphite"] #userDropdown{background:#2A2A2A!important;border-color:#3A3A3A!important;border-radius:14px!important;box-shadow:0 24px 64px rgba(0,0,0,.42)!important}
+[data-tema="graphite"] #userDropdown > div:first-child{background:#303030!important}
+[data-tema="graphite"] #userMenuBtn{background:#242424!important;border-color:#3A3A3A!important}
+[data-tema="graphite"] #userMenuBtn:hover{background:#2D2D2D!important}
+.profile-social-card{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 6px 6px;padding:10px 11px;border-radius:12px;border:1px solid var(--border);background:linear-gradient(135deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025));color:var(--text);text-decoration:none;transition:background .16s ease,border-color .16s ease,transform .16s ease}
+.profile-social-card:hover{transform:translateY(-1px);background:linear-gradient(135deg,rgba(99,102,241,0.16),rgba(255,255,255,0.04));border-color:rgba(129,140,248,0.28)}
+.profile-social-icon{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;color:#fff;background:#111;border:1px solid rgba(255,255,255,0.12);flex-shrink:0}
+.profile-social-icon svg{width:15px;height:15px}
+.profile-social-copy{min-width:0;flex:1}
+.profile-social-copy strong{display:block;color:var(--text);font-size:12px;line-height:1.2;font-weight:800}
+.profile-social-copy span{display:block;color:var(--text3);font-size:11px;line-height:1.35;margin-top:2px}
+.profile-social-arrow{color:var(--text3);font-size:13px;font-weight:800}
 
 /* Tema butonları */
 .tema-btns { display:flex; gap:4px; }
@@ -124,6 +241,181 @@ body, .card, .field input, table, td, th, .inp-row input, .hdr, .tabs, .tab, .up
   transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
+/* Insertmill UI system refresh */
+:root{
+  --ui-font:'Inter','Geist',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --ui-canvas:#141414;
+  --ui-header:#121212;
+  --ui-surface:#1F1F1F;
+  --ui-surface-2:#242424;
+  --ui-surface-3:#2A2A2A;
+  --ui-input:#181818;
+  --ui-border:#333333;
+  --ui-border-strong:#3D3D3D;
+  --ui-text:#F4F4F5;
+  --ui-text-2:#D4D4D8;
+  --ui-text-3:#A1A1AA;
+  --ui-text-4:#71717A;
+  --ui-accent:#8B5CF6;
+  --ui-accent-hover:#7C3AED;
+  --ui-accent-soft:rgba(139,92,246,.13);
+  --ui-success:#16A34A;
+  --ui-success-soft:rgba(22,163,74,.12);
+  --ui-warning:#F59E0B;
+  --ui-warning-soft:rgba(245,158,11,.12);
+  --ui-danger:#EF4444;
+  --ui-danger-soft:rgba(239,68,68,.12);
+  --ui-shadow:0 18px 46px rgba(0,0,0,.22);
+  --ui-radius:12px;
+  --ui-radius-lg:16px;
+}
+[data-tema="gunduz"]{
+  --ui-canvas:#F6F7F9;
+  --ui-header:#FFFFFF;
+  --ui-surface:#FFFFFF;
+  --ui-surface-2:#F8FAFC;
+  --ui-surface-3:#EEF2F7;
+  --ui-input:#FFFFFF;
+  --ui-border:#E1E7EF;
+  --ui-border-strong:#CBD5E1;
+  --ui-text:#18181B;
+  --ui-text-2:#3F3F46;
+  --ui-text-3:#71717A;
+  --ui-text-4:#A1A1AA;
+  --ui-accent-soft:rgba(124,58,237,.10);
+  --ui-shadow:0 18px 46px rgba(15,23,42,.08);
+}
+body{font-family:var(--ui-font)!important;background:var(--ui-canvas)!important;color:var(--ui-text)!important;font-weight:500}
+.hdr{background:var(--ui-header)!important;border-bottom:1px solid var(--ui-border)!important;box-shadow:none!important}
+.hdr-title{font-weight:700!important;color:var(--ui-text)!important;letter-spacing:0!important}
+.hdr-sub,.card-hdr h3 span,.upload p,.field label,th,.tarih-c,.arasinda-c{color:var(--ui-text-3)!important}
+.wrap{max-width:1260px}
+.card,.tabs,.upload,.ctx-menu,.afis-modal,.help-modal,.company-modal,#settingsPage .s-card{background:var(--ui-surface)!important;border-color:var(--ui-border)!important;box-shadow:0 1px 0 rgba(255,255,255,.03)!important}
+.card{border-radius:var(--ui-radius-lg)!important}
+.card-hdr{border-bottom-color:var(--ui-border)!important}
+.card-hdr h3,.upload h2,#settingsPage .s-card-title{color:var(--ui-text)!important;font-weight:700!important;letter-spacing:0!important}
+.tabs{gap:4px!important;padding:5px!important;border-radius:14px!important}
+.tab,.figma-flow-tab{font-weight:600!important;color:var(--ui-text-3)!important;letter-spacing:0!important}
+.tab:hover,.figma-flow-tab:hover{background:var(--ui-surface-3)!important;color:var(--ui-text)!important}
+.tab.active,.figma-flow-tab.active{background:var(--ui-accent)!important;color:#fff!important;box-shadow:none!important}
+.btn,.btn-primary,.btn-green,.btn-ghost,.btn-add,#settingsPage .s-save-btn{font-family:var(--ui-font)!important;font-weight:700!important;letter-spacing:0!important;box-shadow:none!important}
+.btn-primary,.btn-add,#settingsPage .s-save-btn,[style*="linear-gradient(135deg,#6366f1,#8b5cf6)"],[style*="linear-gradient(135deg,#6D5DF6,#8B5CF6)"],[style*="linear-gradient(135deg,#7c3aed,#6366f1)"]{background:var(--ui-accent)!important;color:#fff!important;box-shadow:none!important}
+.btn-primary:hover,.btn-add:hover,#settingsPage .s-save-btn:hover{background:var(--ui-accent-hover)!important;box-shadow:none!important}
+.btn-green{background:var(--ui-surface-3)!important;color:var(--ui-text)!important;border:1px solid var(--ui-border-strong)!important}
+.btn-green:hover{background:#303030!important;box-shadow:none!important}
+.btn-ghost,.btn-del{background:var(--ui-surface-2)!important;border-color:var(--ui-border)!important;color:var(--ui-text-2)!important}
+.btn-ghost:hover,.btn-del:hover{background:var(--ui-surface-3)!important;color:var(--ui-text)!important;border-color:var(--ui-border-strong)!important}
+.field input,.inp-row input,#settingsPage .s-inp,.figma-control-group select,.figma-control-group input,select,input,textarea{font-family:var(--ui-font)!important;background:var(--ui-input)!important;border-color:var(--ui-border)!important;color:var(--ui-text)!important}
+.field input:focus,.inp-row input:focus,#settingsPage .s-inp:focus,.figma-control-group select:focus,.figma-control-group input:focus{border-color:var(--ui-accent)!important;box-shadow:0 0 0 3px var(--ui-accent-soft)!important;background:#1B1B1B!important}
+.upload{border-style:dashed!important}
+.upload::before{background:radial-gradient(ellipse at center,rgba(139,92,246,.10) 0%,transparent 70%)!important}
+.upload:hover,.upload.drag-over{border-color:rgba(139,92,246,.48)!important;background:rgba(139,92,246,.07)!important}
+.upload-ico{filter:none!important;opacity:.86}
+thead tr,.inp-row{background:#1B1B1B!important}
+th{font-weight:700!important;letter-spacing:.03em!important}
+td{color:var(--ui-text-2)!important}
+tbody tr:hover td{background:#222!important}
+.marka{color:var(--ui-text)!important;font-weight:700!important}
+.price{color:#C4B5FD!important;font-weight:800!important}
+.badge{background:var(--ui-accent-soft)!important;border-color:rgba(139,92,246,.25)!important;color:#C4B5FD!important}
+.ai-status.loading,.s-tag-warn{background:var(--ui-warning-soft)!important;border-color:rgba(245,158,11,.25)!important;color:#FBBF24!important}
+.ai-status.success{background:var(--ui-success-soft)!important;border-color:rgba(22,163,74,.24)!important;color:#86EFAC!important}
+.ai-status.error{background:var(--ui-danger-soft)!important;border-color:rgba(239,68,68,.24)!important;color:#FCA5A5!important}
+.figma-flow-tabs,.figma-flow-summary,.figma-control-group,#figmaOnKontrol,.figma-quality-score,.figma-quality-card,.figma-quality-message,.figma-decision-note,.figma-price-preview{background:var(--ui-surface-2)!important;border-color:var(--ui-border)!important;box-shadow:none!important}
+.figma-flow-summary-badge{background:var(--ui-success)!important;color:#fff!important;box-shadow:none!important}
+.figma-flow-step{background:rgba(255,255,255,.08)!important}
+.figma-flow-copy strong,.figma-flow-summary-title,.figma-control-title,.figma-quality-card b,.figma-decision-note strong,.figma-price-preview-copy strong{color:var(--ui-text)!important;font-weight:800!important}
+.figma-flow-copy span,.figma-flow-summary-line,.figma-control-sub,.figma-decision-note span,.figma-price-preview-copy span{color:var(--ui-text-3)!important;font-weight:500!important}
+.figma-control-head{border-bottom-color:var(--ui-border)!important}
+.figma-control-group label{color:var(--ui-text-2)!important;font-weight:700!important}
+.figma-quality-card.warn{background:var(--ui-warning-soft)!important;border-color:rgba(245,158,11,.25)!important}
+.figma-quality-meter i{background:linear-gradient(90deg,var(--ui-warning),var(--ui-success))!important}
+.mapping-overlay,#mappingResult,#mappingAnaliz{background:transparent!important}
+.mapping-status-title{color:var(--ui-text)!important;font-weight:700!important}
+.mapping-status-detail{color:var(--ui-text-3)!important}
+.mapping-status-icon{background:var(--ui-success-soft)!important;color:#86EFAC!important}
+#settingsPage{font-family:var(--ui-font)!important;background:var(--ui-canvas)!important}
+#settingsPage .s-nav{background:var(--ui-header)!important;border-bottom-color:var(--ui-border)!important}
+#settingsPage .s-sidebar{border-right-color:var(--ui-border)!important}
+#settingsPage .s-nav-item{font-weight:600!important;color:var(--ui-text-3)!important}
+#settingsPage .s-nav-item:hover{background:var(--ui-surface-2)!important;color:var(--ui-text)!important}
+#settingsPage .s-nav-item.active{background:var(--ui-accent-soft)!important;color:#DDD6FE!important}
+#settingsPage .s-card-desc,#settingsPage .s-help-text{color:var(--ui-text-3)!important}
+#settingsPage .s-lbl,#settingsPage .s-section-lbl{color:var(--ui-text-4)!important;letter-spacing:.04em!important}
+#settingsPage .s-api-box.claude,#settingsPage .s-api-box.openai,#settingsPage .s-help-card,#settingsPage .s-tag-info{background:var(--ui-surface-2)!important;border-color:var(--ui-border)!important}
+#userDropdown{background:var(--ui-surface-2)!important;border-color:var(--ui-border)!important;box-shadow:var(--ui-shadow)!important}
+.profile-social-card{background:var(--ui-surface)!important;border-color:var(--ui-border)!important}
+.profile-social-card:hover{background:var(--ui-surface-3)!important;border-color:var(--ui-border-strong)!important}
+.theme-segment{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;border-radius:16px;background:#101010;border:1px solid var(--ui-border);width:118px}
+.theme-choice{height:30px;border:0;border-radius:12px;background:transparent;color:var(--ui-text-3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .16s,color .16s,box-shadow .16s}
+.theme-choice svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.theme-choice.active{background:var(--ui-surface-3);color:var(--ui-text);box-shadow:0 1px 0 rgba(255,255,255,.05) inset}
+[data-tema="gunduz"] .theme-segment{background:#F4F6F8;border-color:#E1E7EF}
+[data-tema="gunduz"] .theme-choice.active{background:#FFFFFF;box-shadow:0 1px 3px rgba(15,23,42,.10)}
+.theme-segment + div{display:none!important}
+
+.app-shell{display:block;max-width:none;margin:0;padding:20px 20px 20px 260px}
+body.app-shell-locked .app-shell{visibility:hidden;pointer-events:none}
+.app-sidebar{position:fixed;left:20px;top:84px;width:220px;height:calc(100vh - 104px);display:flex;flex-direction:column;gap:18px;padding:12px 10px;background:#101010;border:1px solid var(--ui-border);border-radius:18px;z-index:1000}
+[data-tema="gunduz"] .app-sidebar{background:#FFFFFF;border-color:#E1E7EF}
+.app-side-brand{padding:10px 12px 8px;font-size:16px;font-weight:800;color:var(--ui-text);letter-spacing:-.01em}
+.app-side-section{display:flex;flex-direction:column;gap:4px}
+.app-side-label{display:none;padding:0 12px 6px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ui-text-4)}
+.app-nav-item{width:100%;display:flex;align-items:center;gap:10px;border:0;border-radius:12px;background:transparent;color:var(--ui-text-3);padding:10px 12px;font-family:var(--ui-font);font-size:0;font-weight:700;cursor:pointer;text-align:left;transition:background .16s,color .16s}
+.app-nav-item::after{content:attr(data-label);font-size:13px;font-weight:700;line-height:1.2}
+.app-nav-item:hover{background:var(--ui-surface);color:var(--ui-text)}
+.app-nav-item.active{background:var(--ui-surface-2);color:var(--ui-text)}
+[data-tema="gunduz"] .app-nav-item.active{background:#F1F5F9}
+.app-nav-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.app-sidebar-bottom{margin-top:auto;display:flex;flex-direction:column;gap:6px;min-height:48px}
+.app-bottom-action{width:100%;display:flex;align-items:center;gap:10px;border:0;border-radius:12px;background:transparent;color:var(--ui-text-3);padding:9px 12px;font-family:var(--ui-font);font-size:13px;font-weight:700;cursor:pointer;text-align:left;transition:background .16s,color .16s}
+.app-bottom-action:hover{background:var(--ui-surface);color:var(--ui-text)}
+.app-bottom-action svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.app-mode-wrap{position:relative}
+.mode-popover{display:none;position:absolute;left:100%;bottom:0;margin-left:10px;width:192px;padding:6px;background:#1D1D23;border:1px solid #31313A;border-radius:7px;box-shadow:0 18px 54px rgba(0,0,0,.48);z-index:220}
+.mode-popover.open{display:block}
+.mode-option{width:100%;height:36px;border:0;border-radius:6px;background:transparent;color:var(--ui-text-2);display:flex;align-items:center;gap:10px;padding:0 10px;font-family:var(--ui-font);font-size:13px;font-weight:650;cursor:pointer;text-align:left}
+.mode-option:hover{background:#2B2B34;color:var(--ui-text)}
+.mode-option svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;color:var(--ui-text-3)}
+.mode-option .mode-check{margin-left:auto;color:var(--ui-accent);display:none}
+.mode-option.active .mode-check{display:block}
+[data-tema="gunduz"] .mode-popover{background:#FFFFFF;border-color:#E1E7EF;box-shadow:0 18px 44px rgba(15,23,42,.16)}
+[data-tema="gunduz"] .mode-option:hover{background:#F1F5F9}
+.app-workspace{position:relative;z-index:1;min-width:0;background:var(--ui-surface);border:1px solid var(--ui-border);border-radius:24px;min-height:calc(100vh - 104px);overflow:hidden}
+.app-workspace .wrap{max-width:none;margin:0;padding:24px}
+.app-workspace .tabs{margin-bottom:18px}
+#userDock #userMenu{display:flex!important;position:relative!important;left:auto!important;bottom:auto!important;top:auto!important;right:auto!important;width:100%!important;z-index:180!important}
+#userDock #loginBtn{display:none!important}
+#userDock #userMenuBtn{width:100%!important;min-height:40px!important;justify-content:flex-start!important;padding:5px 8px!important;border-radius:16px!important;background:var(--ui-surface-2)!important;border:1px solid var(--ui-border)!important;box-shadow:none!important}
+#userDock #userMenuBtn:hover{background:var(--ui-surface-3)!important}
+#userDock #userMenuBtn #userAvatar{width:26px!important;height:26px!important;border-radius:50%!important}
+#userDock #userMenuBtn #userName{flex:1!important;max-width:none!important;color:var(--ui-text)!important;font-size:12px!important;font-weight:700!important}
+#userDock #userMenuBtn > svg{display:none!important}
+#userDock #userMenuBtn:after{content:"...";color:var(--ui-text-3);font-size:16px;line-height:1;margin-left:auto;letter-spacing:1px}
+#userDock #userDropdown{position:absolute!important;left:0!important;right:auto!important;top:auto!important;bottom:calc(100% + 10px)!important;min-width:214px!important;padding:6px!important;border-radius:8px!important;background:#15151A!important;border:1px solid #2B2B34!important;box-shadow:0 18px 54px rgba(0,0,0,.52)!important}
+#userDock #userDropdown > div:first-child,
+#userDock #userDropdown > div:nth-child(2){display:none!important}
+#userDock #userDropdown > div[style*="height:1px"]{display:none!important}
+#userDock .profile-social-card{margin:0!important;padding:9px 10px!important;border:0!important;border-radius:6px!important;background:transparent!important;gap:10px!important}
+#userDock .profile-social-card:hover{background:#2B171A!important}
+#userDock .profile-social-icon{width:18px!important;height:18px!important;border:0!important;background:transparent!important;color:var(--ui-text-3)!important;border-radius:0!important}
+#userDock .profile-social-copy strong{font-size:13px!important;font-weight:650!important;color:var(--ui-text-2)!important}
+#userDock .profile-social-copy span{display:none!important}
+#userDock .profile-social-arrow{display:none!important}
+#userDock #userDropdown > div[style*="padding:4px 0"]{padding:0!important}
+#userDock #userDropdown > div[style*="padding:4px 0"] button{height:36px!important;padding:9px 10px!important;border-radius:6px!important;color:var(--ui-text-2)!important;font-size:13px!important;font-weight:650!important}
+#userDock #userDropdown > div[style*="padding:4px 0"] button:hover{background:#2B171A!important}
+#userDock #userDropdown > div[style*="padding:4px 0"]:last-child button{color:var(--ui-text-2)!important}
+@media(max-width:640px){
+  .app-shell{display:grid;grid-template-columns:1fr;padding:12px;gap:12px}
+  .app-sidebar{position:relative;top:0;height:auto;border-radius:16px}
+  .app-side-section{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .app-side-label{display:none}
+  .app-workspace{border-radius:18px;min-height:auto}
+  .app-workspace .wrap{padding:14px}
+  #userDock #userDropdown{left:auto!important;right:0!important;top:calc(100% + 8px)!important;bottom:auto!important}
+}
+
 /* HEADER */
 .hdr{background:var(--hdr-bg);border-bottom:1px solid var(--hdr-border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
 .hdr-brand{display:flex;align-items:center;gap:12px}
@@ -135,7 +427,6 @@ body, .card, .field input, table, td, th, .inp-row input, .hdr, .tabs, .tab, .up
 
 /* LAYOUT */
 .wrap{max-width:1280px;margin:0 auto;padding:2rem}
-
 /* Onboarding */
 .onboarding {
   position:fixed; inset:0; z-index:10000;
@@ -396,6 +687,83 @@ tbody tr:hover td{background:var(--row-hover)}
 .img-wrap img{max-width:100%;max-height:260px;border-radius:10px;display:block;margin:0 auto 16px;object-fit:contain;border:1px solid rgba(255,255,255,0.08)}
 
 #sheetsStatus,#sheetsAiStatus{display:none;margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;text-align:center}
+
+/* FIGMA DESIGN BUILDER */
+.figma-flow-shell{display:flex;flex-direction:column;gap:14px;margin-bottom:16px}
+.figma-flow-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:6px}
+.figma-flow-tab{border:0;border-radius:9px;background:transparent;color:var(--text3);font-family:inherit;cursor:pointer;padding:11px 12px;text-align:left;display:flex;align-items:center;gap:10px;transition:all .18s;min-width:0}
+.figma-flow-tab:hover{background:rgba(124,58,237,.08);color:var(--text2)}
+.figma-flow-tab.active{background:linear-gradient(135deg,#6D5DF6,#8B5CF6);color:#fff;box-shadow:0 10px 26px rgba(109,93,246,.24)}
+.figma-flow-step{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0}
+.figma-flow-tab.active .figma-flow-step{background:rgba(255,255,255,.18)}
+.figma-flow-copy{min-width:0}
+.figma-flow-copy strong{display:block;font-size:13px;font-weight:950;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.figma-flow-copy span{display:block;font-size:11px;font-weight:650;line-height:1.25;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.figma-flow-summary{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:13px 14px}
+.figma-flow-summary-title{font-size:13px;font-weight:950;color:var(--text);margin-bottom:5px}
+.figma-flow-summary-line{font-size:12px;font-weight:650;color:var(--text3);line-height:1.45}
+.figma-flow-summary-badge{font-size:12px;font-weight:900;color:#fff;background:linear-gradient(135deg,#059669,#10B981);border-radius:9px;padding:9px 12px;white-space:nowrap}
+.figma-design-panel-pro{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px!important;margin-bottom:16px!important}
+.figma-control-group{background:#fff;border:1px solid #dbe4ee;border-radius:10px;padding:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;align-content:start;box-shadow:0 10px 28px rgba(15,23,42,.055)}
+.figma-control-group{display:none}
+.figma-design-panel-pro[data-step="format"] .figma-control-group[data-group="frame"],
+.figma-design-panel-pro[data-step="style"] .figma-control-group[data-group="type"],
+.figma-design-panel-pro[data-step="style"] .figma-control-group[data-group="price"],
+.figma-design-panel-pro[data-step="style"] .figma-control-group[data-group="color"],
+.figma-design-panel-pro[data-step="fine"] .figma-control-group[data-group="visual"]{display:grid}
+.figma-design-panel-pro[data-step="format"]{grid-template-columns:1fr!important}
+.figma-design-panel-pro[data-step="style"]{grid-template-columns:1fr 1fr!important}
+.figma-design-panel-pro[data-step="fine"]{grid-template-columns:1fr 1fr!important}
+.figma-control-group[data-group="frame"],.figma-control-group[data-group="type"],.figma-control-group[data-group="visual"],.figma-control-group[data-group="color"]{grid-column:span 1}
+.figma-control-group[data-group="price"]{grid-column:1/-1}
+.figma-control-group[data-group="color"]{grid-template-columns:1fr}
+.figma-control-head{grid-column:1/-1;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:3px;padding-bottom:10px;border-bottom:1px solid #eef2f7}
+.figma-control-title{font-size:13px;font-weight:950;color:#172033;letter-spacing:0;text-transform:none;line-height:1.1}
+.figma-control-sub{font-size:11.5px;color:#64748b;font-weight:650;text-transform:none;letter-spacing:0;line-height:1.45}
+.figma-control-group label{min-width:0!important;font-size:11px!important;color:#334155!important;letter-spacing:0!important;text-transform:none!important;font-weight:850!important;gap:7px!important}
+.figma-control-group select,.figma-control-group input{min-height:42px!important;border-color:#d5dee9!important;border-radius:9px!important;background:#fbfdff!important;color:#111827!important;font-size:13px!important;font-weight:750!important;padding:9px 10px!important}
+.figma-control-group select:focus,.figma-control-group input:focus{border-color:#7c3aed!important;box-shadow:0 0 0 3px rgba(124,58,237,.12)!important}
+.figma-price-preview{grid-column:1/-1;border:1px solid #dbe4ee;border-radius:10px;background:#f8fafc;padding:14px;display:grid;grid-template-columns:132px 1fr;gap:14px;align-items:center}
+.figma-price-preview-card{height:96px;border:1px solid rgba(15,23,42,.08);border-radius:10px;background:#fff;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(15,23,42,.06)}
+.figma-price-preview-brand{position:absolute;left:12px;top:11px;font-size:11px;line-height:1;font-weight:950;color:#171717}
+.figma-price-preview-name{position:absolute;left:12px;top:26px;font-size:10px;line-height:1;color:#555;font-weight:750}
+.figma-price-preview-visual{position:absolute;left:18px;top:43px;width:34px;height:36px;border-radius:8px;background:linear-gradient(180deg,#f7f7f7,#ddd)}
+.figma-price-preview-tag{position:absolute;right:10px;bottom:10px;width:74px;height:31px;border-radius:7px;background:#f24b0f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:950;line-height:1;font-family:Inter,Arial,sans-serif}
+.figma-price-preview-tag svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.figma-price-preview-tag span{position:relative;z-index:1;transform:translateX(4px)}
+.figma-price-preview-copy{min-width:0}
+.figma-price-preview-copy strong{display:block;font-size:13px;color:#172033;font-weight:950;margin-bottom:4px}
+.figma-price-preview-copy span{display:block;font-size:12px;color:#64748b;font-weight:650;line-height:1.45}
+#figmaOnKontrol{background:#fff!important;border-color:#dbe4ee!important;border-radius:12px!important;box-shadow:0 12px 30px rgba(15,23,42,.06)!important}
+#figmaOnKontrol [style*="font-size:14px"]{font-size:15px!important;color:#172033!important}
+.figma-quality-panel{display:grid;grid-template-columns:220px 1fr;gap:14px;align-items:stretch}
+.figma-quality-score{border:1px solid var(--figma-panel-border);border-radius:14px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(248,250,252,.44));display:flex;flex-direction:column;justify-content:space-between;min-height:150px}
+.figma-quality-score strong{font-size:38px;line-height:1;font-weight:950;color:var(--text);letter-spacing:-.04em}
+.figma-quality-score span{font-size:12px;color:var(--text3);font-weight:750;line-height:1.35;margin-top:8px;display:block}
+.figma-quality-meter{height:8px;border-radius:999px;background:rgba(148,163,184,.18);overflow:hidden;margin-top:14px}
+.figma-quality-meter i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#F59E0B,#10B981);width:0%}
+.figma-quality-main{display:flex;flex-direction:column;gap:10px}
+.figma-quality-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.figma-quality-card{border:1px solid var(--figma-chip-ok-border);background:var(--figma-chip-ok-bg);border-radius:12px;padding:11px 12px;min-height:74px}
+.figma-quality-card.warn{border-color:var(--figma-chip-warn-border);background:var(--figma-chip-warn-bg)}
+.figma-quality-card small{display:block;font-size:10px;font-weight:900;color:var(--figma-chip-ok-label);text-transform:uppercase;letter-spacing:.035em;margin-bottom:7px}
+.figma-quality-card.warn small{color:var(--figma-chip-warn-label)}
+.figma-quality-card b{display:block;font-size:14px;font-weight:950;color:var(--text);line-height:1.15}
+.figma-quality-message{border:1px solid var(--border);border-radius:12px;padding:12px 13px;background:var(--card-bg);font-size:12px;font-weight:750;color:var(--text2);line-height:1.5}
+.figma-quality-message.ok{color:var(--figma-score-ok)}
+.figma-decision-note{grid-column:1/-1;border:1px solid var(--border);border-radius:12px;background:var(--card-bg);padding:12px 13px;display:grid;gap:4px}
+.figma-decision-note strong{font-size:12px;color:var(--text);font-weight:950}
+.figma-decision-note span{font-size:11.5px;color:var(--text3);font-weight:650;line-height:1.45}
+[data-tema="graphite"] .figma-quality-score{background:#1E1E1E!important;border-color:#383838!important}
+[data-tema="graphite"] .figma-quality-message,
+[data-tema="graphite"] .figma-decision-note{background:#1E1E1E!important;border-color:#383838!important}
+@media(max-width:900px){.figma-quality-panel{grid-template-columns:1fr}.figma-quality-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.figma-quality-grid{grid-template-columns:1fr}}
+.figma-quick-strip{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.figma-quick-pill{border:1px solid var(--border);background:var(--input-bg);color:var(--text2);border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .18s}
+.figma-quick-pill:hover{border-color:rgba(99,102,241,.35);color:var(--text);background:rgba(99,102,241,.06)}
+@media(max-width:1100px){.figma-design-panel-pro{grid-template-columns:1fr!important}.figma-control-group{grid-column:1!important;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.figma-flow-tabs{grid-template-columns:1fr}.figma-flow-summary{grid-template-columns:1fr}.figma-control-group{grid-template-columns:1fr}}
 
 
 /* ── ANIMATIONS & EFFECTS ── */
@@ -899,66 +1267,123 @@ input[type="checkbox"] {
 }
 .mapping-overlay {
   display:none;
-  border-radius:16px;
+  border-radius:18px;
   overflow:hidden;
   margin-top:1rem;
-  border:1px solid var(--border);
-  background:var(--card-bg);
+  border:1px solid rgba(99,102,241,0.18);
+  background:linear-gradient(180deg,rgba(255,255,255,0.065),rgba(255,255,255,0.025));
+  box-shadow:0 18px 50px rgba(15,23,42,0.10);
   animation:fadeInUp 0.3s ease;
 }
 .mapping-overlay.visible { display:block; }
-.sk-row {
-  background:linear-gradient(90deg,var(--bg2) 25%,var(--bg) 50%,var(--bg2) 75%);
-  background-size:600px 100%;
-  animation:shimmerWave 1.2s infinite;
-  border-radius:8px;
-  height:52px;
-}
-.col-chip {
-  background:var(--card-bg);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:10px 12px;
+.mapping-result-head {
   display:flex;
   align-items:center;
-  gap:8px;
-  animation:fadeInUp 0.35s ease both;
+  justify-content:space-between;
+  gap:16px;
+  padding:18px 20px;
+  margin:-24px -24px 18px;
+  background:linear-gradient(135deg,rgba(99,102,241,0.10),rgba(16,185,129,0.06));
+  border-bottom:1px solid rgba(99,102,241,0.12);
 }
-.col-chip.ok { border-color:rgba(34,197,94,0.3); }
-.col-chip.warn { border-color:rgba(251,191,36,0.4); }
+.mapping-status {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.mapping-status-icon {
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#22c55e,#10b981);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
+  box-shadow:0 10px 24px rgba(16,185,129,0.24);
+  flex-shrink:0;
+}
+.mapping-status-title {
+  font-size:15px;
+  font-weight:800;
+  color:var(--text);
+  letter-spacing:-0.01em;
+}
+.mapping-status-detail {
+  font-size:12px;
+  color:var(--text3);
+  margin-top:2px;
+  line-height:1.4;
+}
+.mapping-next-btn {
+  min-width:132px;
+  padding:10px 18px !important;
+  border-radius:10px !important;
+  box-shadow:0 10px 24px rgba(99,102,241,0.28);
+  font-weight:800 !important;
+}
+.sk-row {
+  background:linear-gradient(90deg,rgba(99,102,241,0.06) 25%,rgba(255,255,255,0.08) 50%,rgba(16,185,129,0.05) 75%);
+  background-size:600px 100%;
+  animation:shimmerWave 1.2s infinite;
+  border:1px solid rgba(148,163,184,0.12);
+  border-radius:12px;
+  height:72px;
+}
+.col-chip {
+  background:linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.035));
+  border:1px solid rgba(148,163,184,0.18);
+  border-radius:12px;
+  padding:12px 13px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  animation:fadeInUp 0.35s ease both;
+  min-height:72px;
+  box-shadow:0 8px 24px rgba(15,23,42,0.05);
+}
+.col-chip.ok { border-color:rgba(34,197,94,0.28); background:linear-gradient(180deg,rgba(34,197,94,0.08),rgba(255,255,255,0.035)); }
+.col-chip.optional { border-color:rgba(99,102,241,0.26); background:linear-gradient(180deg,rgba(99,102,241,0.08),rgba(255,255,255,0.035)); }
+.col-chip.warn { border-color:rgba(251,191,36,0.38); background:linear-gradient(180deg,rgba(251,191,36,0.08),rgba(255,255,255,0.035)); }
 .chip-check {
-  width:20px;height:20px;
-  background:rgba(34,197,94,0.15);
-  border-radius:50%;
+  width:28px;height:28px;
+  background:linear-gradient(135deg,rgba(34,197,94,0.22),rgba(16,185,129,0.12));
+  border:1px solid rgba(34,197,94,0.25);
+  border-radius:9px;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
   animation:checkPop 0.4s ease both;
-  font-size:10px;
+  font-size:12px;
+  font-weight:900;
+  color:#059669;
 }
 .chip-warn {
-  width:20px;height:20px;
-  background:rgba(251,191,36,0.15);
-  border-radius:50%;
+  width:28px;height:28px;
+  background:linear-gradient(135deg,rgba(251,191,36,0.22),rgba(245,158,11,0.10));
+  border:1px solid rgba(251,191,36,0.3);
+  border-radius:9px;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
-  font-size:10px;
+  font-size:12px;
 }
 .badge-ai {
   background:rgba(34,197,94,0.12);
   color:#4ade80;
   font-size:10px;
-  font-weight:600;
-  padding:2px 7px;
+  font-weight:800;
+  padding:4px 8px;
   border-radius:20px;
   white-space:nowrap;
   flex-shrink:0;
 }
 .badge-manual {
-  background:rgba(251,191,36,0.12);
-  color:#fbbf24;
+  background:rgba(99,102,241,0.12);
+  color:#a5b4fc;
   font-size:10px;
-  font-weight:600;
-  padding:2px 7px;
+  font-weight:800;
+  padding:4px 8px;
   border-radius:20px;
   white-space:nowrap;
   flex-shrink:0;
@@ -967,13 +1392,18 @@ input[type="checkbox"] {
   font-size:11px;
   background:var(--input-bg);
   border:1px solid var(--input-border);
-  border-radius:5px;
-  padding:3px 6px;
+  border-radius:7px;
+  padding:5px 7px;
   color:var(--text);
   font-family:inherit;
   outline:none;
   width:100%;
   margin-top:3px;
+}
+@media(max-width:760px){
+  .mapping-result-head{flex-direction:column;align-items:stretch}
+  .mapping-next-btn{width:100%;justify-content:center}
+  .col-chip{min-height:66px}
 }
 
 @media print{.hdr,.tabs,.upload,.card-hdr .btn,.export-bar,.inp-row,.ai-badge,#sheetsStatus{display:none!important}body{background:#fff;color:#000}.card{border:none;box-shadow:none;transform:none}.price{color:#000!important}.marka{color:#000!important}}
@@ -1438,13 +1868,31 @@ html, body { overflow-x: hidden; }
                   <div id="logoDominantRenk" style="display:none;width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);flex-shrink:0"></div>
                 </div>
               </div>
-            </div>
+          </div>
             <input type="file" id="settingsLogoInput" accept="image/*" style="display:none" onchange="settingsLogoYukle(this)">
+          </div>
+          <div class="s-field">
+            <label class="s-lbl">Kurumsal Slogan Gorseli</label>
+            <div style="display:flex;align-items:center;gap:14px">
+              <div class="s-logo-box" id="settingsSloganBox" onclick="document.getElementById('settingsSloganInput').click()" style="width:220px;height:104px">
+                <img id="settingsSloganImg" src="" style="display:none;width:100%;height:100%;object-fit:contain">
+                <span id="settingsSloganPlaceholder" style="font-size:18px">Slogan</span>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px">Maskot + slogan PNG onerilir</div>
+                <div style="display:flex;gap:6px;margin-top:4px;align-items:center">
+                  <button onclick="document.getElementById('settingsSloganInput').click()" style="padding:5px 12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);border-radius:6px;color:#a5b4fc;font-size:11px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">Yukle</button>
+                  <button onclick="settingsSloganSil()" style="padding:5px 10px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:6px;color:#f87171;font-size:11px;cursor:pointer;font-family:'Geist',sans-serif">Sil</button>
+                </div>
+              </div>
+            </div>
+            <input type="file" id="settingsSloganInput" accept="image/*" style="display:none" onchange="settingsSloganYukle(this)">
           </div>
           <div class="s-grid2">
             <div class="s-field"><label class="s-lbl">Firma Adı</label><input class="s-inp" type="text" id="set-companyName" placeholder="Kesmar Market" onfocus="settingsHelpGoster('set-companyName')"></div>
             <div class="s-field"><label class="s-lbl">Slogan</label><input class="s-inp" type="text" id="set-companySlogan" placeholder="Her evin ihtiyacı" onfocus="settingsHelpGoster('set-companySlogan')"></div>
             <div class="s-field"><label class="s-lbl">Website</label><input class="s-inp" type="url" id="set-companyWebsite" placeholder="www.kesmar.com.tr" onfocus="settingsHelpGoster('set-companyWebsite')"></div>
+            <div class="s-field"><label class="s-lbl">Sosyal Hesap</label><input class="s-inp" type="text" id="set-companySocial" placeholder="@kesmarofficial" onfocus="settingsHelpGoster('set-companySocial')"></div>
             <div class="s-field"><label class="s-lbl">Telefon</label><input class="s-inp" type="text" id="set-companyPhone" placeholder="0212 000 00 00" onfocus="settingsHelpGoster('set-companyPhone')"></div>
           </div>
           <div class="s-field"><label class="s-lbl">Adres</label><input class="s-inp" type="text" id="set-companyAddress" placeholder="İstanbul, Türkiye" onfocus="settingsHelpGoster('set-companyAddress')"></div>
@@ -1776,8 +2224,20 @@ html, body { overflow-x: hidden; }
         <!-- Tema + Dil -->
         <div style="padding:10px 12px 8px">
           <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">Tema</div>
+          <div class="theme-segment" style="margin-bottom:10px" aria-label="Tema secimi">
+            <button class="theme-choice" onclick="setTema('system')" id="dd-tema-system" title="Bilgisayar temasi" aria-label="Bilgisayar temasi">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="12" rx="1.8"/><path d="M9 20h6M12 16v4"/></svg>
+            </button>
+            <button class="theme-choice" onclick="setTema('gunduz')" id="dd-tema-gunduz" title="Beyaz tema" aria-label="Beyaz tema">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </button>
+            <button class="theme-choice" onclick="setTema('graphite')" id="dd-tema-graphite" title="Koyu tema" aria-label="Koyu tema">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 13.2A7.7 7.7 0 0 1 10.8 3a8 8 0 1 0 10.2 10.2Z"/><path d="M18.5 3.5v4M16.5 5.5h4"/></svg>
+            </button>
+          </div>
           <div style="display:flex;gap:4px;margin-bottom:10px">
             <button onclick="setTema('gece')" id="dd-tema-gece" title="Gece" style="flex:1;padding:7px 4px;border-radius:8px;border:1px solid transparent;background:rgba(99,102,241,0.15);font-size:14px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🌙</button>
+            <button onclick="setTema('graphite')" id="dd-tema-graphite" title="Graphite" style="flex:1;padding:7px 4px;border-radius:8px;border:1px solid transparent;background:rgba(255,255,255,0.04);font-size:14px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">◆</button>
             <button onclick="setTema('gunduz')" id="dd-tema-gunduz" title="Gündüz" style="flex:1;padding:7px 4px;border-radius:8px;border:1px solid transparent;background:rgba(255,255,255,0.04);font-size:14px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">☀️</button>
             <button onclick="setTema('goz')" id="dd-tema-goz" title="Göz dostu" style="flex:1;padding:7px 4px;border-radius:8px;border:1px solid transparent;background:rgba(255,255,255,0.04);font-size:14px;cursor:pointer;transition:all 0.15s" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">🟡</button>
           </div>
@@ -1787,6 +2247,20 @@ html, body { overflow-x: hidden; }
             <button onclick="setLang('en')" id="dd-lang-en" style="flex:1;padding:6px 4px;border-radius:8px;border:1px solid transparent;background:rgba(255,255,255,0.04);font-size:11px;font-weight:700;color:var(--text3);cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s">EN</button>
           </div>
         </div>
+        <a class="profile-social-card" href="https://www.instagram.com/insertmill" target="_blank" rel="noopener noreferrer" aria-label="Insertmill Instagram">
+          <span class="profile-social-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+              <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor"/>
+            </svg>
+          </span>
+          <span class="profile-social-copy">
+            <strong>Instagram</strong>
+            <span>Guncellemeler ve ornek insertler</span>
+          </span>
+          <span class="profile-social-arrow">></span>
+        </a>
         <div style="height:1px;background:var(--border);margin:2px 6px"></div>
         <!-- Ayarlar -->
         <div style="padding:4px 0">
@@ -1822,6 +2296,65 @@ html, body { overflow-x: hidden; }
   </div>
 </div>
 
+<div class="app-shell">
+  <aside class="app-sidebar" aria-label="Insertmill navigasyon">
+    <div class="app-side-brand">Insertmill</div>
+    <div class="app-side-section">
+      <button class="app-nav-item active" onclick="appGo('dashboard')" data-app-nav="dashboard" data-label="Dashboard" aria-label="Dashboard">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Dashboard
+      </button>
+      <button class="app-nav-item" onclick="appGo('kampanyalar')" data-app-nav="kampanyalar" data-label="Kampanyalar" aria-label="Kampanyalar">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg>
+        Kampanyalar
+      </button>
+      <button class="app-nav-item" onclick="appGo('urun-havuzu')" data-app-nav="urun-havuzu" data-label="Ürün Havuzu" aria-label="Ürün Havuzu">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="m4 7 3-4h10l3 4"/><path d="M9 12h6"/></svg>
+        Görsel Analiz
+      </button>
+      <button class="app-nav-item" onclick="appGo('marka-profili')" data-app-nav="marka-profili" data-label="Marka Profili" aria-label="Marka Profili">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>
+        Tasarım
+      </button>
+    </div>
+    <div class="app-side-section">
+      <button class="app-nav-item" onclick="appGo('planlar')" data-app-nav="planlar" data-label="Planlar" aria-label="Planlar">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M6 10h12M8 14h8"/><path d="M5 4h14a1 1 0 0 1 1 1v14H4V5a1 1 0 0 1 1-1Z"/></svg>
+        Arşiv
+      </button>
+    </div>
+    <div class="app-sidebar-bottom">
+      <button class="app-bottom-action" onclick="toggleHelp()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.7 2.7 0 0 1 5 1.4c0 1.9-2.5 2.2-2.5 4.1"/><path d="M12 18h.01"/></svg>
+        Help
+      </button>
+      <div class="app-mode-wrap">
+        <button class="app-bottom-action" onclick="toggleModePopover(event)">
+          <svg viewBox="0 0 24 24"><path d="M21 13.2A7.7 7.7 0 0 1 10.8 3a8 8 0 1 0 10.2 10.2Z"/></svg>
+          Dark Mode
+        </button>
+        <div class="mode-popover" id="modePopover">
+          <button class="mode-option" onclick="setTema('gunduz');closeModePopover()" data-mode-option="gunduz">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+            Light Mode
+            <span class="mode-check">✓</span>
+          </button>
+          <button class="mode-option" onclick="setTema('graphite');closeModePopover()" data-mode-option="graphite">
+            <svg viewBox="0 0 24 24"><path d="M21 13.2A7.7 7.7 0 0 1 10.8 3a8 8 0 1 0 10.2 10.2Z"/></svg>
+            Dark Mode
+            <span class="mode-check">✓</span>
+          </button>
+          <button class="mode-option" onclick="setTema('system');closeModePopover()" data-mode-option="system">
+            <svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="12" rx="1.8"/><path d="M9 20h6M12 16v4"/></svg>
+            System <span id="modeSystemLabel" style="color:var(--ui-text-4)"></span>
+            <span class="mode-check">✓</span>
+          </button>
+        </div>
+      </div>
+      <div id="userDock"></div>
+    </div>
+  </aside>
+  <main class="app-workspace">
 <div class="wrap">
   <div class="tabs">
     <button class="tab active" onclick="switchTab('excel')">📂 <span data-i18n="tab_excel">Excel ile Yükle</span></button>
@@ -1867,21 +2400,17 @@ html, body { overflow-x: hidden; }
           </div>
           <!-- Eşleme sonucu -->
           <div id="mappingResult" style="display:none;padding:1.5rem">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px">
-              <div style="display:flex;align-items:center;gap:10px">
-                <div style="width:30px;height:30px;background:rgba(34,197,94,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px">✅</div>
+            <div class="mapping-result-head">
+              <div class="mapping-status">
+                <div class="mapping-status-icon">✓</div>
                 <div>
-                  <div style="font-size:14px;font-weight:600;color:var(--text)" id="matchSummary">Sütunlar eşlendi</div>
-                  <div style="font-size:12px;color:var(--text3);margin-top:1px" id="matchDetail"></div>
+                  <div class="mapping-status-title" id="matchSummary">Sütunlar eşlendi</div>
+                  <div class="mapping-status-detail" id="matchDetail"></div>
                 </div>
               </div>
-              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                <button class="btn btn-ghost" onclick="selectImageFolder()" id="folderBtnStep1" style="white-space:nowrap">📁 Görsel Klasörü Yükle</button>
-                <button class="btn btn-primary" onclick="mappingDevamEt()" style="padding:8px 20px">Devam Et →</button>
-              </div>
+              <button class="btn btn-primary mapping-next-btn" onclick="mappingDevamEt()">Devam Et →</button>
             </div>
-            <div id="colChipsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px"></div>
-            <div id="folderStatus" style="display:none;margin-top:10px;padding:8px 12px;border-radius:8px;font-size:12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;text-align:center"></div>
+            <div id="colChipsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px"></div>
           </div>
         </div>
       </div>
@@ -2180,31 +2709,84 @@ html, body { overflow-x: hidden; }
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:28px;height:28px;background:linear-gradient(135deg,#059669,#10b981);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">3</div>
           <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text)">Tasarimi Olustur</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:1px">Figma frame hazirla; istersen tablo ciktisi al</div>
+            <div style="display:none">
             <div style="font-size:14px;font-weight:700;color:var(--text)">Çıktı Al</div>
             <div style="font-size:12px;color:var(--text3);margin-top:1px">Sheets'e aktar, Excel indir veya yazdır</div>
+            </div>
           </div>
         </div>
       </div>
       <div class="card-body" style="padding:1.25rem 1.5rem;display:flex;flex-direction:column;gap:12px">
 
         <!-- ANA EYLEM: Sheets'e Aktar (ön planda) -->
-        <div style="display:flex;gap:10px;align-items:center">
-          <button class="btn btn-green" onclick="kampanyaSheetsExport()" 
-            style="font-weight:700;font-size:14px;padding:10px 24px;flex:1;justify-content:center;box-shadow:0 2px 12px rgba(16,185,129,0.3)">
-            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:16px;height:16px">
-            Sheets'e Aktar
-          </button>
-        </div>
-
-        <!-- AYIRICI -->
-        <div style="border-top:1px solid var(--border);margin:0 -4px"></div>
-
         <!-- FİGMA ENTEGRASYONU -->
         <div style="padding:14px;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.15);border-radius:12px">
           <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">
             🎨 Figma'da Frame Oluştur
           </div>
           <!-- Boyut seçimi -->
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+            <label style="font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">Sablon</label>
+            <select id="figmaTemplate" onchange="saveFigmaTemplate(this.value)" style="min-width:170px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 10px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none">
+              <option value="market_insert">Market Insert</option>
+              <option value="clean_catalog">Temiz Katalog</option>
+            </select>
+          </div>
+          <div id="figmaSimpleDesignPanel" style="display:grid;grid-template-columns:repeat(5,minmax(112px,1fr));gap:8px;margin-bottom:10px">
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Genislik
+              <input id="figmaDesignWidth" type="number" min="600" max="5000" step="10" onchange="saveFigmaDesignSetting('width',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Yukseklik
+              <input id="figmaDesignHeight" type="number" min="600" max="6000" step="10" onchange="saveFigmaDesignSetting('height',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Layout
+              <select id="figmaDesignLayout" onchange="saveFigmaDesignSetting('layout',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="3x3">3x3</option><option value="3x4">3x4</option><option value="4x3">4x3</option><option value="4x4">4x4</option><option value="5x3">5x3</option><option value="5x4">5x4</option><option value="5x5">5x5</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Rozet Yeri
+              <select id="figmaDesignBadgePlacement" onchange="saveFigmaDesignSetting('badgePlacement',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="right">Sag Ust</option><option value="left">Sol Ust</option><option value="center">Orta</option><option value="full">Genis</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Fiyat
+              <select id="figmaDesignPriceSimple" onchange="saveFigmaDesignSetting('price',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="bar">Bant</option><option value="label01">Etiket 01</option><option value="angled">Kesik Etiket</option><option value="sticker">Sticker</option><option value="bold">Buyuk</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Tipografi
+              <select id="figmaDesignTypography" onchange="saveFigmaDesignSetting('typography',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="inter">Inter</option><option value="arial">Arial</option><option value="helvetica">Helvetica</option><option value="roboto">Roboto</option><option value="montserrat">Montserrat</option><option value="poppins">Poppins</option><option value="nunito">Nunito Sans</option><option value="opensans">Open Sans</option><option value="lato">Lato</option><option value="oswald">Oswald</option><option value="bebas">Bebas Neue</option><option value="barlow">Barlow Condensed</option><option value="anton">Anton</option><option value="din">DIN Condensed</option><option value="futura">Futura</option><option value="avenir">Avenir Next</option><option value="gotham">Gotham</option><option value="proxima">Proxima Nova</option><option value="gilroy">Gilroy</option><option value="custom">Ozel Font</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Font Adi
+              <input id="figmaDesignCustomFont" type="text" placeholder="Figma font adi" onchange="saveFigmaDesignSetting('customFont',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Marka Px
+              <input id="figmaDesignBrandFontSize" type="number" min="8" max="140" step="1" placeholder="Auto" onchange="saveFigmaDesignSetting('brandFontSize',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Urun Px
+              <input id="figmaDesignProductFontSize" type="number" min="8" max="140" step="1" placeholder="Auto" onchange="saveFigmaDesignSetting('productFontSize',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Gorsel Dolulugu
+              <select id="figmaDesignImageScale" onchange="saveFigmaDesignSetting('imageScale',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="standard">Optik Denge</option><option value="large">Daha Tok</option><option value="xlarge">Maksimum Vurgu</option><option value="compact">Ferah</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Yerlesim Kurali
+              <select id="figmaDesignImageMode" onchange="saveFigmaDesignSetting('imageMode',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="fit">Orani Koru</option><option value="fill">Alani Doldur</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Fiyat Px
+              <input id="figmaDesignPriceFontSize" type="number" min="12" max="180" step="1" placeholder="Auto" onchange="saveFigmaDesignSetting('priceFontSize',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0">
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Ust Fill
+              <select id="figmaDesignHeroFill" onchange="saveFigmaDesignSetting('heroFill',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="solid">Duz</option><option value="soft">Soft Gradient</option><option value="strong">Guclu Gradient</option><option value="reverse">Ters Gradient</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Gradient 1
+              <div style="display:flex;align-items:center;gap:6px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:4px 6px">
+                <input id="figmaDesignGradientFrom" type="color" onchange="setFigmaGradientColor('gradientFrom',this.value)" style="width:28px;height:24px;border:none;background:transparent;padding:0;flex-shrink:0">
+                <input id="figmaDesignGradientFromHex" type="text" maxlength="7" placeholder="#F54527" oninput="setFigmaGradientColor('gradientFrom',this.value)" style="width:100%;background:transparent;border:none;color:var(--text);font-size:12px;font-family:monospace;outline:none;text-transform:uppercase">
+              </div>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Gradient 2
+              <div style="display:flex;align-items:center;gap:6px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:4px 6px">
+                <input id="figmaDesignGradientTo" type="color" onchange="setFigmaGradientColor('gradientTo',this.value)" style="width:28px;height:24px;border:none;background:transparent;padding:0;flex-shrink:0">
+                <input id="figmaDesignGradientToHex" type="text" maxlength="7" placeholder="#D9904A" oninput="setFigmaGradientColor('gradientTo',this.value)" style="width:100%;background:transparent;border:none;color:var(--text);font-size:12px;font-family:monospace;outline:none;text-transform:uppercase">
+              </div>
+            </label>
+          </div>
           <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
             <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer">
               <input type="radio" name="figmaBoyut" value="1080x1350" checked style="accent-color:#6366f1"> 1080×1350
@@ -2215,6 +2797,31 @@ html, body { overflow-x: hidden; }
             <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text2);cursor:pointer">
               <input type="radio" name="figmaBoyut" value="1200x628" style="accent-color:#6366f1"> 1200×628
             </label>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(5,minmax(112px,1fr));gap:8px;margin-bottom:10px">
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Kolon
+              <select id="figmaDesignColumns" onchange="saveFigmaDesignSetting('columns',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="auto">Otomatik</option><option value="3">3 Kolon</option><option value="4">4 Kolon</option><option value="5">5 Kolon</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Logo
+              <select id="figmaDesignLogo" onchange="saveFigmaDesignSetting('logo',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="small">Kucuk</option><option value="medium">Orta</option><option value="large">Buyuk</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Rozet
+              <select id="figmaDesignBadge" onchange="saveFigmaDesignSetting('badge',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="medium">Orta</option><option value="large">Buyuk</option><option value="hero">Hero</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Fiyat
+              <select id="figmaDesignPrice" onchange="saveFigmaDesignSetting('price',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="bar">Bant</option><option value="sticker">Sticker</option><option value="bold">Buyuk</option></select>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Siklik
+              <select id="figmaDesignDensity" onchange="saveFigmaDesignSetting('density',this.value)" style="background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:7px 8px;color:var(--text);font-size:12px;font-family:'Geist',sans-serif;outline:none;text-transform:none;font-weight:600;letter-spacing:0"><option value="airy">Ferah</option><option value="balanced">Dengeli</option><option value="tight">Siki</option></select>
+            </label>
+          </div>
+          <div id="figmaOnKontrol" style="display:none;margin-bottom:10px;padding:14px;background:var(--figma-panel-bg);border:1px solid var(--figma-panel-border);border-radius:12px;box-shadow:0 10px 26px var(--figma-panel-shadow)">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;color:var(--text)"><span style="width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#f24e1e,#a259ff 48%,#1abcfe);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800">F</span>Figma On Kontrol</div>
+              <div id="figmaHazirSkor" style="font-size:13px;font-weight:800;color:var(--badge-color)">Kontrol bekleniyor</div>
+            </div>
+            <div id="figmaKontrolGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px"></div>
+            <div id="figmaKontrolUyari" style="margin-top:10px;font-size:12px;color:var(--text2);line-height:1.45;font-weight:600"></div>
           </div>
           <button onclick="figmaFrameOlustur()"
             style="width:100%;padding:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:9px;
@@ -2228,6 +2835,9 @@ html, body { overflow-x: hidden; }
 
         <!-- İKİNCİL: Excel + Görsel Klasörü -->
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="kampanyaSheetsExport()" title="Opsiyonel: tablo verisini Google Sheets'e gonder">
+            <img src="https://www.gstatic.com/images/branding/product/1x/sheets_2020q4_48dp.png" style="width:14px;height:14px"> Sheets'e Gönder
+          </button>
           <button class="btn btn-ghost" onclick="exportExcel()">⬇ Excel İndir</button>
           <div style="flex:1"></div>
           <button class="btn btn-ghost" onclick="window.print()">🖨 Yazdır</button>
@@ -2239,6 +2849,8 @@ html, body { overflow-x: hidden; }
   </div>
   </div><!-- /excelContent -->
 
+</div>
+  </main>
 </div>
 
 <!-- Context Menu -->
@@ -2494,6 +3106,85 @@ let rows = [];
 let aiPendingRows = [];
 let selectedRows = new Set();
 
+function mountUserDock() {
+  const dock = document.getElementById('userDock');
+  const userMenu = document.getElementById('userMenu');
+  const loginBtn = document.getElementById('loginBtn');
+  if (!dock) return;
+  if (loginBtn && loginBtn.parentElement !== dock) dock.appendChild(loginBtn);
+  if (userMenu && userMenu.parentElement !== dock) dock.appendChild(userMenu);
+  const dd = document.getElementById('userDropdown');
+  const social = dd?.querySelector('.profile-social-card');
+  const menuBlocks = dd ? Array.from(dd.querySelectorAll(':scope > div[style*="padding:4px 0"]')) : [];
+  if (dd && social && menuBlocks[0] && social.previousElementSibling !== menuBlocks[0]) {
+    dd.insertBefore(social, menuBlocks[1] || null);
+  }
+}
+
+function setAppNavActive(section) {
+  document.querySelectorAll('[data-app-nav]').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.appNav === section);
+  });
+}
+
+function setAppShellLocked(locked) {
+  document.body.classList.toggle('app-shell-locked', !!locked);
+}
+
+function appNotice(message) {
+  let toast = document.getElementById('appNoticeToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'appNoticeToast';
+    toast.className = 'rozet-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('goster');
+  clearTimeout(appNotice._timer);
+  appNotice._timer = setTimeout(() => toast.classList.remove('goster'), 2600);
+}
+
+function appGo(section) {
+  setAppNavActive(section);
+  if (section === 'marka-profili') {
+    if (typeof toggleSettings === 'function') {
+      toggleSettings();
+      setTimeout(function() {
+        if (typeof switchSettingsTab === 'function') switchSettingsTab('firma');
+      }, 80);
+    } else {
+      appNotice('Marka profili ayarlari yakinda bu alana baglanacak.');
+    }
+    return;
+  }
+
+  if (section === 'planlar') {
+    appNotice('Planlar yakinda. Uyeligi ve paketleri burada yonetecegiz.');
+    return;
+  }
+
+  switchTab('excel');
+  const targetMap = {
+    dashboard: '.app-workspace',
+    kampanyalar: '.upload',
+    'urun-havuzu': '#excelContent'
+  };
+  const target = document.querySelector(targetMap[section] || '.app-workspace') || document.querySelector('.upload');
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+window.appGo = appGo;
+window.appNotice = appNotice;
+window.setAppNavActive = setAppNavActive;
+
+document.addEventListener('click', function(event) {
+  const navButton = event.target.closest('.app-nav-item[data-app-nav]');
+  if (!navButton) return;
+  event.preventDefault();
+  appGo(navButton.dataset.appNav);
+});
+
 function switchTab(tab) {
   const tabs = ['excel','gorsel','onizleme'];
   document.querySelectorAll('.tabs .tab').forEach((b,i) => b.classList.toggle('active', i === tabs.indexOf(tab)));
@@ -2600,10 +3291,25 @@ function showMappingResult() {
 }
 
 function renderColChips(cols) {
+  cols = cols.map(function(col) {
+    const normalized = String(col.excel || '').toUpperCase()
+      .replace(/Ä°/g,'I').replace(/İ/g,'I').replace(/Ä/g,'G').replace(/Ğ/g,'G')
+      .replace(/Å/g,'S').replace(/Ş/g,'S').replace(/Ã‡/g,'C').replace(/Ç/g,'C')
+      .replace(/Ã–/g,'O').replace(/Ö/g,'O').replace(/Ãœ/g,'U').replace(/Ü/g,'U');
+    if (normalized.includes('ARASINDA') || normalized.includes('GECERLI') || normalized.includes('VALID')) {
+      return { ...col, status: 'optional', mapped: 'Opsiyonel gecerlilik metni' };
+    }
+    return col;
+  });
   const okCount = cols.filter(c => c.status === 'ok').length;
   const warnCount = cols.filter(c => c.status === 'warn').length;
   document.getElementById('matchSummary').textContent = okCount + ' sütun otomatik eşlendi' + (warnCount > 0 ? ', ' + warnCount + ' manuel onay bekliyor' : '');
   document.getElementById('matchDetail').textContent = warnCount === 0 ? '✨ Tüm sütunlar AI tarafından tanındı' : warnCount + ' sütun için alan seçin';
+
+  const optionalCount = cols.filter(c => c.status === 'optional').length;
+  const requiredWarnCount = cols.filter(c => c.status === 'warn').length;
+  document.getElementById('matchSummary').textContent = okCount + ' sutun otomatik eslendi' + (optionalCount > 0 ? ', ' + optionalCount + ' opsiyonel alan varsayilan kullanacak' : '') + (requiredWarnCount > 0 ? ', ' + requiredWarnCount + ' manuel onay bekliyor' : '');
+  document.getElementById('matchDetail').textContent = requiredWarnCount === 0 ? 'Gerekli alanlar hazir. Gecerlilik metni yoksa Kampanya Ayarlari kullanilir.' : requiredWarnCount + ' sutun icin alan secin';
 
   const grid = document.getElementById('colChipsGrid');
   grid.innerHTML = '';
@@ -2613,12 +3319,12 @@ function renderColChips(cols) {
     chip.className = 'col-chip ' + col.status;
     chip.style.animationDelay = (i * 60) + 'ms';
 
-    if (col.status === 'ok') {
+    if (col.status === 'ok' || col.status === 'optional') {
       chip.innerHTML = `
         <div class="chip-check">✓</div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${col.excel}</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:1px">${col.mapped}</div>
+          <div style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px">${col.mapped}</div>
+          <div style="font-size:13px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${col.excel}</div>
         </div>
         <span class="badge-ai">AI eşledi</span>`;
     } else {
@@ -2635,6 +3341,14 @@ function renderColChips(cols) {
           </select>
         </div>
         <span class="badge-manual">Manuel</span>`;
+    }
+    if (col.status === 'optional') {
+      const check = chip.querySelector('.chip-check');
+      const badge = chip.querySelector('.badge-ai');
+      const desc = chip.querySelector('[style*="font-size:10px"]');
+      if (check) check.textContent = 'i';
+      if (badge) { badge.textContent = 'Opsiyonel'; badge.className = 'badge-manual'; }
+      if (desc) desc.textContent = 'Varsayılan metin kullanılır';
     }
     grid.appendChild(chip);
   });
@@ -2689,7 +3403,7 @@ function _realProcessFile(file) {
     const colFiyat    = find('FIYAT','PRICE','YENI');
     const colKod      = find('KOD','CODE');
     const colTarih    = find('TARIH','DATE');
-    const colArasinda = find('ARASINDA','GECERLI');
+    const colArasinda = find('ARASINDA','GECERLI','VALID');
     const colGorsel   = find('GORSEL','URL','IMAGE');
 
     // Format: MARKA sütunu varsa hazır, yoksa stok
@@ -3035,6 +3749,7 @@ function renderTable() {
       }
     });
   }
+  figmaOnKontrolGuncelle();
 }
 
 function updateField(idx,field,val) { rows[idx][field]=val.trim(); scheduleSheetsSync(); }
@@ -3726,6 +4441,10 @@ async function matchImagesToRows() {
 
   const total = Object.keys(folderFiles).length;
   const status = document.getElementById('folderStatus');
+  if (!status) {
+    renderTable();
+    return;
+  }
   status.style.display = 'block';
   status.textContent = `📁 ${total} görsel bulundu, ${matched}/${rows.length} ürünle eşleşti. Sheets'e aktarınca Drive'a yüklenecek.`;
   
@@ -3885,12 +4604,12 @@ async function uploadRowImageToDrive(token, base64Data, fileName) {
 }
 
 // ── TEMA ──────────────────────────────────────────────────────
-function setTema(tema) {
+function setTemaLegacy(tema) {
   document.documentElement.setAttribute('data-tema', tema === 'gece' ? '' : tema);
   document.body.style.background = '';
   localStorage.setItem('tema', tema);
   // Dropdown butonlarını güncelle
-  ['gece','gunduz','goz'].forEach(function(t) {
+  ['gece','graphite','gunduz','goz'].forEach(function(t) {
     var btn = document.getElementById('dd-tema-' + t);
     if (!btn) return;
     var isActive = t === tema;
@@ -3899,10 +4618,61 @@ function setTema(tema) {
   });
 }
 
+function normalizeTema(tema) {
+  if (tema === 'gece' || tema === 'goz') return 'graphite';
+  if (tema === 'light') return 'gunduz';
+  if (tema === 'dark') return 'graphite';
+  return ['system','gunduz','graphite'].includes(tema) ? tema : 'system';
+}
+
+function getSystemTema() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'gunduz' : 'graphite';
+}
+
+function setTema(tema) {
+  tema = normalizeTema(tema);
+  var effectiveTema = tema === 'system' ? getSystemTema() : tema;
+  document.documentElement.setAttribute('data-tema', effectiveTema === 'gunduz' ? 'gunduz' : 'graphite');
+  document.body.style.background = '';
+  localStorage.setItem('tema', tema);
+  ['system','gunduz','graphite'].forEach(function(t) {
+    var btn = document.getElementById('dd-tema-' + t);
+    if (!btn) return;
+    btn.classList.toggle('active', t === tema);
+  });
+  updateModeMenu();
+}
+
+function updateModeMenu() {
+  var tema = normalizeTema(localStorage.getItem('tema') || 'system');
+  document.querySelectorAll('[data-mode-option]').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.modeOption === tema);
+  });
+  var label = document.getElementById('modeSystemLabel');
+  if (label) label.textContent = getSystemTema() === 'gunduz' ? '(Light)' : '(Dark)';
+}
+
+function toggleModePopover(event) {
+  if (event) event.stopPropagation();
+  document.getElementById('modePopover')?.classList.toggle('open');
+}
+
+function closeModePopover() {
+  document.getElementById('modePopover')?.classList.remove('open');
+}
+
 // Sayfa açılınca kayıtlı temayı yükle
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('tema') || 'gece';
+  mountUserDock();
+  const saved = normalizeTema(localStorage.getItem('tema') || 'system');
   setTema(saved);
+  updateModeMenu();
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function() {
+      if (normalizeTema(localStorage.getItem('tema') || 'system') === 'system') setTema('system');
+      updateModeMenu();
+    });
+  }
 });
 
 // ── BULK ACTIONS ──────────────────────────────────────────────
@@ -4021,9 +4791,9 @@ document.addEventListener('keydown', (e) => {
     }
   }
   // Alt + 1/2/3 → tema
-  if (e.altKey && e.key === '1') { e.preventDefault(); setTema('gece'); }
+  if (e.altKey && e.key === '1') { e.preventDefault(); setTema('system'); }
   if (e.altKey && e.key === '2') { e.preventDefault(); setTema('gunduz'); }
-  if (e.altKey && e.key === '3') { e.preventDefault(); setTema('goz'); }
+  if (e.altKey && e.key === '3') { e.preventDefault(); setTema('graphite'); }
   // ? → yardım
   if (e.key === '?' && !isInput) toggleHelp();
 });
@@ -4586,6 +5356,7 @@ function loadSettingsValues() {
   if (document.getElementById('set-companyName')) document.getElementById('set-companyName').value = cp.name || '';
   if (document.getElementById('set-companySlogan')) document.getElementById('set-companySlogan').value = cp.slogan || '';
   if (document.getElementById('set-companyWebsite')) document.getElementById('set-companyWebsite').value = cp.website || '';
+  if (document.getElementById('set-companySocial')) document.getElementById('set-companySocial').value = cp.social || '';
   if (document.getElementById('set-companyPhone')) document.getElementById('set-companyPhone').value = cp.phone || '';
   if (document.getElementById('set-companyAddress')) document.getElementById('set-companyAddress').value = cp.address || '';
   if (document.getElementById('set-campaignText')) document.getElementById('set-campaignText').value = cp.campaignText || '';
@@ -4606,6 +5377,12 @@ function loadSettingsValues() {
     if (img) { img.src = cp.logoBase64; img.style.display = 'block'; }
     if (ph)  ph.style.display = 'none';
   }
+  if (cp.sloganImageBase64) {
+    const img = document.getElementById('settingsSloganImg');
+    const ph  = document.getElementById('settingsSloganPlaceholder');
+    if (img) { img.src = cp.sloganImageBase64; img.style.display = 'block'; }
+    if (ph)  ph.style.display = 'none';
+  }
 
   // API key'leri input'lara gösterme — Supabase'de güvenli saklı
   // Kur
@@ -4621,6 +5398,7 @@ async function saveSettingsAll() {
   cp.name          = document.getElementById('set-companyName')?.value.trim() || cp.name;
   cp.slogan        = document.getElementById('set-companySlogan')?.value.trim() || cp.slogan;
   cp.website       = document.getElementById('set-companyWebsite')?.value.trim() || cp.website;
+  cp.social        = document.getElementById('set-companySocial')?.value.trim() || cp.social;
   cp.phone         = document.getElementById('set-companyPhone')?.value.trim() || cp.phone;
   cp.address       = document.getElementById('set-companyAddress')?.value.trim() || cp.address;
   cp.campaignText  = document.getElementById('set-campaignText')?.value.trim() || cp.campaignText;
@@ -4879,6 +5657,36 @@ function settingsLogoSil() {
   if (ph)  ph.style.display = 'block';
 }
 
+function settingsSloganYukle(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const b64 = e.target.result;
+    const cp = JSON.parse(localStorage.getItem('companyProfile') || '{}');
+    cp.sloganImageBase64 = b64;
+    localStorage.setItem('companyProfile', JSON.stringify(cp));
+    companyProfile = cp;
+    const img = document.getElementById('settingsSloganImg');
+    const ph = document.getElementById('settingsSloganPlaceholder');
+    if (img) { img.src = b64; img.style.display = 'block'; }
+    if (ph) ph.style.display = 'none';
+    figmaOnKontrolGuncelle();
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function settingsSloganSil() {
+  const cp = JSON.parse(localStorage.getItem('companyProfile') || '{}');
+  delete cp.sloganImageBase64;
+  localStorage.setItem('companyProfile', JSON.stringify(cp));
+  companyProfile = cp;
+  const img = document.getElementById('settingsSloganImg');
+  const ph = document.getElementById('settingsSloganPlaceholder');
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  if (ph) ph.style.display = 'block';
+  figmaOnKontrolGuncelle();
+}
+
 function setSettingsColor(type, hex) {
   if (type === 'primary') {
     const el = document.getElementById('set-primaryColor');
@@ -4893,16 +5701,566 @@ function setSettingsColor(type, hex) {
   }
 }
 /* ── END SETTINGS ─────────────────────────────────────────── */
+const FIGMA_TEMPLATE_PRESETS = {
+  market_insert: { label: 'Market Insert', productStyle: 'dense', heroStyle: 'campaign' },
+  clean_catalog: { label: 'Temiz Katalog', productStyle: 'clean', heroStyle: 'minimal' }
+};
+
+function getFigmaTemplate() {
+  const selected = document.getElementById('figmaTemplate')?.value || localStorage.getItem('figma_template') || 'market_insert';
+  return FIGMA_TEMPLATE_PRESETS[selected] || FIGMA_TEMPLATE_PRESETS.market_insert;
+}
+
+function saveFigmaTemplate(value) {
+  localStorage.setItem('figma_template', value || 'market_insert');
+  figmaOnKontrolGuncelle();
+}
+
+function getFigmaDesignSettings() {
+  const width = parseInt(localStorage.getItem('figma_design_width') || '1080', 10);
+  const height = parseInt(localStorage.getItem('figma_design_height') || '1350', 10);
+  const layout = localStorage.getItem('figma_design_layout') || '4x3';
+  const parts = layout.split('x').map(function(v) { return parseInt(v, 10) || 4; });
+  return {
+    width: Math.max(600, Math.min(5000, width || 1080)),
+    height: Math.max(600, Math.min(6000, height || 1350)),
+    layout: layout,
+    layoutColumns: Math.max(3, Math.min(5, parts[0] || 4)),
+    layoutRows: Math.max(3, Math.min(5, parts[1] || 3)),
+    badgePlacement: localStorage.getItem('figma_design_badgePlacement') || 'right',
+    heroFill: localStorage.getItem('figma_design_heroFill') || 'soft',
+    gradientFrom: localStorage.getItem('figma_design_gradientFrom') || '',
+    gradientTo: localStorage.getItem('figma_design_gradientTo') || '',
+    columns: localStorage.getItem('figma_design_columns') || 'auto',
+    logoScale: localStorage.getItem('figma_design_logo') || 'medium',
+    badgeScale: localStorage.getItem('figma_design_badge') || 'large',
+    priceStyle: localStorage.getItem('figma_design_price') || 'sticker',
+    typography: localStorage.getItem('figma_design_typography') || 'inter',
+    customFont: localStorage.getItem('figma_design_customFont') || '',
+    brandFontSize: parseInt(localStorage.getItem('figma_design_brandFontSize') || '0', 10) || 0,
+    productFontSize: parseInt(localStorage.getItem('figma_design_productFontSize') || '0', 10) || 0,
+    priceFontSize: parseInt(localStorage.getItem('figma_design_priceFontSize') || '0', 10) || 0,
+    imageScale: localStorage.getItem('figma_design_imageScale') || 'standard',
+    imageMode: localStorage.getItem('figma_design_imageMode') || 'fit',
+    density: localStorage.getItem('figma_design_density') || 'balanced'
+  };
+}
+
+function saveFigmaDesignSetting(key, value) {
+  localStorage.setItem('figma_design_' + key, value || '');
+  if (key === 'typography') updateFigmaCustomFontVisibility();
+  if (['width','height','layout','brandFontSize','productFontSize','priceFontSize'].includes(key)) updateFigmaTypographyHints();
+  if (['price','typography','priceFontSize','gradientFrom','gradientTo'].includes(key)) updateFigmaPricePreview();
+  updateFigmaFlowSummary();
+  figmaOnKontrolGuncelle();
+}
+
+function normalizeHexColor(value) {
+  let hex = String(value || '').trim();
+  if (!hex) return '';
+  if (hex[0] !== '#') hex = '#' + hex;
+  if (/^#[0-9a-fA-F]{3}$/.test(hex)) {
+    hex = '#' + hex.slice(1).split('').map(function(ch) { return ch + ch; }).join('');
+  }
+  return /^#[0-9a-fA-F]{6}$/.test(hex) ? hex.toUpperCase() : '';
+}
+
+function setFigmaGradientColor(key, value) {
+  const hex = normalizeHexColor(value);
+  const colorId = key === 'gradientFrom' ? 'figmaDesignGradientFrom' : 'figmaDesignGradientTo';
+  const hexId = key === 'gradientFrom' ? 'figmaDesignGradientFromHex' : 'figmaDesignGradientToHex';
+  const colorInput = document.getElementById(colorId);
+  const hexInput = document.getElementById(hexId);
+  if (hexInput && hexInput.value !== String(value).toUpperCase()) hexInput.value = String(value || '').toUpperCase();
+  if (!hex) return;
+  if (colorInput) colorInput.value = hex;
+  if (hexInput) hexInput.value = hex;
+  saveFigmaDesignSetting(key, hex);
+}
+
+function initFigmaDesignControls() {
+  if (!localStorage.getItem('figma_design_card_controls_v2')) {
+    if (!localStorage.getItem('figma_design_price') || localStorage.getItem('figma_design_price') === 'sticker' || localStorage.getItem('figma_design_price') === 'angled') {
+      localStorage.setItem('figma_design_price', 'label01');
+    }
+    if (!localStorage.getItem('figma_design_typography') || ['modern','compact','strong','soft'].includes(localStorage.getItem('figma_design_typography'))) {
+      localStorage.setItem('figma_design_typography', 'inter');
+    }
+    localStorage.setItem('figma_design_card_controls_v2', '1');
+  }
+  if (!localStorage.getItem('figma_design_card_controls_v3')) {
+    localStorage.setItem('figma_design_price', 'label01');
+    localStorage.setItem('figma_design_card_controls_v3', '1');
+  }
+  if (!localStorage.getItem('figma_design_panel_v4')) {
+    if (localStorage.getItem('figma_design_imageScale') === 'large') localStorage.setItem('figma_design_imageScale', 'standard');
+    localStorage.setItem('figma_design_panel_v4', '1');
+  }
+  if (['modern','compact','strong','soft'].includes(localStorage.getItem('figma_design_typography'))) {
+    localStorage.setItem('figma_design_typography', 'inter');
+  }
+  const settings = getFigmaDesignSettings();
+  const gradientFrom = normalizeHexColor(settings.gradientFrom || (companyProfile?.color || '#f54527')) || '#F54527';
+  const gradientTo = normalizeHexColor(settings.gradientTo || (companyProfile?.secondaryColor || companyProfile?.color || '#d9904a')) || '#D9904A';
+  const templateWrap = document.getElementById('figmaTemplate')?.closest('div');
+  if (templateWrap) templateWrap.style.display = 'none';
+  const sizeRadioWrap = document.querySelector('input[name="figmaBoyut"]')?.closest('div');
+  if (sizeRadioWrap) sizeRadioWrap.style.display = 'none';
+  ['figmaDesignColumns','figmaDesignLogo','figmaDesignBadge','figmaDesignPrice','figmaDesignDensity'].forEach(function(id) {
+    const old = document.getElementById(id);
+    const wrap = old?.closest('label');
+    if (wrap) wrap.style.display = 'none';
+  });
+  [
+    ['figmaDesignWidth', settings.width],
+    ['figmaDesignHeight', settings.height],
+    ['figmaDesignLayout', settings.layout],
+    ['figmaDesignBadgePlacement', settings.badgePlacement],
+    ['figmaDesignHeroFill', settings.heroFill],
+    ['figmaDesignGradientFrom', gradientFrom],
+    ['figmaDesignGradientFromHex', gradientFrom],
+    ['figmaDesignGradientTo', gradientTo],
+    ['figmaDesignGradientToHex', gradientTo],
+    ['figmaDesignPriceSimple', settings.priceStyle],
+    ['figmaDesignTypography', settings.typography],
+    ['figmaDesignCustomFont', settings.customFont],
+    ['figmaDesignBrandFontSize', settings.brandFontSize || ''],
+    ['figmaDesignProductFontSize', settings.productFontSize || ''],
+    ['figmaDesignImageScale', settings.imageScale],
+    ['figmaDesignImageMode', settings.imageMode],
+    ['figmaDesignPriceFontSize', settings.priceFontSize || ''],
+    ['figmaDesignColumns', settings.columns],
+    ['figmaDesignLogo', settings.logoScale],
+    ['figmaDesignBadge', settings.badgeScale],
+    ['figmaDesignPrice', settings.priceStyle],
+    ['figmaDesignDensity', settings.density]
+  ].forEach(function(pair) {
+    const el = document.getElementById(pair[0]);
+    if (el) el.value = pair[1];
+  });
+  enhanceFigmaDesignPanelLayout();
+  updateFigmaCustomFontVisibility();
+  updateFigmaTypographyHints();
+  updateFigmaPricePreview();
+}
+
+function updateFigmaCustomFontVisibility() {
+  const custom = document.getElementById('figmaDesignCustomFont');
+  const wrap = custom?.closest('label');
+  const typo = document.getElementById('figmaDesignTypography')?.value;
+  if (wrap) wrap.style.display = typo === 'custom' ? 'flex' : 'none';
+}
+
+function updateFigmaTypographyHints() {
+  const hint = document.getElementById('figmaTypographyHint');
+  if (!hint) return;
+  const settings = getFigmaDesignSettings();
+  const fw = settings.width;
+  const cols = settings.layoutColumns;
+  const pad = Math.round(fw * 0.045);
+  const gap = Math.max(8, Math.round(fw * 0.014));
+  const cardW = Math.floor((fw - pad * 2 - gap * (cols - 1)) / cols);
+  const brandMin = Math.round(cardW * 0.046);
+  const brandMax = Math.round(cardW * 0.056);
+  const productMin = Math.round(cardW * 0.038);
+  const productMax = Math.round(cardW * 0.047);
+  const priceMin = Math.round(cardW * 0.15);
+  const priceMax = Math.round(cardW * 0.20);
+  hint.textContent = 'Oneri: Marka ' + brandMin + '-' + brandMax + ' px · Urun ' + productMin + '-' + productMax + ' px · Fiyat ' + priceMin + '-' + priceMax + ' px';
+}
+
+function updateFigmaPricePreview() {
+  const preview = document.getElementById('figmaPricePreview');
+  if (!preview) return;
+  const settings = getFigmaDesignSettings();
+  const priceStyle = settings.priceStyle || 'label01';
+  const cp = (typeof companyProfile !== 'undefined') ? companyProfile : {};
+  const color = normalizeHexColor(settings.gradientFrom || cp.color || '#F24B0F') || '#F24B0F';
+  const labelSvg = figmaPriceLabelSvg(116, 50).replace(/#F24B0F/g, color);
+  const styleNames = {
+    label01: 'Etiket 01',
+    bar: 'Bant',
+    angled: 'Kesik Etiket',
+    sticker: 'Sticker',
+    bold: 'Buyuk'
+  };
+  const descriptions = {
+    label01: 'Sol kesik form; fiyat sagda vurgu etiketi olarak kullanilir.',
+    bar: 'Kart altina tam genislik sade fiyat bandi verir.',
+    angled: 'Kose kesimli promosyon etiketi hissi verir.',
+    sticker: 'Daha kompakt, rozet gibi fiyat alani kullanir.',
+    bold: 'Buyuk ve tok fiyat vurgusu icin kullanilir.'
+  };
+  let tagHtml = '<div class="figma-price-preview-tag" style="background:' + color + '"><span>144,95</span></div>';
+  if (priceStyle === 'label01') {
+    tagHtml = '<div class="figma-price-preview-tag" style="background:transparent;width:88px;height:38px;border-radius:0">' + labelSvg + '<span>144,95</span></div>';
+  } else if (priceStyle === 'bar') {
+    tagHtml = '<div class="figma-price-preview-tag" style="left:8px;right:8px;width:auto;background:' + color + ';border-radius:6px"><span style="transform:none">144,95</span></div>';
+  } else if (priceStyle === 'bold') {
+    tagHtml = '<div class="figma-price-preview-tag" style="width:82px;height:36px;background:' + color + ';border-radius:7px;font-size:18px"><span style="transform:none">144,95</span></div>';
+  } else if (priceStyle === 'sticker') {
+    tagHtml = '<div class="figma-price-preview-tag" style="width:78px;height:34px;background:' + color + ';border-radius:999px;font-size:16px"><span style="transform:none">144,95</span></div>';
+  }
+  preview.innerHTML =
+    '<div class="figma-price-preview-card">' +
+      '<div class="figma-price-preview-brand">MARKA</div>' +
+      '<div class="figma-price-preview-name">Urun adi 750 ml</div>' +
+      '<div class="figma-price-preview-visual"></div>' +
+      tagHtml +
+    '</div>' +
+    '<div class="figma-price-preview-copy">' +
+      '<strong>' + (styleNames[priceStyle] || 'Fiyat etiketi') + '</strong>' +
+      '<span>' + (descriptions[priceStyle] || 'Secilen fiyat tasarimi burada onizlenir.') + '</span>' +
+    '</div>';
+}
+
+function setFigmaDesignStep(step) {
+  const panel = document.getElementById('figmaSimpleDesignPanel');
+  const safeStep = ['format','style','fine'].includes(step) ? step : 'format';
+  if (panel) panel.dataset.step = safeStep;
+  document.querySelectorAll('.figma-flow-tab').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.step === safeStep);
+  });
+}
+
+function updateFigmaFlowSummary() {
+  const title = document.getElementById('figmaFlowSummaryTitle');
+  const line = document.getElementById('figmaFlowSummaryLine');
+  const badge = document.getElementById('figmaFlowSummaryBadge');
+  if (!title || !line || !badge) return;
+  const settings = getFigmaDesignSettings();
+  const priceMap = { label01: 'Etiket 01', bar: 'Bant', angled: 'Kesik Etiket', sticker: 'Sticker', bold: 'Buyuk' };
+  const imageMap = { standard: 'Optik Denge', large: 'Daha Tok', xlarge: 'Maksimum Vurgu', compact: 'Ferah' };
+  title.textContent = settings.width + 'x' + settings.height + ' / ' + settings.layout + ' / ' + (priceMap[settings.priceStyle] || settings.priceStyle);
+  line.textContent = 'Tipografi: ' + (settings.typography || 'inter') + ' · Gorsel: ' + (imageMap[settings.imageScale] || 'Optik Denge') + ' · Ust alan: ' + (settings.heroFill || 'soft');
+  badge.textContent = rows.length + ' urun';
+}
+
+function enhanceFigmaDesignPanelLayout() {
+  const panel = document.getElementById('figmaSimpleDesignPanel');
+  if (!panel || panel.dataset.enhanced === '1') return;
+  panel.dataset.enhanced = '1';
+  panel.classList.add('figma-design-panel-pro');
+  panel.removeAttribute('style');
+  panel.dataset.step = localStorage.getItem('figma_design_step') || 'format';
+
+  const makeGroup = function(title, sub, key) {
+    const group = document.createElement('div');
+    group.className = 'figma-control-group';
+    group.dataset.group = key;
+    group.innerHTML = '<div class="figma-control-head"><div><div class="figma-control-title">' + title + '</div><div class="figma-control-sub">' + sub + '</div></div></div>';
+    return group;
+  };
+  const frameGroup = makeGroup('Frame', 'Boyut ve yerlesim', 'frame');
+  const typeGroup = makeGroup('Kart Metni', 'Marka, urun adi ve punto', 'type');
+  const visualGroup = makeGroup('Urun Gorseli', 'Hedef doluluk ve kirpma kurali', 'visual');
+  const priceGroup = makeGroup('Fiyat Etiketi', 'Form, punto ve onizleme', 'price');
+  const colorGroup = makeGroup('Kurumsal Renk', 'Ust alan ve gradient', 'color');
+  const groups = [frameGroup, typeGroup, visualGroup, priceGroup, colorGroup];
+
+  const move = function(id, group) {
+    const el = document.getElementById(id);
+    const wrap = el?.closest('label');
+    if (wrap) group.appendChild(wrap);
+  };
+  move('figmaDesignWidth', frameGroup);
+  move('figmaDesignHeight', frameGroup);
+  move('figmaDesignLayout', frameGroup);
+  move('figmaDesignBadgePlacement', frameGroup);
+  move('figmaDesignTypography', typeGroup);
+  move('figmaDesignCustomFont', typeGroup);
+  move('figmaDesignBrandFontSize', typeGroup);
+  move('figmaDesignProductFontSize', typeGroup);
+  move('figmaDesignImageScale', visualGroup);
+  move('figmaDesignImageMode', visualGroup);
+  move('figmaDesignPriceSimple', priceGroup);
+  move('figmaDesignPriceFontSize', priceGroup);
+  move('figmaDesignHeroFill', colorGroup);
+  move('figmaDesignGradientFrom', colorGroup);
+  move('figmaDesignGradientTo', colorGroup);
+
+  const shell = document.createElement('div');
+  shell.className = 'figma-flow-shell';
+  const tabs = document.createElement('div');
+  tabs.className = 'figma-flow-tabs';
+  tabs.innerHTML = `
+    <button type="button" class="figma-flow-tab" data-step="format" onclick="localStorage.setItem('figma_design_step','format');setFigmaDesignStep('format')"><span class="figma-flow-step">1</span><span class="figma-flow-copy"><strong>Format</strong><span>Boyut, grid ve rozet yeri</span></span></button>
+    <button type="button" class="figma-flow-tab" data-step="style" onclick="localStorage.setItem('figma_design_step','style');setFigmaDesignStep('style')"><span class="figma-flow-step">2</span><span class="figma-flow-copy"><strong>Stil</strong><span>Tipografi, fiyat ve renk</span></span></button>
+    <button type="button" class="figma-flow-tab" data-step="fine" onclick="localStorage.setItem('figma_design_step','fine');setFigmaDesignStep('fine')"><span class="figma-flow-step">3</span><span class="figma-flow-copy"><strong>Ince Ayar</strong><span>Gorsel dolulugu ve son kontrol</span></span></button>`;
+  const summary = document.createElement('div');
+  summary.className = 'figma-flow-summary';
+  summary.innerHTML = '<div><div id="figmaFlowSummaryTitle" class="figma-flow-summary-title"></div><div id="figmaFlowSummaryLine" class="figma-flow-summary-line"></div></div><div id="figmaFlowSummaryBadge" class="figma-flow-summary-badge"></div>';
+  panel.parentNode.insertBefore(shell, panel);
+  shell.appendChild(tabs);
+  shell.appendChild(summary);
+  shell.appendChild(panel);
+
+  panel.innerHTML = '';
+  groups.forEach(function(group) { panel.appendChild(group); });
+
+  const hint = document.createElement('div');
+  hint.id = 'figmaTypographyHint';
+  hint.className = 'figma-control-sub';
+  hint.style.gridColumn = '1 / -1';
+  hint.style.marginTop = '2px';
+  const typeNote = document.createElement('div');
+  typeNote.className = 'figma-decision-note';
+  typeNote.innerHTML = '<strong>Metin hiyerarsisi</strong><span>Marka guclu, urun adi okunakli, fiyat ise tasarimin en baskin kararidir. Punto bos kalirsa sistem kart genisligine gore hesaplar.</span>';
+  typeGroup.appendChild(typeNote);
+  typeGroup.appendChild(hint);
+
+  const imageHint = document.createElement('div');
+  imageHint.className = 'figma-decision-note';
+  imageHint.innerHTML = '<strong>Optik doluluk</strong><span>Urun gorseli fiyat etiketiyle cakismadan guvenli alan icinde buyur. Orani Koru kirpmaz, Alani Doldur daha tok sonuc verir.</span>';
+  visualGroup.appendChild(imageHint);
+
+  const pricePreview = document.createElement('div');
+  pricePreview.id = 'figmaPricePreview';
+  pricePreview.className = 'figma-price-preview';
+  const priceNote = document.createElement('div');
+  priceNote.className = 'figma-decision-note';
+  priceNote.innerHTML = '<strong>Fiyat vurgusu</strong><span>Etiket formu ve fiyat puntosu beraber calisir. Uzun fiyatlarda sistem metni etikete sigacak sekilde guvenli limite indirir.</span>';
+  priceGroup.appendChild(priceNote);
+  priceGroup.appendChild(pricePreview);
+
+  updateFigmaTypographyHints();
+  updateFigmaPricePreview();
+  updateFigmaFlowSummary();
+  setFigmaDesignStep(panel.dataset.step);
+}
+function applyFigmaQuickPreset(type) {
+  const presets = {
+    insert: { price: 'label01', typography: 'inter', heroFill: 'strong' },
+    bold: { price: 'bold', typography: 'bebas', heroFill: 'strong' },
+    catalog: { price: 'bar', typography: 'opensans', heroFill: 'soft' }
+  };
+  const preset = presets[type] || presets.insert;
+  Object.keys(preset).forEach(function(key) {
+    localStorage.setItem('figma_design_' + key, preset[key]);
+  });
+  initFigmaDesignControls();
+  figmaOnKontrolGuncelle();
+}
+
+function getBrandProfileForFigma() {
+  const cp = (typeof companyProfile !== 'undefined') ? companyProfile : {};
+  const cleanWebsite = String(cp.website || '').replace(/^https?:\/\//i, '').replace(/\/$/, '');
+  return {
+    name: cp.name || 'Insertmill',
+    slogan: cp.slogan || '',
+    website: cleanWebsite || 'insertmill.com',
+    phone: cp.phone || '',
+    address: cp.address || '',
+    logo: cp.logoBase64 || cp.logo || '',
+    sloganImage: cp.sloganImageBase64 || 'http://localhost:3000/assets/kesmar-kurumsal-slogan.png',
+    priceTagSvg: cp.priceTagSvg || 'http://localhost:3000/assets/fiyat-etiket-01.svg',
+    primaryColor: cp.color || '#f54527',
+    secondaryColor: cp.secondaryColor || cp.color || '#f54527',
+    legalText: cp.campaignSubtext || 'Kampanyamiz stoklarla sinirlidir. Tipografik hatalardan firmamiz sorumlu degildir.',
+    social: cp.social || cp.name || 'insertmill',
+    mascot: cp.mascotBase64 || cp.mascot || ''
+  };
+}
+
+function buildFigmaPayloadMeta(brandProfile, activeTemplate, proTarih, proGecerli) {
+  return {
+    brand: brandProfile,
+    template: {
+      key: document.getElementById('figmaTemplate')?.value || localStorage.getItem('figma_template') || 'market_insert',
+      label: activeTemplate.label,
+      productStyle: activeTemplate.productStyle,
+      heroStyle: activeTemplate.heroStyle,
+      design: getFigmaDesignSettings()
+    },
+    campaign: {
+      dateRange: proTarih || '',
+      validityText: proGecerli || '',
+      legalText: brandProfile.legalText || ''
+    },
+    products: (Array.isArray(rows) ? rows : []).map(function(r) {
+      return {
+        brand: r.marka || '',
+        name: r.urun || '',
+        price: r.fiyat || '',
+        dateRange: r.tarih || '',
+        validityText: r.arasinda || '',
+        hasImage: !!(r.imgPreview || r.imgUrl)
+      };
+    })
+  };
+}
+
+async function figmaImageToDataUrl(url) {
+  if (!url || String(url).startsWith('data:')) return url || '';
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return await new Promise(function(resolve, reject) {
+      const reader = new FileReader();
+      reader.onload = function() { resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch(e) {
+    return url;
+  }
+}
+
+async function figmaTextAsset(url) {
+  if (!url) return '';
+  if (String(url).trim().startsWith('<svg')) return String(url);
+  try {
+    const res = await fetch(url);
+    return await res.text();
+  } catch(e) {
+    return '';
+  }
+}
+
+function figmaPriceLabelSvg(width, height) {
+  const w = Math.max(80, Math.round(width || 209));
+  const h = Math.max(36, Math.round(height || 58));
+  const cut = Math.round(h * 0.42);
+  const radius = Math.round(h * 0.18);
+  return '<svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="M' + cut + ' 0H' + (w - radius) + 'C' + (w - Math.round(radius * 0.45)) + ' 0 ' + w + ' ' + Math.round(radius * 0.45) + ' ' + w + ' ' + radius + 'V' + (h - radius) + 'C' + w + ' ' + (h - Math.round(radius * 0.45)) + ' ' + (w - Math.round(radius * 0.45)) + ' ' + h + ' ' + (w - radius) + ' ' + h + 'H' + radius + 'C' + Math.round(radius * 0.45) + ' ' + h + ' 0 ' + (h - Math.round(radius * 0.45)) + ' 0 ' + (h - radius) + 'V' + cut + 'L' + cut + ' 0Z" fill="#F24B0F"/>' +
+    '</svg>';
+}
+
+function figmaHexToRgb(hex, fallback) {
+  const clean = String(hex || '').replace('#', '').trim();
+  if (!/^[0-9a-fA-F]{6}$/.test(clean)) return fallback || { r: 0.95, g: 0.27, b: 0.15 };
+  return {
+    r: parseInt(clean.slice(0, 2), 16) / 255,
+    g: parseInt(clean.slice(2, 4), 16) / 255,
+    b: parseInt(clean.slice(4, 6), 16) / 255
+  };
+}
+
+function figmaMixColor(a, b, amount) {
+  amount = Math.max(0, Math.min(1, amount));
+  return {
+    r: a.r + (b.r - a.r) * amount,
+    g: a.g + (b.g - a.g) * amount,
+    b: a.b + (b.b - a.b) * amount
+  };
+}
+
+function figmaSolid(color, opacity) {
+  return { type: 'SOLID', color: color, opacity: typeof opacity === 'number' ? opacity : 1 };
+}
+
+function figmaLinearGradient(from, to, direction) {
+  const transforms = {
+    horizontal: [[1, 0, 0], [0, 1, 0]],
+    vertical: [[0, 1, 0], [-1, 0, 1]],
+    diagonal: [[0.707, 0.707, 0], [-0.707, 0.707, 0.5]]
+  };
+  return {
+    type: 'GRADIENT_LINEAR',
+    gradientTransform: transforms[direction || 'horizontal'],
+    gradientStops: [
+      { position: 0, color: { r: from.r, g: from.g, b: from.b, a: 1 } },
+      { position: 1, color: { r: to.r, g: to.g, b: to.b, a: 1 } }
+    ]
+  };
+}
+
+function figmaHeroFills(design, primary, secondary) {
+  if (design.heroFill === 'solid') return [figmaSolid(primary)];
+  if (design.heroFill === 'strong') return [figmaLinearGradient(primary, secondary, 'diagonal')];
+  if (design.heroFill === 'reverse') return [figmaLinearGradient(secondary, primary, 'horizontal')];
+  return [figmaLinearGradient(figmaMixColor(primary, { r: 1, g: 1, b: 1 }, 0.10), figmaMixColor(secondary, primary, 0.35), 'horizontal')];
+}
+
+function figmaOnKontrolGuncelle() {
+  updateFigmaFlowSummary();
+  const panel = document.getElementById('figmaOnKontrol');
+  const grid = document.getElementById('figmaKontrolGrid');
+  const skor = document.getElementById('figmaHazirSkor');
+  const uyari = document.getElementById('figmaKontrolUyari');
+  if (!panel || !grid || !skor || !uyari) return null;
+
+  const liste = Array.isArray(rows) ? rows : [];
+  const toplam = liste.length;
+  const gorselli = liste.filter(function(r) { return !!(r.imgPreview || r.imgUrl); }).length;
+  const eksikGorsel = Math.max(0, toplam - gorselli);
+  const uzunUrun = liste.filter(function(r) { return String(r.urun || '').length > 42; }).length;
+  const eksikFiyat = liste.filter(function(r) { return !String(r.fiyat || '').trim(); }).length;
+  const rozetVar = !!((typeof _kampanyaData !== 'undefined' && (_kampanyaData?.rozet_png_b64 || _kampanyaData?.rozet_drive_url)) || document.getElementById('rozetSeciliBuyuk')?.src);
+  const brand = getBrandProfileForFigma();
+  const template = getFigmaTemplate();
+  const design = getFigmaDesignSettings();
+  const boyut = design.width + 'x' + design.height;
+  const logoVar = !!brand.logo;
+  const typographyLabel = design.typography === 'custom' && design.customFont ? design.customFont : design.typography;
+
+  const uyarilar = [];
+  if (!toplam) uyarilar.push('Urun tablosu bos.');
+  if (!logoVar) uyarilar.push('Firma logosu eksik; Ayarlar > Firma Profili bolumunden ekleyebilirsin.');
+  if (eksikGorsel) uyarilar.push(eksikGorsel + ' urunde gorsel yok.');
+  if (uzunUrun) uyarilar.push(uzunUrun + ' urun adi uzun, Figma kartinda tasabilir.');
+  if (eksikFiyat) uyarilar.push(eksikFiyat + ' urunde fiyat eksik.');
+  if (!rozetVar) uyarilar.push('Rozet secilmedi; frame rozet alani bos kalabilir.');
+
+  let puan = 100;
+  if (!toplam) puan -= 45;
+  if (!logoVar) puan -= 10;
+  puan -= Math.min(35, eksikGorsel * 8);
+  puan -= Math.min(20, uzunUrun * 5);
+  puan -= Math.min(20, eksikFiyat * 8);
+  if (!rozetVar) puan -= 12;
+  puan = Math.max(0, puan);
+
+  function item(label, value, ok) {
+    return '<div class="figma-quality-card ' + (ok ? '' : 'warn') + '">' +
+      '<small>' + label + '</small>' +
+      '<b>' + value + '</b>' +
+    '</div>';
+  }
+
+  panel.style.display = 'block';
+  skor.textContent = puan >= 90 ? 'Figma hazir - ' + puan + '%' : puan >= 65 ? 'Uyari var - ' + puan + '%' : 'Eksikler var - ' + puan + '%';
+  skor.style.color = puan >= 90 ? 'var(--figma-score-ok)' : puan >= 65 ? 'var(--figma-score-mid)' : 'var(--figma-score-bad)';
+  uyari.textContent = uyarilar.length ? uyarilar.join(' ') : 'Her sey iyi gorunuyor. Figma frame olusturmaya hazirsin.';
+  uyari.style.color = uyarilar.length ? 'var(--figma-score-mid)' : 'var(--figma-score-ok)';
+  uyari.style.display = 'none';
+  const qualityLabel = puan >= 90 ? 'Uretime hazir' : puan >= 65 ? 'Kontrollu uretim' : 'Once eksikleri tamamla';
+  const qualityMessage = uyarilar.length ? uyarilar.join(' ') : 'Her sey iyi gorunuyor. Figma frame olusturmaya hazirsin.';
+  grid.innerHTML =
+    '<div class="figma-quality-panel">' +
+      '<div class="figma-quality-score">' +
+        '<div><strong>' + puan + '%</strong><span>' + qualityLabel + '</span></div>' +
+        '<div class="figma-quality-meter"><i style="width:' + puan + '%"></i></div>' +
+      '</div>' +
+      '<div class="figma-quality-main">' +
+        '<div class="figma-quality-grid">' +
+          item('Veri', toplam + ' urun', toplam > 0) +
+          item('Logo', logoVar ? 'Hazir' : 'Eksik', logoVar) +
+          item('Gorsel', gorselli + '/' + toplam, toplam > 0 && eksikGorsel === 0) +
+          item('Fiyat', eksikFiyat ? eksikFiyat + ' eksik' : 'Tamam', eksikFiyat === 0 && toplam > 0) +
+          item('Rozet', rozetVar ? 'Hazir' : 'Opsiyonel', rozetVar) +
+          item('Sablon', template.label, true) +
+          item('Tasarim', design.layout + ' / ' + typographyLabel, true) +
+          item('Boyut', boyut, true) +
+        '</div>' +
+        '<div class="figma-quality-message ' + (uyarilar.length ? '' : 'ok') + '">' + qualityMessage + '</div>' +
+      '</div>' +
+    '</div>';
+  return { puan, uyarilar, toplam, eksikGorsel, uzunUrun, eksikFiyat, rozetVar, logoVar, boyut, template, design };
+}
+
 async function figmaFrameOlustur() {
+  figmaOnKontrolGuncelle();
   if (!rows || rows.length === 0) {
     figmaDurum('❌ Önce ürün tablosunu doldur.', 'error'); return;
   }
 
   figmaDurum('⏳ Frame hazırlanıyor...', 'info');
 
-  // Boyut al
-  const boyutStr = document.querySelector('input[name="figmaBoyut"]:checked')?.value || '1080x1350';
-  const [fw, fh] = boyutStr.split('x').map(Number);
+  const design = getFigmaDesignSettings();
+  const fw = design.width;
+  const fh = design.height;
 
   // Rozet varsa badge alanına ekle
   const rozetB64 = (typeof _kampanyaData !== 'undefined' && _kampanyaData?.rozet_png_b64)
@@ -4915,11 +6273,24 @@ async function figmaFrameOlustur() {
 
   // Şirket profili
   const cp = (typeof companyProfile !== 'undefined') ? companyProfile : {};
-  const logoB64 = cp.logoBase64 || null;
-  const anaRenkHex = cp.color || '#f54527';
+  const brandProfile = getBrandProfileForFigma();
+  const activeTemplate = getFigmaTemplate();
+  const logoB64 = brandProfile.logo || null;
+  brandProfile.sloganImage = await figmaImageToDataUrl(brandProfile.sloganImage);
+  brandProfile.priceTagSvg = await figmaTextAsset(brandProfile.priceTagSvg);
+  const anaRenkHex = brandProfile.primaryColor || '#f54527';
   const _hr = parseInt(anaRenkHex.slice(1,3),16)/255;
   const _hg = parseInt(anaRenkHex.slice(3,5),16)/255;
   const _hb = parseInt(anaRenkHex.slice(5,7),16)/255;
+  const primaryRgb = figmaHexToRgb(normalizeHexColor(design.gradientFrom) || brandProfile.primaryColor, { r: _hr, g: _hg, b: _hb });
+  const secondaryRgb = figmaHexToRgb(normalizeHexColor(design.gradientTo) || brandProfile.secondaryColor, figmaMixColor(primaryRgb, { r: 1, g: 1, b: 1 }, 0.18));
+  const brandPrimaryRgb = figmaHexToRgb(brandProfile.primaryColor, primaryRgb);
+  const brandSecondaryRgb = figmaHexToRgb(brandProfile.secondaryColor, figmaMixColor(brandPrimaryRgb, { r: 1, g: 1, b: 1 }, 0.18));
+  const brandNameLower = String(brandProfile.name || '').toLowerCase();
+  const priceBaseHex = normalizeHexColor(cp.priceColor || cp.accentColor || '#F04423') || '#F04423';
+  const priceBaseRgb = figmaHexToRgb(priceBaseHex, brandPrimaryRgb);
+  const priceFillColor = priceBaseRgb;
+  const priceAccentColor = figmaMixColor(priceBaseRgb, { r: 1, g: 1, b: 1 }, design.priceStyle === 'bar' ? 0.06 : 0.16);
 
   const kolonSayisi = 4;
   const padding = 40;
@@ -4931,13 +6302,99 @@ async function figmaFrameOlustur() {
   // Node'ları oluştur
   const nodes = [];
 
+  function figmaClampText(text, max) {
+    text = String(text || '').trim();
+    return text.length > max ? text.slice(0, max - 1).trim() + '…' : text;
+  }
+  function figmaPriceText(value) {
+    const text = String(value || '').trim();
+    return text || '0';
+  }
+  function figmaFontByLength(text, base, min) {
+    const len = String(text || '').length;
+    if (len > 52) return Math.max(min, base - 6);
+    if (len > 38) return Math.max(min, base - 4);
+    if (len > 28) return Math.max(min, base - 2);
+    return base;
+  }
+  function figmaPriceTextUnits(text) {
+    return String(text || '').split('').reduce((sum, ch) => {
+      if (/[0-9]/.test(ch)) return sum + 0.62;
+      if (ch === ',' || ch === '.') return sum + 0.26;
+      if (ch === ' ') return sum + 0.22;
+      return sum + 0.72;
+    }, 0);
+  }
+  const proAspect = fw / fh;
+  const proKolon = design.layoutColumns;
+  const densityMap = {
+    airy: { padding: 0.052, gap: 0.018, cardTop: 0.82, imageLift: 138 },
+    balanced: { padding: 0.045, gap: 0.014, cardTop: 0.72, imageLift: 132 },
+    tight: { padding: 0.036, gap: 0.010, cardTop: 0.58, imageLift: 118 }
+  };
+  const density = densityMap[design.density] || densityMap.balanced;
+  const typographyMap = {
+    inter: { font: 'Inter', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.052, nameScale: 0.046, priceScale: 0.92 },
+    arial: { font: 'Arial', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    helvetica: { font: 'Helvetica', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    roboto: { font: 'Roboto', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.051, nameScale: 0.044, priceScale: 0.91 },
+    montserrat: { font: 'Montserrat', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    poppins: { font: 'Poppins', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.049, nameScale: 0.042, priceScale: 0.89 },
+    nunito: { font: 'Nunito Sans', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.052, nameScale: 0.045, priceScale: 0.92 },
+    opensans: { font: 'Open Sans', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    lato: { font: 'Lato', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.051, nameScale: 0.044, priceScale: 0.91 },
+    oswald: { font: 'Oswald', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.056, nameScale: 0.047, priceScale: 0.98 },
+    bebas: { font: 'Bebas Neue', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.060, nameScale: 0.050, priceScale: 1.02 },
+    barlow: { font: 'Barlow Condensed', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.058, nameScale: 0.049, priceScale: 1.00 },
+    anton: { font: 'Anton', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.054, nameScale: 0.046, priceScale: 0.96 },
+    din: { font: 'DIN Condensed', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.058, nameScale: 0.049, priceScale: 1.00 },
+    futura: { font: 'Futura', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    avenir: { font: 'Avenir Next', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    gotham: { font: 'Gotham', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    proxima: { font: 'Proxima Nova', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    gilroy: { font: 'Gilroy', brandWeight: 900, nameWeight: 500, priceWeight: 900, brandScale: 0.050, nameScale: 0.043, priceScale: 0.90 },
+    custom: { font: design.customFont || 'Inter', brandWeight: 900, nameWeight: 600, priceWeight: 900, brandScale: 0.052, nameScale: 0.046, priceScale: 0.92 }
+  };
+  const typo = typographyMap[design.typography] || typographyMap.inter;
+  const logoScaleMap = { small: 0.20, medium: 0.25, large: 0.31 };
+  const badgeScaleMap = { medium: 0.36, large: 0.42, hero: 0.48 };
+  const logoScale = logoScaleMap[design.logoScale] || logoScaleMap.medium;
+  const badgeScale = badgeScaleMap[design.badgeScale] || badgeScaleMap.large;
+  const proPadding = Math.round(fw * density.padding);
+  const proGap = Math.max(8, Math.round(fw * density.gap));
+  const proUstAlan = Math.round(fh * (proAspect > 1.45 ? 0.30 : design.badgeScale === 'hero' ? 0.38 : 0.34));
+  const proFooterH = Math.round(fh * 0.058);
+  const proKartAlanY = proUstAlan + Math.round(proGap * 0.8);
+  const proKartAlanH = fh - proKartAlanY - proPadding - proFooterH;
+  const proMaxSatir = proAspect > 1.45 ? 2 : 3;
+  const proSatir = design.layoutRows;
+  const proKartW = Math.floor((fw - proPadding*2 - proGap*(proKolon-1)) / proKolon);
+  const proKartH = Math.max(138, Math.floor((proKartAlanH - proPadding*1.15 - proGap*(proSatir-1)) / proSatir));
+  const proTarih = rows.find(function(r) { return r.tarih; })?.tarih || document.getElementById('tarihText')?.value || '';
+  const proGecerli = rows.find(function(r) { return r.arasinda; })?.arasinda || document.getElementById('arasindaText')?.value || '';
+  const proFirma = figmaClampText(brandProfile.name, 26);
+  const badgeBoxMap = {
+    right: { x: 0.50, y: 0.12, w: 0.42, h: 0.54 },
+    left: { x: 0.07, y: 0.22, w: 0.42, h: 0.54 },
+    center: { x: 0.29, y: 0.16, w: 0.42, h: 0.56 },
+    full: { x: 0.20, y: 0.12, w: 0.62, h: 0.62 }
+  };
+  const badgeBox = badgeBoxMap[design.badgePlacement] || badgeBoxMap.right;
+  const sloganOnLeft = design.badgePlacement !== 'left';
+  const logoY = Math.round(proPadding * 0.72);
+  const logoH = Math.round(proUstAlan * (design.logoScale === 'large' ? 0.22 : 0.18));
+  const logoW = Math.round(fw * logoScale);
+  const sloganY = Math.max(logoY + logoH + Math.round(proUstAlan * 0.045), Math.round(proUstAlan * 0.30));
+  const sloganW = Math.round(fw * (rozetB64 ? (sloganOnLeft ? 0.44 : 0.43) : 0.46));
+  const sloganH = Math.round(proUstAlan * (rozetB64 ? 0.50 : 0.52));
+
   // 1) Ana frame
   const anaFrame = {
     type: 'FRAME',
     name: 'Insertmill Insert — ' + new Date().toLocaleDateString('tr-TR'),
     x: 0, y: 0,
     width: fw, height: fh,
-    fills: [{ type: 'SOLID', color: { r: _hr, g: _hg, b: _hb } }],
+    fills: figmaHeroFills(design, primaryRgb, secondaryRgb),
     children: []
   };
 
@@ -4946,43 +6403,64 @@ async function figmaFrameOlustur() {
     type: 'FRAME',
     name: 'Üst Alan',
     x: 0, y: 0,
-    width: fw, height: ustAlan,
+    width: fw, height: proUstAlan,
     fills: [],
     children: [
       {
         type: 'RECTANGLE',
         name: '#LOGO_ALANI',
-        x: Math.floor(fw/2) - 120, y: 20,
-        width: 240, height: 70,
+        x: proPadding, y: logoY,
+        width: logoW, height: logoH,
         imageUrl: logoB64 || '',
+        imageScaleMode: 'FIT',
         fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: logoB64 ? 0 : 0.15 }],
-        cornerRadius: 12
+        cornerRadius: 14
       },
       {
         type: 'RECTANGLE',
         name: '#BADGE_ALANI',
-        x: Math.floor(fw/2) - 150, y: 110,
-        width: 300, height: 180,
+        x: Math.round(fw * badgeBox.x), y: Math.round(proUstAlan * badgeBox.y),
+        width: Math.round(fw * badgeBox.w), height: Math.round(proUstAlan * badgeBox.h),
         imageUrl: rozetB64 || '',
-        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: 0.1 }],
-        cornerRadius: 16
+        imageScaleMode: 'FIT',
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: rozetB64 ? 0 : 0 }],
+        cornerRadius: rozetB64 ? 0 : 22
+      },
+      {
+        type: 'RECTANGLE',
+        name: '#KURUMSAL_SLOGAN',
+        x: Math.round(fw * (sloganOnLeft ? 0.10 : 0.51)), y: sloganY,
+        width: sloganW, height: sloganH,
+        imageUrl: brandProfile.sloganImage || '',
+        imageScaleMode: 'FIT',
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 }, opacity: brandProfile.sloganImage ? 0 : 0 }],
+        cornerRadius: 0
+      },
+      {
+        type: 'TEXT',
+        name: '#FIRMA_ADI',
+        x: proPadding, y: Math.round(proUstAlan * 0.30),
+        width: Math.round(fw * 0.38), height: 34,
+        characters: logoB64 ? '' : proFirma,
+        style: { fontSize: Math.max(18, Math.round(fw * 0.024)), fontFamily: 'Inter', fontWeight: 900, textAlignHorizontal: 'LEFT' },
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
       },
       {
         type: 'TEXT',
         name: '#TARİH',
-        x: Math.floor(fw/2) - 150, y: ustAlan - 60,
-        width: 300, height: 30,
-        characters: '22 - 01 Haziran 2026',
-        style: { fontSize: 22, fontFamily: 'Inter', fontWeight: 700, textAlignHorizontal: 'CENTER' },
+        x: Math.round(fw * 0.58), y: Math.round(proUstAlan * 0.68),
+        width: Math.round(fw * 0.34), height: Math.round(proUstAlan * 0.14),
+        characters: figmaClampText(proTarih || proGecerli || 'Kampanya donemi', 44),
+        style: { fontSize: Math.max(18, Math.round(fw * 0.021)), fontFamily: 'Inter', fontWeight: 900, textAlignHorizontal: 'CENTER' },
         fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
       }
     ]
   });
 
   // 3) Ürün kartları alanı (beyaz arka plan)
-  const kartAlaniY = ustAlan + 10;
-  const kartAlaniH = fh - kartAlaniY - padding;
-  const satirSayisi = Math.ceil(rows.length / kolonSayisi);
+  const kartAlaniY = proKartAlanY;
+  const kartAlaniH = proKartAlanH;
+  const satirSayisi = proSatir;
 
   anaFrame.children.push({
     type: 'FRAME',
@@ -4990,67 +6468,162 @@ async function figmaFrameOlustur() {
     x: 0, y: kartAlaniY,
     width: fw, height: kartAlaniH,
     fills: [{ type: 'SOLID', color: { r: 0.98, g: 0.98, b: 0.98 } }],
-    cornerRadius: 20,
-    children: rows.slice(0, kolonSayisi * satirSayisi).map(function(r, i) {
-      const col = i % kolonSayisi;
-      const row = Math.floor(i / kolonSayisi);
-      const x = padding + col * (kartW + gap);
-      const y = padding + row * (kartH + gap);
+    cornerRadius: 26,
+    children: rows.slice(0, proKolon * satirSayisi).map(function(r, i) {
+      const col = i % proKolon;
+      const row = Math.floor(i / proKolon);
+      const x = proPadding + col * (proKartW + proGap);
+      const y = Math.round(proPadding * density.cardTop) + row * (proKartH + proGap);
+      const urunAdi = figmaClampText(r.urun || 'Urun Adi', 58);
+      const markaAdi = figmaClampText(r.marka || 'MARKA', 22);
+      const brandFont = design.brandFontSize || Math.max(11, Math.round(proKartW * typo.brandScale));
+      const productFontBase = design.productFontSize || Math.max(10, Math.round(proKartW * typo.nameScale));
+      const productFont = design.productFontSize || figmaFontByLength(urunAdi, productFontBase, 8);
+      const brandY = 10;
+      const brandH = Math.ceil(brandFont * 1.05);
+      const productY = brandY + brandH + Math.max(3, Math.round(productFont * 0.10));
+      const productH = Math.ceil(productFont * 1.35);
+      const priceH = design.priceStyle === 'label01' ? Math.round(proKartH * 0.27) : design.priceStyle === 'bold' ? 62 : design.priceStyle === 'sticker' || design.priceStyle === 'angled' ? 58 : 50;
+      const priceW = design.priceStyle === 'label01' ? Math.round(proKartW * 0.56) : design.priceStyle === 'bar' || design.priceStyle === 'angled' ? proKartW - 24 : Math.round((proKartW - 24) * 0.78);
+      const priceX = design.priceStyle === 'label01' ? proKartW - priceW - 12 : design.priceStyle === 'bar' || design.priceStyle === 'angled' ? 12 : proKartW - priceW - 10;
+      const priceRadius = design.priceStyle === 'bar' ? 8 : design.priceStyle === 'bold' ? 10 : design.priceStyle === 'angled' ? 9 : design.priceStyle === 'label01' ? 0 : 4;
+      const priceFills = design.priceStyle === 'label01' ? [] : design.priceStyle === 'bar'
+        ? [figmaSolid(priceFillColor)]
+        : [figmaLinearGradient(priceFillColor, priceAccentColor, 'horizontal')];
+      const priceY = design.priceStyle === 'label01' ? 72 : proKartH - priceH - 14;
+      const priceTextInsetX = design.priceStyle === 'label01' ? Math.round(priceW * 0.10) : 4;
+      const priceTextInsetRight = design.priceStyle === 'label01' ? Math.round(priceW * 0.04) : 4;
+      const priceTextValue = figmaPriceText(r.fiyat);
+      const priceUsableW = Math.max(1, priceW - priceTextInsetX - priceTextInsetRight);
+      const priceFitFactor = ['bebas','barlow','din','oswald','anton'].includes(design.typography) ? 1.02 : 1.18;
+      const widthSafePriceFont = Math.floor(priceUsableW / Math.max(1, figmaPriceTextUnits(priceTextValue) * priceFitFactor));
+      const heightSafePriceFont = priceH - 14;
+      const autoPriceFont = Math.round((design.priceStyle === 'label01' ? priceW * 0.18 : proKartW * (design.priceStyle === 'bold' ? 0.098 : design.priceStyle === 'sticker' || design.priceStyle === 'angled' ? 0.092 : 0.082)) * typo.priceScale);
+      const requestedPriceFont = design.priceFontSize || autoPriceFont;
+      const priceFont = Math.max(14, Math.min(heightSafePriceFont, widthSafePriceFont, requestedPriceFont));
+      const imageY = Math.max(70, productY + productH + 10);
+      const imageH = design.priceStyle === 'label01' ? Math.max(95, proKartH - imageY - 22) : Math.max(72, priceY - imageY - 12);
+      const imageScaleMap = { compact: 0.88, standard: 1, large: 1.20, xlarge: 1.42 };
+      const imageScale = imageScaleMap[design.imageScale] || imageScaleMap.large;
+      const imageBaseW = design.priceStyle === 'label01' ? Math.round(proKartW * 0.45) : proKartW - 36;
+      const imageBaseH = imageH;
+      const imageW = Math.min(proKartW - 24, Math.round(imageBaseW * imageScale));
+      const visualHMax = design.priceStyle === 'label01' ? Math.max(72, proKartH - imageY - 12) : Math.max(72, priceY - imageY - 8);
+      const imageFrameH = Math.min(visualHMax, Math.round(imageBaseH * imageScale));
+      const imageX = design.priceStyle === 'label01' ? 18 : Math.round((proKartW - imageW) / 2);
+      const imageMode = design.imageMode === 'fill' ? 'FILL' : 'FIT';
       return {
         type: 'FRAME',
         name: 'Kart_' + (i+1),
         x: x, y: y,
-        width: kartW, height: kartH,
+        width: proKartW, height: proKartH,
         fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }],
-        cornerRadius: 10,
+        strokes: [figmaSolid({ r: 0.94, g: 0.94, b: 0.94 })],
+        strokeWeight: 1,
+        cornerRadius: 14,
         children: [
           {
             type: 'TEXT',
             name: '#MARKA_' + (i+1),
-            x: 8, y: 8,
-            width: kartW - 16, height: 20,
-            characters: r.marka || 'MARKA',
-            style: { fontSize: 12, fontFamily: 'Inter', fontWeight: 700, textAlignHorizontal: 'LEFT' },
+            x: 12, y: brandY,
+            width: proKartW - 24, height: brandH + 2,
+            characters: markaAdi,
+            style: { fontSize: brandFont, fontFamily: typo.font, fontWeight: typo.brandWeight, textAlignHorizontal: 'LEFT' },
             fills: [{ type: 'SOLID', color: { r: 0.1, g: 0.1, b: 0.1 } }]
           },
           {
             type: 'TEXT',
             name: '#ÜRÜN_' + (i+1),
-            x: 8, y: 26,
-            width: kartW - 16, height: 30,
-            characters: r.urun || 'Ürün Adı',
-            style: { fontSize: 10, fontFamily: 'Inter', fontWeight: 400, textAlignHorizontal: 'LEFT' },
+            x: 12, y: productY,
+            width: proKartW - 24, height: productH + 2,
+            characters: urunAdi,
+            style: { fontSize: productFont, fontFamily: typo.font, fontWeight: typo.nameWeight, textAlignHorizontal: 'LEFT' },
             fills: [{ type: 'SOLID', color: { r: 0.4, g: 0.4, b: 0.4 } }]
           },
           {
             type: 'RECTANGLE',
             name: '#GÖRSEL_' + (i+1),
-            x: 8, y: 60,
-            width: kartW - 16, height: kartH - 110,
+            x: imageX, y: imageY,
+            width: imageW, height: imageFrameH,
             imageUrl: r.imgPreview || r.imgUrl || '',
-            fills: [{ type: 'SOLID', color: { r: 0.9, g: 0.9, b: 0.9 } }],
+            imageScaleMode: imageMode,
+            fills: [{ type: 'SOLID', color: { r: 0.965, g: 0.965, b: 0.965 }, opacity: (r.imgPreview || r.imgUrl) ? 0 : 1 }],
             cornerRadius: 6
           },
           {
             type: 'FRAME',
             name: '#FİYAT_ALANI_' + (i+1),
-            x: 8, y: kartH - 44,
-            width: kartW - 16, height: 36,
-            fills: [{ type: 'SOLID', color: { r: 0.957, g: 0.271, b: 0.153 } }],
-            cornerRadius: 8,
-            children: [{
+            x: priceX, y: priceY,
+            width: priceW, height: priceH,
+            fills: priceFills,
+            strokes: design.priceStyle === 'bar' || design.priceStyle === 'label01' ? [] : [figmaSolid({ r: 1, g: 1, b: 1 })],
+            strokeWeight: Math.max(3, Math.round(proKartW * 0.012)),
+            cornerRadius: priceRadius,
+            children: (design.priceStyle === 'label01' ? [{
+              type: 'SVG',
+              name: '#FIYAT_ETIKET_01_' + (i+1),
+              x: 0, y: 0,
+              width: priceW, height: priceH,
+              svg: figmaPriceLabelSvg(priceW, priceH)
+            }] : design.priceStyle === 'angled' ? [{
+              type: 'RECTANGLE',
+              name: '#FIYAT_KESIK_' + (i+1),
+              x: -32, y: -42,
+              width: 72, height: 72,
+              rotation: 45,
+              fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }],
+              cornerRadius: 0
+            }] : []).concat([{
               type: 'TEXT',
               name: '#FİYAT_' + (i+1),
-              x: 4, y: 6,
-              width: kartW - 24, height: 24,
-              characters: (r.fiyat || '0') + ' ₺',
-              style: { fontSize: 16, fontFamily: 'Inter', fontWeight: 900, textAlignHorizontal: 'CENTER' },
+              x: priceTextInsetX, y: 0,
+              width: priceW - priceTextInsetX - priceTextInsetRight, height: priceH,
+              characters: priceTextValue,
+              style: { fontSize: priceFont, fontFamily: typo.font, fontWeight: typo.priceWeight, textAlignHorizontal: 'CENTER', textAlignVertical: 'CENTER' },
               fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
-            }]
+            }])
           }
         ]
       };
     })
+  });
+
+  anaFrame.children.push({
+    type: 'FRAME',
+    name: 'Alt Bilgi Seridi',
+    x: 0, y: fh - proFooterH,
+    width: fw, height: proFooterH,
+    fills: [{ type: 'SOLID', color: { r: Math.max(0, _hr * 0.86), g: Math.max(0, _hg * 0.86), b: Math.max(0, _hb * 0.86) } }],
+    cornerRadius: 0,
+    children: [
+      {
+        type: 'TEXT',
+        name: '#WEBSITE',
+        x: proPadding, y: Math.round(proFooterH * 0.25),
+        width: Math.round(fw * 0.22), height: Math.round(proFooterH * 0.42),
+        characters: figmaClampText(brandProfile.website, 26),
+        style: { fontSize: Math.max(15, Math.round(fw * 0.019)), fontFamily: 'Inter', fontWeight: 900, textAlignHorizontal: 'LEFT' },
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
+      },
+      {
+        type: 'TEXT',
+        name: '#YASAL_NOT',
+        x: Math.round(fw * 0.28), y: Math.round(proFooterH * 0.20),
+        width: Math.round(fw * 0.44), height: Math.round(proFooterH * 0.55),
+        characters: figmaClampText(brandProfile.legalText, 105),
+        style: { fontSize: Math.max(9, Math.round(fw * 0.011)), fontFamily: 'Inter', fontWeight: 700, textAlignHorizontal: 'CENTER' },
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
+      },
+      {
+        type: 'TEXT',
+        name: '#SOSYAL',
+        x: Math.round(fw * 0.76), y: Math.round(proFooterH * 0.25),
+        width: Math.round(fw * 0.19), height: Math.round(proFooterH * 0.42),
+        characters: figmaClampText(brandProfile.social, 24),
+        style: { fontSize: Math.max(13, Math.round(fw * 0.017)), fontFamily: 'Inter', fontWeight: 900, textAlignHorizontal: 'RIGHT' },
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1 } }]
+      }
+    ]
   });
 
   // Figma REST API — create file
@@ -5058,20 +6631,20 @@ async function figmaFrameOlustur() {
     const res = await fetch('/api/figma', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token, frame: anaFrame, width: fw, height: fh })
+      body: JSON.stringify({ token, frame: anaFrame, width: fw, height: fh, meta: buildFigmaPayloadMeta(brandProfile, activeTemplate, proTarih, proGecerli) })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     figmaDurum('✅ Figma frame oluşturuldu! <a href="' + data.url + '" target="_blank" style="color:#a5b4fc">Figma\'da aç →</a>', 'success');
   } catch(e) {
     // Figma REST API file oluşturma desteklemiyor, alternatif: Figma Plugin payload oluştur
-    _figmaPluginPayload(anaFrame, fw, fh);
+    _figmaPluginPayload(anaFrame, fw, fh, buildFigmaPayloadMeta(brandProfile, activeTemplate, proTarih, proGecerli));
   }
 }
 
-async function _figmaPluginPayload(frame, fw, fh) {
+async function _figmaPluginPayload(frame, fw, fh, meta) {
   try {
-    const payload = JSON.stringify({ frame, width: fw, height: fh });
+    const payload = JSON.stringify({ frame, width: fw, height: fh, meta: meta || {} });
     const b64 = btoa(unescape(encodeURIComponent(payload)));
     
     // Panoya kopyala
@@ -5101,6 +6674,16 @@ function figmaDurum(msg, tip) {
   el.innerHTML = msg;
 }
 /* ── END FİGMA ─────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+  const templateSelect = document.getElementById('figmaTemplate');
+  if (templateSelect) templateSelect.value = localStorage.getItem('figma_template') || 'market_insert';
+  initFigmaDesignControls();
+  document.querySelectorAll('input[name="figmaBoyut"]').forEach(function(el) {
+    el.addEventListener('change', figmaOnKontrolGuncelle);
+  });
+  setTimeout(figmaOnKontrolGuncelle, 300);
+});
+
 function obNext(n) {
   for (let i=1; i<=4; i++) {
     const p = document.getElementById('ob-p'+i);
@@ -5158,6 +6741,7 @@ function obToggleCheck(el) {
 
 function obBitir() {
   const ob = document.getElementById('onboarding');
+  setAppShellLocked(false);
   if (ob) {
     ob.style.opacity = '0';
     ob.style.transition = 'opacity 0.4s';
@@ -5400,6 +6984,7 @@ async function signInWithGoogle() {
 }
 
 async function signOut() {
+  mountUserDock();
   await _supa.auth.signOut();
   document.getElementById('loginBtn').style.display = 'flex';
   document.getElementById('userMenu').style.display = 'none';
@@ -5412,6 +6997,7 @@ function toggleUserDropdown() {
 }
 
 document.addEventListener('click', (e) => {
+  if (!e.target.closest?.('.app-mode-wrap')) closeModePopover();
   if (!document.getElementById('userMenu')?.contains(e.target)) {
     const dd = document.getElementById('userDropdown');
     if (dd) dd.style.display = 'none';
@@ -5433,12 +7019,15 @@ async function initAuth() {
 }
 
 function showOnboarding() {
+  mountUserDock();
+  setAppShellLocked(true);
   document.getElementById('onboarding').classList.remove('hidden');
   document.getElementById('loginBtn').style.display = 'flex';
   document.getElementById('userMenu').style.display = 'none';
 }
 
 async function showApp(user) {
+  setAppShellLocked(false);
   document.getElementById('onboarding').classList.add('hidden');
   try { await updateUI(user); } catch(e) { console.warn('updateUI hatası:', e); }
 
@@ -5459,6 +7048,7 @@ async function showApp(user) {
 }
 
 async function updateUI(user) {
+  mountUserDock();
   document.getElementById('loginBtn').style.display = 'none';
   document.getElementById('userMenu').style.display = 'flex';
   const name = user.user_metadata?.full_name || user.email;
@@ -5484,6 +7074,11 @@ async function updateUI(user) {
       const cp = JSON.parse(localStorage.getItem('companyProfile') || '{}');
       if (settings.company_name) cp.name = settings.company_name;
       if (settings.company_slogan) cp.slogan = settings.company_slogan;
+      if (settings.company_website) cp.website = settings.company_website;
+      if (settings.company_phone) cp.phone = settings.company_phone;
+      if (settings.company_address) cp.address = settings.company_address;
+      if (settings.campaign_text) cp.campaignText = settings.campaign_text;
+      if (settings.campaign_subtext) cp.campaignSubtext = settings.campaign_subtext;
       if (settings.brand_color) { cp.color = settings.brand_color; _afisClr = settings.brand_color; }
       if (settings.logo_base64) cp.logoBase64 = settings.logo_base64;
       if (settings.claude_model) localStorage.setItem('rozet_model', settings.claude_model);
@@ -5553,6 +7148,7 @@ function handleLogoUpload(input) {
   const reader = new FileReader();
   reader.onload = (e) => {
     companyProfile.logo = e.target.result;
+    companyProfile.logoBase64 = e.target.result;
     document.getElementById('logoImg').src = e.target.result;
     document.getElementById('logoImg').style.display = 'block';
     document.getElementById('logoPlaceholder').style.display = 'none';
@@ -6462,6 +8058,7 @@ KRITIK: Her iki promptta da rozet SEFFAF arka plan uzerinde olmali. Sadece rozet
     const buyuk = document.getElementById('rozetSeciliBuyuk');
     if (buyuk) buyuk.src = _seciliUrl;
     document.getElementById('rozetSecimPanel').style.display = 'block';
+    figmaOnKontrolGuncelle();
   }
 
   /* ── PNG Indir ──────────────────────────────────────── */
