@@ -1,0 +1,14 @@
+{
+  "name": "insertmill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node local-server.js",
+    "start": "node local-server.js",
+    "check": "node scripts/check-html.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
