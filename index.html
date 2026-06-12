@@ -2477,109 +2477,483 @@ html, body { overflow-x: hidden; }
 
     <!-- PLANLAR İÇERİĞİ -->
     <div id="ws-planlar" style="display:none;padding:2.5rem;overflow-y:auto">
-
-      <!-- Başlık -->
       <div style="text-align:center;margin-bottom:3rem">
         <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:50px;padding:6px 16px;margin-bottom:1rem">
           <span style="font-size:11px;font-weight:700;color:#a5b4fc;letter-spacing:0.06em">INSERT MILL PLANS</span>
         </div>
         <div style="font-size:32px;font-weight:800;color:var(--text);letter-spacing:-0.03em;margin-bottom:10px">Sana uygun planı seç</div>
-        <div style="font-size:15px;color:var(--text3);max-width:480px;margin:0 auto;line-height:1.6">Tüm planlarda kendi Claude ve OpenAI key'ini kullanırsın.<br>AI maliyeti sana aittir — insertmill sadece platform ücreti alır.</div>
+        <div style="font-size:15px;color:var(--text3);max-width:480px;margin:0 auto;line-height:1.6">Tüm planlarda kendi Claude ve OpenAI key'ini kullanırsın.</div>
       </div>
-
-      <!-- Kartlar -->
       <div style="display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:16px;align-items:start">
-
-        <!-- Ücretsiz -->
-        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:2rem;display:flex;flex-direction:column;gap:0">
-          <div style="margin-bottom:1.5rem">
-            <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Ücretsiz</div>
-            <div style="display:flex;align-items:flex-end;gap:4px;margin-bottom:4px">
-              <span style="font-size:42px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-0.04em">₺0</span>
-            </div>
-            <div style="font-size:13px;color:var(--text3)">/ ay · Sonsuza kadar ücretsiz</div>
-          </div>
-
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:2rem;display:flex;flex-direction:column">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Ücretsiz</div>
+          <div style="font-size:42px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-0.04em;margin-bottom:4px">₺0</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:1.5rem">/ ay · Sonsuza kadar</div>
           <div style="height:1px;background:var(--border);margin-bottom:1.5rem"></div>
-
           <div style="display:flex;flex-direction:column;gap:10px;flex:1;margin-bottom:2rem">
-            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Dahil olanlar</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(74,222,128,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#4ade80;font-weight:700;margin-top:1px">✓</span>Excel kampanya yönetimi</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(74,222,128,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#4ade80;font-weight:700;margin-top:1px">✓</span>Ürün Havuzu (50 görsel)</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(74,222,128,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#4ade80;font-weight:700;margin-top:1px">✓</span>Google Sheets export</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(74,222,128,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#4ade80;font-weight:700;margin-top:1px">✓</span>5 kampanya kaydı</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(74,222,128,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#4ade80;font-weight:700">✓</span>Excel kampanya yönetimi</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(74,222,128,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#4ade80;font-weight:700">✓</span>Ürün Havuzu (50 görsel)</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(74,222,128,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#4ade80;font-weight:700">✓</span>Google Sheets export</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(74,222,128,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#4ade80;font-weight:700">✓</span>5 kampanya kaydı</div>
             <div style="height:1px;background:var(--border);margin:4px 0"></div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text3)"><span style="width:18px;height:18px;background:rgba(255,255,255,0.04);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:var(--text3);margin-top:1px">✕</span>Figma export</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text3)"><span style="width:18px;height:18px;background:rgba(255,255,255,0.04);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:var(--text3);margin-top:1px">✕</span>Canva export</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text3)"><span style="width:18px;height:18px;background:rgba(255,255,255,0.04);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:var(--text3)">✕</span>Figma export</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text3)"><span style="width:18px;height:18px;background:rgba(255,255,255,0.04);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:var(--text3)">✕</span>Canva export</div>
           </div>
-
-          <button disabled style="width:100%;padding:13px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;color:var(--text3);font-size:13px;font-weight:600;cursor:default;font-family:'Geist',sans-serif">Mevcut Planın</button>
+          <button disabled style="width:100%;padding:13px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;color:var(--text3);font-size:13px;font-weight:600;cursor:default;font-family:var(--font)">Mevcut Planın</button>
         </div>
-
-        <!-- Pro — öne çıkan -->
-        <div style="background:linear-gradient(160deg,#0f0c29,#1a1040,#0f0c29);border:1.5px solid rgba(99,102,241,0.5);border-radius:22px;padding:2rem;display:flex;flex-direction:column;position:relative;box-shadow:0 20px 60px rgba(99,102,241,0.2),0 0 0 1px rgba(99,102,241,0.1)">
-          <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:11px;font-weight:700;padding:5px 16px;border-radius:20px;white-space:nowrap;letter-spacing:0.04em;box-shadow:0 4px 12px rgba(99,102,241,0.4)">⭐ En Popüler</div>
-
-          <div style="margin-bottom:1.5rem">
-            <div style="font-size:12px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Pro</div>
-            <div style="display:flex;align-items:flex-end;gap:4px;margin-bottom:4px">
-              <span style="font-size:48px;font-weight:800;color:#fff;line-height:1;letter-spacing:-0.04em">₺299</span>
-            </div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.4)">/ ay</div>
-          </div>
-
+        <div style="background:linear-gradient(160deg,#0f0c29,#1a1040,#0f0c29);border:2px solid rgba(99,102,241,0.5);border-radius:22px;padding:2rem;display:flex;flex-direction:column;position:relative;box-shadow:0 20px 60px rgba(99,102,241,0.2)">
+          <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:11px;font-weight:700;padding:5px 16px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 12px rgba(99,102,241,0.4)">⭐ En Popüler</div>
+          <div style="font-size:11px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Pro</div>
+          <div style="font-size:48px;font-weight:800;color:#fff;line-height:1;letter-spacing:-0.04em;margin-bottom:4px">₺299</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:1.5rem">/ ay</div>
           <div style="height:1px;background:rgba(99,102,241,0.25);margin-bottom:1.5rem"></div>
-
           <div style="display:flex;flex-direction:column;gap:10px;flex:1;margin-bottom:2rem">
-            <div style="font-size:11px;font-weight:700;color:rgba(165,180,252,0.6);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Dahil olanlar</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.75)"><span style="width:18px;height:18px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700;margin-top:1px">✓</span>Ücretsiz'deki her şey</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.75)"><span style="width:18px;height:18px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700;margin-top:1px">✓</span>Sınırsız kampanya</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.75)"><span style="width:18px;height:18px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700;margin-top:1px">✓</span>Sınırsız görsel havuzu</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:rgba(255,255,255,0.75)"><span style="width:18px;height:18px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700">✓</span>Ücretsiz'deki her şey</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:rgba(255,255,255,0.75)"><span style="width:18px;height:18px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700">✓</span>Sınırsız kampanya</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:rgba(255,255,255,0.75)"><span style="width:18px;height:18px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700">✓</span>Sınırsız görsel havuzu</div>
             <div style="height:1px;background:rgba(99,102,241,0.2);margin:4px 0"></div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#c4b5fd;font-weight:600"><span style="width:18px;height:18px;background:rgba(99,102,241,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700;margin-top:1px">✓</span>
-              <span>Figma export <span style="font-size:10px;background:rgba(99,102,241,0.3);color:#a5b4fc;padding:1px 6px;border-radius:4px;margin-left:4px;font-weight:700">PRO</span></span></div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#c4b5fd;font-weight:600"><span style="width:18px;height:18px;background:rgba(99,102,241,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700;margin-top:1px">✓</span>
-              <span>Canva export <span style="font-size:10px;background:rgba(99,102,241,0.3);color:#a5b4fc;padding:1px 6px;border-radius:4px;margin-left:4px;font-weight:700">PRO</span></span></div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:rgba(255,255,255,0.75)"><span style="width:18px;height:18px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700;margin-top:1px">✓</span>Öncelikli destek</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:#c4b5fd;font-weight:600"><span style="width:18px;height:18px;background:rgba(99,102,241,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700">✓</span>Figma export <span style="font-size:10px;background:rgba(99,102,241,0.3);color:#a5b4fc;padding:1px 6px;border-radius:4px;margin-left:4px">PRO</span></div>
+            <div style="display:flex;gap:10px;font-size:13px;color:#c4b5fd;font-weight:600"><span style="width:18px;height:18px;background:rgba(99,102,241,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700">✓</span>Canva export <span style="font-size:10px;background:rgba(99,102,241,0.3);color:#a5b4fc;padding:1px 6px;border-radius:4px;margin-left:4px">PRO</span></div>
+            <div style="display:flex;gap:10px;font-size:13px;color:rgba(255,255,255,0.75)"><span style="width:18px;height:18px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#a5b4fc;font-weight:700">✓</span>Öncelikli destek</div>
           </div>
-
-          <button onclick="alert('Yakında aktif olacak!\nBildirim almak için: info@insertmill.com')" style="width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif;box-shadow:0 6px 20px rgba(99,102,241,0.4);letter-spacing:0.01em">Yakında Geliyor →</button>
+          <button onclick="alert('Yakinda aktif olacak! info@insertmill.com')" style="width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 6px 20px rgba(99,102,241,0.4)">Yakında Geliyor →</button>
         </div>
-
-        <!-- Business -->
         <div style="background:var(--card-bg);border:1px solid rgba(251,191,36,0.2);border-radius:20px;padding:2rem;display:flex;flex-direction:column">
-          <div style="margin-bottom:1.5rem">
-            <div style="font-size:12px;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Business</div>
-            <div style="display:flex;align-items:flex-end;gap:4px;margin-bottom:4px">
-              <span style="font-size:42px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-0.04em">₺799</span>
-            </div>
-            <div style="font-size:13px;color:var(--text3)">/ ay</div>
-          </div>
-
+          <div style="font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">Business</div>
+          <div style="font-size:42px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-0.04em;margin-bottom:4px">₺799</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:1.5rem">/ ay</div>
           <div style="height:1px;background:var(--border);margin-bottom:1.5rem"></div>
-
           <div style="display:flex;flex-direction:column;gap:10px;flex:1;margin-bottom:2rem">
-            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">Dahil olanlar</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700;margin-top:1px">✓</span>Pro'daki her şey</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700;margin-top:1px">✓</span>Sınırsız kullanıcı</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700">✓</span>Pro'daki her şey</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700">✓</span>Sınırsız kullanıcı</div>
             <div style="height:1px;background:var(--border);margin:4px 0"></div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#fbbf24;font-weight:600"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700;margin-top:1px">✓</span>Beyaz etiket (kendi logosu)</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#fbbf24;font-weight:600"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700;margin-top:1px">✓</span>API erişimi</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700;margin-top:1px">✓</span>Özel entegrasyon desteği</div>
-            <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700;margin-top:1px">✓</span>Öncelikli teknik destek</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:#fbbf24;font-weight:600"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700">✓</span>Beyaz etiket</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:#fbbf24;font-weight:600"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700">✓</span>API erişimi</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700">✓</span>Özel entegrasyon</div>
+            <div style="display:flex;gap:10px;font-size:13px;color:var(--text2)"><span style="width:18px;height:18px;background:rgba(251,191,36,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:#fbbf24;font-weight:700">✓</span>Öncelikli teknik destek</div>
           </div>
-
-          <button onclick="alert('Yakında aktif olacak!\nBildirim almak için: info@insertmill.com')" style="width:100%;padding:13px;background:rgba(251,191,36,0.08);border:1.5px solid rgba(251,191,36,0.35);border-radius:12px;color:#fbbf24;font-size:13px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif">Yakında Geliyor →</button>
+          <button onclick="alert('Yakinda aktif olacak! info@insertmill.com')" style="width:100%;padding:13px;background:rgba(251,191,36,0.08);border:1.5px solid rgba(251,191,36,0.35);border-radius:12px;color:#fbbf24;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">Yakında Geliyor →</button>
         </div>
-
       </div>
-
-      <!-- Alt not -->
       <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:2rem;padding:14px 20px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.1);border-radius:12px">
         <span style="font-size:16px">💡</span>
-        <div style="font-size:13px;color:var(--text3)"><strong style="color:var(--text2)">BYOK modeli:</strong> Tüm planlarda kendi Claude ve OpenAI API key'ini kullanırsın. AI maliyeti sana aittir, insertmill sadece platform ücreti alır.</div>
+        <div style="font-size:13px;color:var(--text3)"><strong style="color:var(--text2)">BYOK modeli:</strong> Tüm planlarda kendi Claude ve OpenAI API key'ini kullanırsın. AI maliyeti sana aittir.</div>
       </div>
-
     </div>
 
 
+
+<script>
+// ── INSERTMILL YENİ ÖZELLİKLER ──────────────────────────────────
+
+// Supabase client
+const _supa = window.supabase.createClient(
+  'https://qjouilkvtqnmptgeawoj.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqb3VpbGt2dHFubXB0Z2Vhd29qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4MzU2ODMsImV4cCI6MjA2MzQxMTY4M30.V5LM6r5_VFb6RbTz4yXi0cI4sExVh9pMdaV-eEDfmM0'
+);
+
+// ── SUPABASE AYARLAR ─────────────────────────────────────────────
+async function _supabaseAyarKaydet(data) {
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) return false;
+    const { error } = await _supa.from('user_settings').upsert({
+      user_id: session.user.id, ...data
+    }, { onConflict: 'user_id' });
+    return !error;
+  } catch(e) { return false; }
+}
+
+async function _supabaseAyarYukle() {
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) return null;
+    const { data } = await _supa.from('user_settings').select('*').eq('user_id', session.user.id).single();
+    return data;
+  } catch(e) { return null; }
+}
+
+async function _getAuthHeader() {
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (session) return { 'Authorization': 'Bearer ' + session.access_token };
+  } catch(e) {}
+  return {};
+}
+
+// ── WORKSPACE NAVİGASYON ─────────────────────────────────────────
+function wsGo(section) {
+  ['ws-ana','ws-dashboard','ws-kampanyalar','ws-urun-havuzu','ws-planlar'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  const map = {
+    'dashboard': function(){ document.getElementById('ws-dashboard').style.display='block'; dashboardYukle(); },
+    'kampanyalar': function(){ document.getElementById('ws-kampanyalar').style.display='block'; kampanyalarYukle(); },
+    'urun-havuzu': function(){ document.getElementById('ws-urun-havuzu').style.display='block'; urunHavuzuYukle(); },
+    'planlar': function(){ document.getElementById('ws-planlar').style.display='block'; },
+    'ana': function(){ const el=document.getElementById('ws-ana'); if(el) el.style.display='block'; }
+  };
+  if (map[section]) map[section]();
+  else { const el=document.getElementById('ws-ana'); if(el) el.style.display='block'; }
+}
+
+// ── DASHBOARD ────────────────────────────────────────────────────
+async function dashboardYukle() {
+  const isim = document.getElementById('userName')?.textContent || 'Kullanıcı';
+  const saat = new Date().getHours();
+  const selam = saat<12?'Günaydın':saat<18?'İyi günler':'İyi akşamlar';
+  const el = document.getElementById('db-greeting');
+  if (el) el.textContent = selam + ', ' + isim.split(' ')[0] + ' 👋';
+
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) return;
+    const { data } = await _supa.from('campaigns').select('id,name,products,created_at').eq('user_id', session.user.id).order('created_at', { ascending: false });
+    if (!data) return;
+
+    const sayiEl = document.getElementById('db-kampanya-sayi');
+    if (sayiEl) sayiEl.textContent = data.length;
+    const urunEl = document.getElementById('db-urun-sayi');
+    if (urunEl) urunEl.textContent = data.reduce(function(t,k){ return t+(k.products||[]).length; }, 0);
+
+    const sonEl = document.getElementById('db-son-kampanyalar');
+    if (sonEl) {
+      if (!data.length) {
+        sonEl.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3);font-size:13px">📂 Henüz kampanya yok</div>';
+      } else {
+        sonEl.innerHTML = data.slice(0,5).map(function(k) {
+          const tarih = new Date(k.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'short'});
+          return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">' +
+            '<div><div style="font-size:13px;font-weight:500;color:var(--text)">' + k.name + '</div>' +
+            '<div style="font-size:11px;color:var(--text3)">' + (k.products||[]).length + ' ürün · ' + tarih + '</div></div>' +
+            '<button onclick="kampanyaAc(\'' + k.id + '\');wsGo(\'ana\')" style="padding:5px 12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:7px;color:#a5b4fc;font-size:11px;font-weight:600;cursor:pointer;font-family:\'Geist\',sans-serif">Aç</button>' +
+            '</div>';
+        }).join('');
+      }
+    }
+  } catch(e) { console.log('Dashboard:', e.message); }
+}
+
+// ── KAMPANYA KAYDET ───────────────────────────────────────────────
+function kampanyaKaydetModal() {
+  if (!window.rows || window.rows.length === 0) { alert('Önce ürün tablosunu doldur!'); return; }
+  const modal = document.getElementById('kampanyaKaydetModalEl');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  document.getElementById('kampanyaAdiInput').value = '';
+  document.getElementById('kampanyaKaydetStatus').textContent = '';
+  setTimeout(function(){ document.getElementById('kampanyaAdiInput').focus(); }, 100);
+}
+
+async function kampanyaKaydetOnayla() {
+  const ad = document.getElementById('kampanyaAdiInput').value.trim();
+  if (!ad) { document.getElementById('kampanyaKaydetStatus').textContent='⚠️ Ad gir'; document.getElementById('kampanyaKaydetStatus').style.color='#f87171'; return; }
+  const btn = document.getElementById('kampanyaKaydetBtn');
+  btn.textContent='⏳...'; btn.disabled=true;
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Giriş gerekli');
+    const { error } = await _supa.from('campaigns').insert({ user_id: session.user.id, name: ad, products: window.rows||[] });
+    if (error) throw new Error(error.message);
+    document.getElementById('kampanyaKaydetStatus').textContent='✅ Kaydedildi!';
+    document.getElementById('kampanyaKaydetStatus').style.color='#4ade80';
+    btn.textContent='✅'; btn.style.background='linear-gradient(135deg,#059669,#10b981)';
+    setTimeout(function(){ document.getElementById('kampanyaKaydetModalEl').style.display='none'; btn.textContent='Kaydet'; btn.style.background=''; btn.disabled=false; }, 1200);
+  } catch(e) {
+    document.getElementById('kampanyaKaydetStatus').textContent='❌ '+e.message;
+    document.getElementById('kampanyaKaydetStatus').style.color='#f87171';
+    btn.textContent='Kaydet'; btn.style.background=''; btn.disabled=false;
+  }
+}
+
+async function kampanyalarYukle() {
+  const liste = document.getElementById('kampanyaListesi');
+  if (!liste) return;
+  liste.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3)">⏳ Yükleniyor...</div>';
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Giriş gerekli');
+    const { data, error } = await _supa.from('campaigns').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false });
+    if (error) throw new Error(error.message);
+    if (!data || !data.length) {
+      liste.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text3)"><div style="font-size:32px;margin-bottom:8px">📂</div><div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz kampanya yok</div></div>';
+      return;
+    }
+    liste.innerHTML = data.map(function(k) {
+      const tarih = new Date(k.created_at).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+      return '<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:12px">' +
+        '<div><div style="font-size:15px;font-weight:600;color:var(--text)">' + k.name + '</div>' +
+        '<div style="font-size:12px;color:var(--text3)">' + (k.products||[]).length + ' ürün · ' + tarih + '</div></div>' +
+        '<div style="display:flex;gap:6px">' +
+        '<button onclick="kampanyaAc(\'' + k.id + '\')" style="padding:7px 14px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:8px;color:#a5b4fc;font-size:12px;font-weight:600;cursor:pointer;font-family:\'Geist\',sans-serif">Aç</button>' +
+        '<button onclick="kampanyaSil(\'' + k.id + '\',this)" style="padding:7px 10px;background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:8px;color:#f87171;font-size:12px;cursor:pointer;font-family:\'Geist\',sans-serif">🗑</button>' +
+        '</div></div>';
+    }).join('');
+  } catch(e) { liste.innerHTML = '<div style="text-align:center;padding:2rem;color:#f87171">❌ '+e.message+'</div>'; }
+}
+
+async function kampanyaAc(id) {
+  try {
+    const { data, error } = await _supa.from('campaigns').select('*').eq('id', id).single();
+    if (error) throw new Error(error.message);
+    window.rows = data.products || [];
+    if (typeof showTable === 'function') showTable();
+    wsGo('ana');
+  } catch(e) { alert('Açılamadı: '+e.message); }
+}
+
+async function kampanyaSil(id, btn) {
+  if (!confirm('Silinsin mi?')) return;
+  btn.textContent='⏳'; btn.disabled=true;
+  try {
+    await _supa.from('campaigns').delete().eq('id', id);
+    btn.closest('div[style*="border-radius:12px"]').remove();
+  } catch(e) { alert('Silinemedi: '+e.message); btn.textContent='🗑'; btn.disabled=false; }
+}
+
+// ── ÜRÜN HAVUZU ──────────────────────────────────────────────────
+let _bekleyenGorselFile = null;
+let _bekleyenGorselKuyruk = [];
+
+function urunGorselOnizle(input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+  _bekleyenGorselKuyruk = files;
+  input.value = '';
+  _urunGorselSiradakiGoster();
+}
+
+function _urunGorselSiradakiGoster() {
+  if (!_bekleyenGorselKuyruk.length) { document.getElementById('urunIsimModal').style.display='none'; return; }
+  const file = _bekleyenGorselKuyruk[0];
+  _bekleyenGorselFile = file;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('urunOnizlemeImg').src = e.target.result;
+    document.getElementById('urunIsimModal').style.display = 'block';
+    const inp = document.getElementById('urunIsimInput');
+    inp.value = ''; inp.focus();
+    const sayac = document.getElementById('urunIsimSayac');
+    if (sayac) sayac.textContent = _bekleyenGorselKuyruk.length > 1 ? _bekleyenGorselKuyruk.length+' kaldı' : '';
+  };
+  reader.readAsDataURL(file);
+}
+
+function urunIsimIptal() {
+  _bekleyenGorselFile = null; _bekleyenGorselKuyruk = [];
+  document.getElementById('urunIsimModal').style.display = 'none';
+}
+
+async function urunGorselKaydet() {
+  const isim = document.getElementById('urunIsimInput').value.trim();
+  if (!isim) { document.getElementById('urunIsimInput').style.borderColor='#f87171'; setTimeout(function(){document.getElementById('urunIsimInput').style.borderColor='';},1500); return; }
+  const status = document.getElementById('urunYuklemeStatus');
+  status.style.cssText='display:block;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);color:#a5b4fc;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem';
+  status.textContent='⏳ Yükleniyor...';
+  document.getElementById('urunIsimModal').style.display='none';
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Giriş gerekli');
+    const file = _bekleyenGorselFile;
+    const temiz = file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+    const path = session.user.id+'/'+Date.now()+'_'+temiz;
+    const { error: upErr } = await _supa.storage.from('urun-gorselleri').upload(path, file, { upsert: true });
+    if (upErr) throw new Error(upErr.message);
+    const { data: urlData } = _supa.storage.from('urun-gorselleri').getPublicUrl(path);
+    await _supa.from('products').upsert({ user_id: session.user.id, name: isim, image_url: urlData.publicUrl, image_path: path }, { onConflict: 'user_id,name' });
+    status.style.cssText='display:block;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);color:#4ade80;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem';
+    status.textContent='✅ "'+isim+'" kaydedildi!';
+    _bekleyenGorselFile = null;
+    _bekleyenGorselKuyruk.shift();
+    urunHavuzuYukle();
+    _urunGorselSiradakiGoster();
+    setTimeout(function(){ if (!_bekleyenGorselKuyruk.length) status.style.display='none'; }, 2000);
+  } catch(e) {
+    status.style.cssText='display:block;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:#f87171;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem';
+    status.textContent='❌ '+e.message;
+  }
+}
+
+async function urunHavuzuYukle() {
+  const grid = document.getElementById('urunHavuzuGrid');
+  if (!grid) return;
+  grid.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text3);grid-column:1/-1">⏳ Yükleniyor...</div>';
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Giriş gerekli');
+    const { data, error } = await _supa.from('products').select('*').eq('user_id', session.user.id).order('name');
+    if (error) throw new Error(error.message);
+    if (!data || !data.length) {
+      grid.innerHTML='<div style="text-align:center;padding:3rem;color:var(--text3);grid-column:1/-1"><div style="font-size:36px;margin-bottom:8px">🖼️</div><div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz görsel yok</div><div style="font-size:12px;margin-top:4px">Yukarıdan görsel yükle</div></div>';
+      return;
+    }
+    grid.innerHTML = data.map(function(p) {
+      return '<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative" id="urun-card-'+p.id+'">' +
+        '<img src="'+p.image_url+'" style="width:100%;aspect-ratio:1;object-fit:cover;display:block" loading="lazy">' +
+        '<div style="padding:8px"><div id="urun-name-'+p.id+'" style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+p.name+'">'+p.name+'</div></div>' +
+        '<button onclick="urunIsimDuzenle(\''+p.id+'\',\''+p.name.replace(/'/g,"\\'")+'\')" style="position:absolute;top:6px;left:6px;width:24px;height:24px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:#a5b4fc;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center">✎</button>' +
+        '<button onclick="urunSil(\''+p.id+'\',\''+p.image_path+'\',this)" style="position:absolute;top:6px;right:6px;width:24px;height:24px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:#f87171;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>' +
+        '</div>';
+    }).join('');
+  } catch(e) { grid.innerHTML='<div style="text-align:center;padding:2rem;color:#f87171;grid-column:1/-1">❌ '+e.message+'</div>'; }
+}
+
+async function urunIsimDuzenle(id, mevcutIsim) {
+  const yeni = prompt('Ürün adını düzenle:', mevcutIsim);
+  if (!yeni || yeni.trim() === mevcutIsim) return;
+  try {
+    await _supa.from('products').update({ name: yeni.trim() }).eq('id', id);
+    const el = document.getElementById('urun-name-'+id);
+    if (el) { el.textContent=yeni.trim(); el.title=yeni.trim(); }
+  } catch(e) { alert('Güncellenemedi: '+e.message); }
+}
+
+async function urunSil(id, path, btn) {
+  if (!confirm('Silinsin mi?')) return;
+  btn.textContent='⏳'; btn.disabled=true;
+  try {
+    if (path) await _supa.storage.from('urun-gorselleri').remove([path]);
+    await _supa.from('products').delete().eq('id', id);
+    document.getElementById('urun-card-'+id).remove();
+  } catch(e) { alert('Silinemedi: '+e.message); btn.textContent='✕'; btn.disabled=false; }
+}
+
+async function urunHavuzuEslestir(manuel) {
+  const msg = document.getElementById('sheetsStatus');
+  if (!window.rows || !window.rows.length) {
+    if (manuel && msg) { msg.style.color='#f97316'; msg.textContent='⚠️ Önce Excel yükle!'; } return;
+  }
+  if (manuel && msg) { msg.style.color='#a5b4fc'; msg.textContent='🤖 Claude eşleştiriyor...'; }
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) return;
+    const { data } = await _supa.from('products').select('name,image_url').eq('user_id', session.user.id);
+    if (!data || !data.length) { if (manuel && msg) { msg.style.color='#f97316'; msg.textContent='⚠️ Ürün Havuzu boş!'; } return; }
+
+    const urunler = window.rows.map(function(r,i){ return i+': '+(r.marka||'')+' '+(r.urun||''); }).join('\n');
+    const havuzlar = data.map(function(p,i){ return i+': '+p.name; }).join('\n');
+    const authH = await _getAuthHeader();
+    const res = await fetch('/api/claude', {
+      method:'POST',
+      headers:{'Content-Type':'application/json',...authH},
+      body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:500, messages:[{role:'user',content:'Kampanya ürünlerini görsel havuzuyla eşleştir. Türkçe karakter farklılıklarını göz önünde bulundur.\n\nKAMPANYA:\n'+urunler+'\n\nHAVUZ:\n'+havuzlar+'\n\nSADECE JSON döndür: {"eslemeler":[{"urun_idx":0,"gorsel_idx":2}]}'}]})
+    });
+    const result = await res.json();
+    const text = (result.content||[{text:''}])[0].text || '';
+    const m = text.match(/\{[\s\S]*\}/);
+    if (!m) throw new Error('Geçersiz yanıt');
+    const parsed = JSON.parse(m[0]);
+    let eslesen = 0;
+    (parsed.eslemeler||[]).forEach(function(e) {
+      if (window.rows[e.urun_idx] && data[e.gorsel_idx]) {
+        window.rows[e.urun_idx].gorselUrl = data[e.gorsel_idx].image_url;
+        window.rows[e.urun_idx].imgUrl = data[e.gorsel_idx].image_url;
+        eslesen++;
+      }
+    });
+    if (typeof renderTable==='function') renderTable();
+    if (msg) { msg.style.color= eslesen>0?'#4ade80':'#f97316'; msg.textContent= eslesen>0?'✅ '+eslesen+'/'+window.rows.length+' eşleşti!':'⚠️ Eşleşme bulunamadı.'; }
+  } catch(e) { if (msg) { msg.style.color='#f87171'; msg.textContent='❌ '+e.message; } }
+}
+
+// ── API KEY KURULUM ───────────────────────────────────────────────
+function _apiKeyKurulumGoster(settings) {
+  const modal = document.getElementById('apiKeySetupModal');
+  if (!modal) return;
+  if (settings?.claude_api_key && settings?.openai_api_key) return;
+  modal.style.display = 'flex';
+}
+
+function _setupAtla() {
+  const modal = document.getElementById('apiKeySetupModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function signInWithGoogle() {
+  try {
+    await _supa.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin }
+    });
+  } catch(e) {
+    const err = document.getElementById('loginError');
+    if (err) { err.style.display='block'; err.textContent='❌ '+e.message; }
+  }
+}
+
+async function signOut() {
+  await _supa.auth.signOut();
+  window.location.reload();
+}
+
+window.signInWithGoogle = signInWithGoogle;
+window.signOut = signOut;
+window._setupAtla = _setupAtla;
+
+async function _apiKeyKurulumKaydet() {
+  const btn = document.getElementById('setup-save-btn');
+  const ck = document.getElementById('setup-claudeKey')?.value.trim();
+  const ok = document.getElementById('setup-openaiKey')?.value.trim();
+  if (ck && !ck.startsWith('sk-ant')) { document.getElementById('setup-claude-status').textContent='❌ sk-ant... ile başlamalı'; document.getElementById('setup-claude-status').style.color='#f87171'; return; }
+  if (ok && !ok.startsWith('sk-')) { document.getElementById('setup-openai-status').textContent='❌ sk- ile başlamalı'; document.getElementById('setup-openai-status').style.color='#f87171'; return; }
+  btn.textContent='⏳...'; btn.disabled=true;
+  const saved = await _supabaseAyarKaydet({ ...(ck&&{claude_api_key:ck}), ...(ok&&{openai_api_key:ok}) });
+  if (saved) {
+    if (ck) { document.getElementById('setup-claude-status').textContent='✅ Kaydedildi!'; document.getElementById('setup-claude-status').style.color='#4ade80'; }
+    if (ok) { document.getElementById('setup-openai-status').textContent='✅ Kaydedildi!'; document.getElementById('setup-openai-status').style.color='#4ade80'; }
+    btn.textContent='✅ Hazır!'; btn.style.background='linear-gradient(135deg,#059669,#10b981)';
+    setTimeout(function(){ document.getElementById('apiKeySetupModal').style.display='none'; btn.textContent='Kaydet ve Başla →'; btn.style.background=''; btn.disabled=false; }, 1200);
+  } else { btn.textContent='Kaydet ve Başla →'; btn.disabled=false; }
+}
+
+// ── AUTH ─────────────────────────────────────────────────────────
+_supa.auth.onAuthStateChange(function(event, session) {
+  if (session) {
+    const ob = document.getElementById('onboarding');
+    if (ob) ob.classList.add('hidden');
+    _onLogin(session.user);
+  } else {
+    const ob = document.getElementById('onboarding');
+    if (ob) ob.classList.remove('hidden');
+  }
+});
+
+async function _onLogin(user) {
+  const nameEl = document.getElementById('userName');
+  if (nameEl) nameEl.textContent = user.user_metadata?.full_name || user.email;
+  const emailEl = document.getElementById('userEmail');
+  if (emailEl) emailEl.textContent = user.email;
+  const avatar = user.user_metadata?.avatar_url;
+  if (avatar) {
+    const img = document.getElementById('userAvatar');
+    if (img && img.tagName === 'IMG') img.src = avatar;
+  }
+  const userMenu = document.getElementById('userMenu');
+  if (userMenu) userMenu.style.display='flex';
+  const loginBtn = document.getElementById('loginBtn');
+  if (loginBtn) loginBtn.style.display='none';
+
+  const settings = await _supabaseAyarYukle();
+  if (!settings?.claude_api_key || !settings?.openai_api_key) {
+    _apiKeyKurulumGoster(settings);
+  }
+}
+
+// ── WINDOW EXPORTS ────────────────────────────────────────────────
+window.wsGo = wsGo;
+window.dashboardYukle = dashboardYukle;
+window.kampanyaKaydetModal = kampanyaKaydetModal;
+window.kampanyaKaydetOnayla = kampanyaKaydetOnayla;
+window.kampanyalarYukle = kampanyalarYukle;
+window.kampanyaAc = kampanyaAc;
+window.kampanyaSil = kampanyaSil;
+window.urunGorselOnizle = urunGorselOnizle;
+window.urunGorselKaydet = urunGorselKaydet;
+window.urunIsimIptal = urunIsimIptal;
+window.urunHavuzuYukle = urunHavuzuYukle;
+window.urunIsimDuzenle = urunIsimDuzenle;
+window.urunSil = urunSil;
+window.urunHavuzuEslestir = urunHavuzuEslestir;
+window._apiKeyKurulumKaydet = _apiKeyKurulumKaydet;
+</script>
