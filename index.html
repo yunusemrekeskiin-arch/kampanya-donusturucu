@@ -7473,8 +7473,6 @@ function kampanyalarSayfasiAc() { wsGo('kampanyalar'); }
 function kampanyalarSayfasiKapat() { wsGo('ana'); }
 
 async function dashboardYukle() {
-  document.getElementById('dashboardSayfasi').style.display = 'block';
-
   // Selamlama
   const isim = document.getElementById('userName')?.textContent || 'Kullanıcı';
   const saat = new Date().getHours();
