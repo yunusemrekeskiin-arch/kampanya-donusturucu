@@ -2865,6 +2865,32 @@ function _apiKeyKurulumGoster(settings) {
   modal.style.display = 'flex';
 }
 
+function _setupAtla() {
+  const modal = document.getElementById('apiKeySetupModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function signInWithGoogle() {
+  try {
+    await _supa.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin }
+    });
+  } catch(e) {
+    const err = document.getElementById('loginError');
+    if (err) { err.style.display='block'; err.textContent='❌ '+e.message; }
+  }
+}
+
+async function signOut() {
+  await _supa.auth.signOut();
+  window.location.reload();
+}
+
+window.signInWithGoogle = signInWithGoogle;
+window.signOut = signOut;
+window._setupAtla = _setupAtla;
+
 async function _apiKeyKurulumKaydet() {
   const btn = document.getElementById('setup-save-btn');
   const ck = document.getElementById('setup-claudeKey')?.value.trim();
