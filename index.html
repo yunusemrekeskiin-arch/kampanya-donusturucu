@@ -2596,11 +2596,11 @@ html, body { overflow-x: hidden; }
     <div class="card-hdr">
       <h3><span>📋</span><span data-i18n="table_title">Kampanya Ürünleri</span></h3>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        <button onclick="selectImageFolder()" id="folderBtn"
+        <button onclick="urunHavuzuEslestir(true)" id="havuzEslestirBtn"
           style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(99,102,241,0.1);
                  border:1px solid rgba(99,102,241,0.25);border-radius:8px;color:#a5b4fc;font-size:12px;
                  font-weight:600;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s;white-space:nowrap">
-          📁 Görsel Klasörü Yükle
+          🖼️ Havuzdan Eşleştir
         </button>
         <div style="position:relative;">
           <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;">🔍</span>
@@ -7632,29 +7632,42 @@ async function urunSil(id, path, btn) {
   }
 }
 
-// Kampanya tablosu yüklenince ürün havuzuyla otomatik eşleştir
-async function urunHavuzuEslestir() {
+async function urunHavuzuEslestir(manuel) {
   if (!rows || rows.length === 0) return;
   try {
     const { data: { session } } = await _supa.auth.getSession();
     if (!session) return;
     const { data } = await _supa.from('products').select('name,image_url').eq('user_id', session.user.id);
-    if (!data || data.length === 0) return;
+    if (!data || data.length === 0) {
+      if (manuel) {
+        const msg = document.getElementById('sheetsStatus');
+        if (msg) { msg.style.color='#f97316'; msg.textContent='⚠️ Ürün havuzunda görsel yok. Sol panelden "Ürün Havuzu"na gidip görsel yükle.'; }
+      }
+      return;
+    }
 
     let eslesen = 0;
     rows.forEach(function(row, i) {
-      if (row.gorselUrl) return; // zaten görseli var
       const urunAdi = (row.urun || row.marka || '').toLowerCase().trim();
+      if (!urunAdi) return;
       const eslesme = data.find(function(p) {
-        return p.name.toLowerCase().includes(urunAdi) || urunAdi.includes(p.name.toLowerCase());
+        const pAd = p.name.toLowerCase().trim();
+        return pAd === urunAdi || pAd.includes(urunAdi) || urunAdi.includes(pAd);
       });
       if (eslesme) { rows[i].gorselUrl = eslesme.image_url; eslesen++; }
     });
 
-    if (eslesen > 0) {
-      showTable();
-      const msg = document.getElementById('sheetsStatus');
-      if (msg) { msg.style.color='#4ade80'; msg.textContent='✅ ' + eslesen + ' ürün görseli havuzdan otomatik eşleşti!'; }
+    renderTable();
+
+    const msg = document.getElementById('sheetsStatus');
+    if (msg) {
+      if (eslesen > 0) {
+        msg.style.color = '#4ade80';
+        msg.textContent = '✅ ' + eslesen + ' / ' + rows.length + ' ürün görseli havuzdan eşleşti!';
+      } else if (manuel) {
+        msg.style.color = '#f97316';
+        msg.textContent = '⚠️ Eşleşen görsel bulunamadı. Ürün adları havuzdaki dosya adlarıyla uyuşmuyor olabilir.';
+      }
     }
   } catch(e) { console.log('Eşleştirme hatası:', e.message); }
 }
