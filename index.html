@@ -7674,67 +7674,89 @@ async function urunSil(id, path, btn) {
 async function urunHavuzuEslestir(manuel) {
   if (!rows || rows.length === 0) return;
 
-  function normalize(str) {
-    return (str || '').toLowerCase()
-      .replace(/\.png|\.jpg|\.jpeg|\.webp/g,'')  // uzantıyı kaldır
-      .replace(/[-_]/g,' ')                        // tire ve alt çizgiyi boşluğa çevir
-      .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
-      .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
-      .replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();
-  }
+  const msg = document.getElementById('sheetsStatus');
 
   try {
     const { data: { session } } = await _supa.auth.getSession();
     if (!session) return;
+
     const { data } = await _supa.from('products').select('name,image_url').eq('user_id', session.user.id);
     if (!data || data.length === 0) {
-      if (manuel) {
-        const msg = document.getElementById('sheetsStatus');
-        if (msg) { msg.style.color='#f97316'; msg.textContent='Urun havuzunda gorsel yok. Sol panelden Urun Havuzu na gidip gorsel yukle.'; }
-      }
+      if (manuel && msg) { msg.style.color='#f97316'; msg.textContent='⚠️ Ürün havuzunda görsel yok. Sol panelden "Ürün Havuzu"na gidip görsel yükle.'; }
       return;
     }
 
-    const havuz = data.map(function(p) {
-      return { norm: normalize(p.name), url: p.image_url };
+    if (manuel && msg) { msg.style.color='#a5b4fc'; msg.textContent='🤖 Claude ürünleri eşleştiriyor...'; }
+
+    // Ürün listesi
+    const urunler = rows.map(function(r, i) { return i + ': ' + (r.marka||'') + ' ' + (r.urun||''); }).join('\n');
+    // Havuz listesi
+    const havuzlar = data.map(function(p, i) { return i + ': ' + p.name; }).join('\n');
+
+    const prompt = `Aşağıdaki kampanya ürünlerini görsel havuzuyla eşleştir.
+
+KAMPANYA ÜRÜNLERİ:
+${urunler}
+
+GÖRSEL HAVUZU:
+${havuzlar}
+
+Her kampanya ürünü için en uygun görsel havuzu indexini bul. Türkçe karakter farklılıklarını, kısaltmaları ve kelime sırası farklılıklarını göz önünde bulundur.
+
+SADECE JSON döndür, başka hiçbir şey yazma:
+{"eslemeler": [{"urun_idx": 0, "gorsel_idx": 2}, ...]}
+
+Eşleşme yoksa o ürünü listeye ekleme.`;
+
+    const authHeader = await _getAuthHeader();
+    const res = await fetch('/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...authHeader },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
 
+    const result = await res.json();
+    const text = result.content?.[0]?.text || '';
+
+    // JSON parse
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Claude geçerli yanıt vermedi');
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    const eslemeler = parsed.eslemeler || [];
+
     let eslesen = 0;
-    rows.forEach(function(row, i) {
-      const urunNorm = normalize((row.urun || '') + ' ' + (row.marka || ''));
-      if (!urunNorm) return;
-
-      let eslesme = havuz.find(function(p) { return p.norm === urunNorm; });
-
-      if (!eslesme) {
-        eslesme = havuz.find(function(p) {
-          const pKelimeler = p.norm.split(' ').filter(function(k) { return k.length > 2; });
-          const urunKelimeler = urunNorm.split(' ').filter(function(k) { return k.length > 2; });
-          const eslesenKelime = pKelimeler.filter(function(k) { return urunKelimeler.includes(k); });
-          return eslesenKelime.length >= Math.min(2, pKelimeler.length);
-        });
-      }
-
-      if (eslesme) {
-        rows[i].gorselUrl = eslesme.url;
-        rows[i].imgUrl = eslesme.url;
+    eslemeler.forEach(function(e) {
+      const urun = rows[e.urun_idx];
+      const gorsel = data[e.gorsel_idx];
+      if (urun && gorsel) {
+        rows[e.urun_idx].gorselUrl = gorsel.image_url;
+        rows[e.urun_idx].imgUrl = gorsel.image_url;
         eslesen++;
       }
     });
 
     renderTable();
 
-    const msg = document.getElementById('sheetsStatus');
     if (msg) {
       if (eslesen > 0) {
         msg.style.color = '#4ade80';
-        msg.textContent = eslesen + ' / ' + rows.length + ' urun gorseli havuzdan eslesti!';
-      } else if (manuel) {
+        msg.textContent = '✅ ' + eslesen + ' / ' + rows.length + ' ürün görseli Claude ile eşleşti!';
+      } else {
         msg.style.color = '#f97316';
-        msg.textContent = 'Eslesen gorsel bulunamadi. Havuzdaki gorsel adlarini Excel urun adlariyla benzer tut.';
+        msg.textContent = '⚠️ Eşleşen görsel bulunamadı — havuzdaki isimleri kontrol et.';
       }
     }
-  } catch(e) { console.log('Eslestirme hatasi:', e.message); }
+
+  } catch(e) {
+    console.log('Eşleştirme hatası:', e.message);
+    // Hata durumunda eski normalize yöntemi dene
+    if (msg) { msg.style.color='#f97316'; msg.textContent='⚠️ Claude eşleştirme başarısız: ' + e.message; }
+  }
 }
 
 
