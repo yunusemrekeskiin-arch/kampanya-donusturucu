@@ -3792,19 +3792,22 @@ function showTable() {
   if (rozetMod) rozetMod.style.display = 'block';
   // Ürün havuzundan otomatik görsel eşleştir
   setTimeout(async function() {
-    const { data: { session } } = await _supa.auth.getSession().catch(function(){return {data:{session:null}};});
-    if (!session) return;
-    const { data } = await _supa.from('products').select('id').eq('user_id', session.user.id).limit(1);
-    const msg = document.getElementById('sheetsStatus');
-    if (!data || data.length === 0) {
-      if (msg) {
-        msg.innerHTML = '📷 Ürün Havuzu boş — görseller için <a onclick="wsGo(\'urun-havuzu\')" style="color:#a5b4fc;cursor:pointer;text-decoration:underline">Ürün Havuzuna Git →</a>';
-        msg.style.color = '#f97316';
+    try {
+      if (typeof _supa === 'undefined') return;
+      const { data: { session } } = await _supa.auth.getSession();
+      if (!session) return;
+      const { data } = await _supa.from('products').select('id').eq('user_id', session.user.id).limit(1);
+      const msg = document.getElementById('sheetsStatus');
+      if (!data || data.length === 0) {
+        if (msg) {
+          msg.innerHTML = '📷 Ürün Havuzu boş — görseller için <a onclick="wsGo(\'urun-havuzu\')" style="color:#a5b4fc;cursor:pointer;text-decoration:underline">Ürün Havuzuna Git →</a>';
+          msg.style.color = '#f97316';
+        }
+      } else {
+        urunHavuzuEslestir(false);
       }
-    } else {
-      urunHavuzuEslestir(false);
-    }
-  }, 600);
+    } catch(e) { console.log('Havuz kontrol hatası:', e.message); }
+  }, 800);
   document.dispatchEvent(new Event('kampanyaPanelAcildi'));
   // Model ve HF token yükle
   const savedModel = localStorage.getItem('rozet_model');
@@ -7683,17 +7686,21 @@ async function urunSil(id, path, btn) {
 }
 
 async function urunHavuzuEslestir(manuel) {
+  const msg = document.getElementById('sheetsStatus');
+
   if (!rows || rows.length === 0) {
-    const msg = document.getElementById('sheetsStatus');
     if (manuel && msg) { msg.style.color='#f97316'; msg.textContent='⚠️ Önce Excel dosyasını yükle!'; }
     return;
   }
 
-  const msg = document.getElementById('sheetsStatus');
+  if (manuel && msg) { msg.style.color='#a5b4fc'; msg.textContent='🤖 Claude ürünleri eşleştiriyor...'; }
 
   try {
     const { data: { session } } = await _supa.auth.getSession();
-    if (!session) return;
+    if (!session) {
+      if (msg) { msg.style.color='#f87171'; msg.textContent='❌ Giriş yapman gerekiyor'; }
+      return;
+    }
 
     const { data } = await _supa.from('products').select('name,image_url').eq('user_id', session.user.id);
     if (!data || data.length === 0) {
