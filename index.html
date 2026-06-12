@@ -2408,6 +2408,32 @@ html, body { overflow-x: hidden; }
       </div>
     </div>
 
+    <!-- ÜRÜN HAVUZU İÇERİĞİ -->
+    <div id="ws-urun-havuzu" style="display:none;padding:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+        <div>
+          <div style="font-size:22px;font-weight:700;color:var(--text)">Ürün Havuzu</div>
+          <div style="font-size:13px;color:var(--text3);margin-top:2px">Görselleri bir kez yükle, her kampanyada otomatik eşleşsin</div>
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;padding:9px 16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:9px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">
+          📁 Görsel Yükle
+          <input type="file" id="urunGorselInput" accept="image/*" multiple style="display:none" onchange="urunGorselYukle(this)">
+        </label>
+      </div>
+
+      <!-- Yükleme durumu -->
+      <div id="urunYuklemeStatus" style="display:none;margin-bottom:1rem;padding:10px 14px;border-radius:8px;font-size:13px"></div>
+
+      <!-- Ürün grid -->
+      <div id="urunHavuzuGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px">
+        <div style="text-align:center;padding:3rem;color:var(--text3);grid-column:1/-1">
+          <div style="font-size:36px;margin-bottom:8px">🖼️</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz görsel yok</div>
+          <div style="font-size:12px;margin-top:4px">Yukarıdan görsel yükle</div>
+        </div>
+      </div>
+    </div>
+
     <!-- KAMPANYALAR İÇERİĞİ -->
     <div id="ws-kampanyalar" style="display:none;padding:24px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
@@ -3248,8 +3274,7 @@ function appNotice(message) {
 }
 
 function wsGo(section) {
-  // Tüm workspace panellerini gizle
-  ['ws-ana','ws-dashboard','ws-kampanyalar'].forEach(function(id) {
+  ['ws-ana','ws-dashboard','ws-kampanyalar','ws-urun-havuzu'].forEach(function(id) {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -3260,6 +3285,9 @@ function wsGo(section) {
   } else if (section === 'kampanyalar') {
     document.getElementById('ws-kampanyalar').style.display = 'block';
     kampanyalarYukle();
+  } else if (section === 'urun-havuzu') {
+    document.getElementById('ws-urun-havuzu').style.display = 'block';
+    urunHavuzuYukle();
   } else {
     document.getElementById('ws-ana').style.display = 'block';
   }
@@ -3270,7 +3298,7 @@ function appGo(section) {
 
   if (section === 'dashboard') { wsGo('dashboard'); return; }
   if (section === 'kampanyalar') { wsGo('kampanyalar'); return; }
-  if (section === 'urun-havuzu') { wsGo('ana'); switchTab('excel'); return; }
+  if (section === 'urun-havuzu') { wsGo('urun-havuzu'); return; }
 
   if (section === 'marka-profili') {
     if (typeof toggleSettings === 'function') {
@@ -3736,15 +3764,14 @@ function showTable() {
   ec.dataset.loaded = 'true';
   document.getElementById('controlsPanel').style.display = 'block';
   document.getElementById('productTable').style.display = 'block';
-  // AI Rozet Asistanı'nı göster
   const aiAsistan = document.getElementById('aiAsistanPanel');
   if (aiAsistan) aiAsistan.style.display = 'block';
   const cikti = document.getElementById('ciktiPanel');
   if (cikti) cikti.style.display = 'block';
-  // Rozet Modülünü göster
   const rozetMod = document.getElementById('rozetModulu');
   if (rozetMod) rozetMod.style.display = 'block';
-  // API key input'u doldur
+  // Ürün havuzundan otomatik görsel eşleştir
+  setTimeout(urunHavuzuEslestir, 500);
   document.dispatchEvent(new Event('kampanyaPanelAcildi'));
   // Model ve HF token yükle
   const savedModel = localStorage.getItem('rozet_model');
@@ -7483,6 +7510,154 @@ async function dashboardYukle() {
 }
 
 function dashboardKapat() { wsGo('ana'); }
+
+// ── ÜRÜN HAVUZU ─────────────────────────────────────────────────
+async function urunGorselYukle(input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+
+  const status = document.getElementById('urunYuklemeStatus');
+  status.style.display = 'block';
+  status.style.background = 'rgba(99,102,241,0.08)';
+  status.style.border = '1px solid rgba(99,102,241,0.2)';
+  status.style.color = '#a5b4fc';
+  status.textContent = '⏳ ' + files.length + ' görsel yükleniyor...';
+
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Giriş yapman gerekiyor');
+
+    let basarili = 0;
+    for (const file of files) {
+      // Dosya adını temizle — Türkçe karakter yok, boşluk yok
+      const temizAd = file.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
+        .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
+        .replace(/Ğ/g,'G').replace(/Ü/g,'U').replace(/Ş/g,'S')
+        .replace(/İ/g,'I').replace(/Ö/g,'O').replace(/Ç/g,'C')
+        .replace(/\s+/g,'_').replace(/[^a-zA-Z0-9._-]/g,'');
+
+      const path = session.user.id + '/' + Date.now() + '_' + temizAd;
+
+      // Supabase Storage'a yükle
+      const { error: uploadError } = await _supa.storage
+        .from('urun-gorselleri')
+        .upload(path, file, { upsert: true });
+
+      if (uploadError) continue;
+
+      // Public URL al
+      const { data: urlData } = _supa.storage.from('urun-gorselleri').getPublicUrl(path);
+      const url = urlData.publicUrl;
+
+      // Ürün adını dosya adından çıkar
+      const urunAdi = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g,' ');
+
+      // products tablosuna kaydet
+      await _supa.from('products').upsert({
+        user_id: session.user.id,
+        name: urunAdi,
+        image_url: url,
+        image_path: path
+      }, { onConflict: 'user_id,name' });
+
+      basarili++;
+    }
+
+    status.style.background = 'rgba(16,185,129,0.08)';
+    status.style.border = '1px solid rgba(16,185,129,0.2)';
+    status.style.color = '#4ade80';
+    status.textContent = '✅ ' + basarili + ' görsel yüklendi!';
+    setTimeout(function() { status.style.display = 'none'; }, 3000);
+
+    urunHavuzuYukle();
+    input.value = '';
+
+  } catch(e) {
+    status.style.background = 'rgba(239,68,68,0.08)';
+    status.style.border = '1px solid rgba(239,68,68,0.2)';
+    status.style.color = '#f87171';
+    status.textContent = '❌ ' + e.message;
+  }
+}
+
+async function urunHavuzuYukle() {
+  const grid = document.getElementById('urunHavuzuGrid');
+  if (!grid) return;
+  grid.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text3);grid-column:1/-1">⏳ Yükleniyor...</div>';
+
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) throw new Error('Giriş yapman gerekiyor');
+
+    const { data, error } = await _supa.from('products')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .order('name');
+
+    if (error) throw new Error(error.message);
+
+    if (!data || data.length === 0) {
+      grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text3);grid-column:1/-1"><div style="font-size:36px;margin-bottom:8px">🖼️</div><div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz görsel yok</div><div style="font-size:12px;margin-top:4px">Yukarıdan görsel yükle</div></div>';
+      return;
+    }
+
+    grid.innerHTML = data.map(function(p) {
+      return '<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative">' +
+        '<img src="' + p.image_url + '" style="width:100%;aspect-ratio:1;object-fit:cover;display:block" loading="lazy">' +
+        '<div style="padding:8px">' +
+        '<div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + p.name + '">' + p.name + '</div>' +
+        '</div>' +
+        '<button onclick="urunSil(\'' + p.id + '\',\'' + p.image_path + '\',this)" style="position:absolute;top:6px;right:6px;width:24px;height:24px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:#f87171;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>' +
+        '</div>';
+    }).join('');
+
+  } catch(e) {
+    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#f87171;grid-column:1/-1">❌ ' + e.message + '</div>';
+  }
+}
+
+async function urunSil(id, path, btn) {
+  if (!confirm('Bu görsel silinsin mi?')) return;
+  btn.textContent = '⏳';
+  try {
+    // Storage'dan sil
+    if (path) await _supa.storage.from('urun-gorselleri').remove([path]);
+    // DB'den sil
+    await _supa.from('products').delete().eq('id', id);
+    btn.closest('div[style*="border-radius:10px"]').remove();
+  } catch(e) {
+    alert('Silinemedi: ' + e.message);
+    btn.textContent = '✕';
+  }
+}
+
+// Kampanya tablosu yüklenince ürün havuzuyla otomatik eşleştir
+async function urunHavuzuEslestir() {
+  if (!rows || rows.length === 0) return;
+  try {
+    const { data: { session } } = await _supa.auth.getSession();
+    if (!session) return;
+    const { data } = await _supa.from('products').select('name,image_url').eq('user_id', session.user.id);
+    if (!data || data.length === 0) return;
+
+    let eslesen = 0;
+    rows.forEach(function(row, i) {
+      if (row.gorselUrl) return; // zaten görseli var
+      const urunAdi = (row.urun || row.marka || '').toLowerCase().trim();
+      const eslesme = data.find(function(p) {
+        return p.name.toLowerCase().includes(urunAdi) || urunAdi.includes(p.name.toLowerCase());
+      });
+      if (eslesme) { rows[i].gorselUrl = eslesme.image_url; eslesen++; }
+    });
+
+    if (eslesen > 0) {
+      showTable();
+      const msg = document.getElementById('sheetsStatus');
+      if (msg) { msg.style.color='#4ade80'; msg.textContent='✅ ' + eslesen + ' ürün görseli havuzdan otomatik eşleşti!'; }
+    }
+  } catch(e) { console.log('Eşleştirme hatası:', e.message); }
+}
 
 function _apiKeyKurulumGoster(settings) {
   const modal = document.getElementById('apiKeySetupModal');
