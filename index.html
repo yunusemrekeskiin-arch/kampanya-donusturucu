@@ -7635,6 +7635,16 @@ async function urunSil(id, path, btn) {
 
 async function urunHavuzuEslestir(manuel) {
   if (!rows || rows.length === 0) return;
+
+  function normalize(str) {
+    return (str || '').toLowerCase()
+      .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
+      .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
+      .replace(/Ğ/g,'g').replace(/Ü/g,'u').replace(/Ş/g,'s')
+      .replace(/İ/g,'i').replace(/Ö/g,'o').replace(/Ç/g,'c')
+      .replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();
+  }
+
   try {
     const { data: { session } } = await _supa.auth.getSession();
     if (!session) return;
@@ -7642,23 +7652,35 @@ async function urunHavuzuEslestir(manuel) {
     if (!data || data.length === 0) {
       if (manuel) {
         const msg = document.getElementById('sheetsStatus');
-        if (msg) { msg.style.color='#f97316'; msg.textContent='⚠️ Ürün havuzunda görsel yok. Sol panelden "Ürün Havuzu"na gidip görsel yükle.'; }
+        if (msg) { msg.style.color='#f97316'; msg.textContent='Urun havuzunda gorsel yok. Sol panelden Urun Havuzu na gidip gorsel yukle.'; }
       }
       return;
     }
 
+    const havuz = data.map(function(p) {
+      return { norm: normalize(p.name), url: p.image_url };
+    });
+
     let eslesen = 0;
     rows.forEach(function(row, i) {
-      const urunAdi = (row.urun || row.marka || '').toLowerCase().trim();
-      if (!urunAdi) return;
-      const eslesme = data.find(function(p) {
-        const pAd = p.name.toLowerCase().trim();
-        return pAd === urunAdi || pAd.includes(urunAdi) || urunAdi.includes(pAd);
-      });
-      if (eslesme) { 
-        rows[i].gorselUrl = eslesme.image_url; 
-        rows[i].imgUrl = eslesme.image_url;
-        eslesen++; 
+      const urunNorm = normalize((row.urun || '') + ' ' + (row.marka || ''));
+      if (!urunNorm) return;
+
+      let eslesme = havuz.find(function(p) { return p.norm === urunNorm; });
+
+      if (!eslesme) {
+        eslesme = havuz.find(function(p) {
+          const pKelimeler = p.norm.split(' ').filter(function(k) { return k.length > 2; });
+          const urunKelimeler = urunNorm.split(' ').filter(function(k) { return k.length > 2; });
+          const eslesenKelime = pKelimeler.filter(function(k) { return urunKelimeler.includes(k); });
+          return eslesenKelime.length >= Math.min(2, pKelimeler.length);
+        });
+      }
+
+      if (eslesme) {
+        rows[i].gorselUrl = eslesme.url;
+        rows[i].imgUrl = eslesme.url;
+        eslesen++;
       }
     });
 
@@ -7668,14 +7690,15 @@ async function urunHavuzuEslestir(manuel) {
     if (msg) {
       if (eslesen > 0) {
         msg.style.color = '#4ade80';
-        msg.textContent = '✅ ' + eslesen + ' / ' + rows.length + ' ürün görseli havuzdan eşleşti!';
+        msg.textContent = eslesen + ' / ' + rows.length + ' urun gorseli havuzdan eslesti!';
       } else if (manuel) {
         msg.style.color = '#f97316';
-        msg.textContent = '⚠️ Eşleşen görsel bulunamadı. Ürün adları havuzdaki dosya adlarıyla uyuşmuyor olabilir.';
+        msg.textContent = 'Eslesen gorsel bulunamadi. Havuzdaki gorsel adlarini Excel urun adlariyla benzer tut.';
       }
     }
-  } catch(e) { console.log('Eşleştirme hatası:', e.message); }
+  } catch(e) { console.log('Eslestirme hatasi:', e.message); }
 }
+
 
 function _apiKeyKurulumGoster(settings) {
   const modal = document.getElementById('apiKeySetupModal');
