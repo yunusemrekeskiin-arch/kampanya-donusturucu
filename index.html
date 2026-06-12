@@ -3791,7 +3791,20 @@ function showTable() {
   const rozetMod = document.getElementById('rozetModulu');
   if (rozetMod) rozetMod.style.display = 'block';
   // Ürün havuzundan otomatik görsel eşleştir
-  setTimeout(urunHavuzuEslestir, 500);
+  setTimeout(async function() {
+    const { data: { session } } = await _supa.auth.getSession().catch(function(){return {data:{session:null}};});
+    if (!session) return;
+    const { data } = await _supa.from('products').select('id').eq('user_id', session.user.id).limit(1);
+    const msg = document.getElementById('sheetsStatus');
+    if (!data || data.length === 0) {
+      if (msg) {
+        msg.innerHTML = '📷 Ürün Havuzu boş — görseller için <a onclick="wsGo(\'urun-havuzu\')" style="color:#a5b4fc;cursor:pointer;text-decoration:underline">Ürün Havuzuna Git →</a>';
+        msg.style.color = '#f97316';
+      }
+    } else {
+      urunHavuzuEslestir(false);
+    }
+  }, 600);
   document.dispatchEvent(new Event('kampanyaPanelAcildi'));
   // Model ve HF token yükle
   const savedModel = localStorage.getItem('rozet_model');
