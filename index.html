@@ -2355,6 +2355,79 @@ html, body { overflow-x: hidden; }
     </div>
   </aside>
   <main class="app-workspace">
+
+    <!-- DASHBOARD İÇERİĞİ -->
+    <div id="ws-dashboard" style="display:none;padding:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+        <div>
+          <div style="font-size:22px;font-weight:700;color:var(--text)" id="db-greeting">Merhaba 👋</div>
+          <div style="font-size:13px;color:var(--text3);margin-top:3px">insertmill — Kampanya Otomasyon Platformu</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem">
+        <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.15);border-radius:12px;padding:1.25rem;text-align:center">
+          <div style="font-size:28px;font-weight:700;color:#a5b4fc" id="db-kampanya-sayi">—</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px">Kampanya</div>
+        </div>
+        <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.15);border-radius:12px;padding:1.25rem;text-align:center">
+          <div style="font-size:28px;font-weight:700;color:#4ade80" id="db-urun-sayi">—</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px">Toplam Ürün</div>
+        </div>
+        <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:1.25rem;text-align:center">
+          <div style="font-size:28px;font-weight:700;color:#fbbf24" id="db-maliyet">—</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px">Bu Ay Maliyet</div>
+        </div>
+        <div style="background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.15);border-radius:12px;padding:1.25rem;text-align:center">
+          <div style="font-size:28px;font-weight:700;color:#f97316" id="db-rozet-sayi">—</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:4px">Rozet</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem">
+        <button onclick="wsGo('ana')" style="padding:1.25rem;background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(139,92,246,0.1));border:1px solid rgba(99,102,241,0.2);border-radius:12px;text-align:left;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size:24px;margin-bottom:8px">📊</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">Yeni Kampanya</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:3px">Excel yükle, tablo oluştur</div>
+        </button>
+        <button onclick="wsGo('kampanyalar')" style="padding:1.25rem;background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(5,150,105,0.1));border:1px solid rgba(16,185,129,0.2);border-radius:12px;text-align:left;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size:24px;margin-bottom:8px">📂</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">Kampanyalarım</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:3px">Kayıtlı kampanyalara git</div>
+        </button>
+        <button onclick="toggleSettings()" style="padding:1.25rem;background:linear-gradient(135deg,rgba(249,115,22,0.1),rgba(234,88,12,0.1));border:1px solid rgba(249,115,22,0.2);border-radius:12px;text-align:left;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="font-size:24px;margin-bottom:8px">⚙️</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text)">Ayarlar</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:3px">API key, firma profili</div>
+        </button>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <div style="font-size:15px;font-weight:600;color:var(--text)">Son Kampanyalar</div>
+          <button onclick="wsGo('kampanyalar')" style="font-size:12px;color:#a5b4fc;background:none;border:none;cursor:pointer;font-family:'Geist',sans-serif">Tümünü gör →</button>
+        </div>
+        <div id="db-son-kampanyalar"><div style="text-align:center;padding:2rem;color:var(--text3);font-size:13px">⏳ Yükleniyor...</div></div>
+      </div>
+    </div>
+
+    <!-- KAMPANYALAR İÇERİĞİ -->
+    <div id="ws-kampanyalar" style="display:none;padding:24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+        <div>
+          <div style="font-size:22px;font-weight:700;color:var(--text)">Kampanyalar</div>
+          <div style="font-size:13px;color:var(--text3);margin-top:2px">Kaydedilmiş kampanyalarını yönet</div>
+        </div>
+        <button onclick="wsGo('ana')" style="padding:7px 16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">+ Yeni Kampanya</button>
+      </div>
+      <div id="kampanyaListesi" style="display:flex;flex-direction:column;gap:10px">
+        <div style="text-align:center;padding:3rem;color:var(--text3)">
+          <div style="font-size:32px;margin-bottom:8px">📂</div>
+          <div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz kampanya yok</div>
+          <div style="font-size:12px;margin-top:4px">Tabloyu doldurup "Kampanyayı Kaydet" butonuna bas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANA İÇERİK -->
+    <div id="ws-ana">
 <div class="wrap">
   <div class="tabs">
     <button class="tab active" onclick="switchTab('excel')">📂 <span data-i18n="tab_excel">Excel ile Yükle</span></button>
@@ -2853,73 +2926,8 @@ html, body { overflow-x: hidden; }
   </div><!-- /excelContent -->
 
 </div>
+    </div><!-- /ws-ana -->
   </main>
-</div>
-
-<!-- ── DASHBOARD ── -->
-<div id="dashboardSayfasi" style="display:none;position:fixed;inset:0;z-index:9980;background:var(--bg);overflow-y:auto">
-  <div style="max-width:960px;margin:0 auto;padding:2rem">
-
-    <!-- Başlık -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem">
-      <div>
-        <div style="font-size:24px;font-weight:700;color:var(--text)" id="db-greeting">Merhaba 👋</div>
-        <div style="font-size:13px;color:var(--text3);margin-top:3px">insertmill — Kampanya Otomasyon Platformu</div>
-      </div>
-      <button onclick="dashboardKapat()" style="padding:7px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">← Geri</button>
-    </div>
-
-    <!-- Özet kartlar -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:2rem" id="db-stats">
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center">
-        <div style="font-size:28px;font-weight:700;color:#a5b4fc" id="db-kampanya-sayi">—</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:4px">Kampanya</div>
-      </div>
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center">
-        <div style="font-size:28px;font-weight:700;color:#4ade80" id="db-urun-sayi">—</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:4px">Toplam Ürün</div>
-      </div>
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center">
-        <div style="font-size:28px;font-weight:700;color:#fbbf24" id="db-maliyet">—</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:4px">Bu Ay Maliyet</div>
-      </div>
-      <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center">
-        <div style="font-size:28px;font-weight:700;color:#f97316" id="db-rozet-sayi">—</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:4px">Rozet</div>
-      </div>
-    </div>
-
-    <!-- Hızlı erişim -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:2rem">
-      <button onclick="dashboardKapat();switchTab('excel')" style="padding:1.25rem;background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(139,92,246,0.1));border:1px solid rgba(99,102,241,0.2);border-radius:12px;text-align:left;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-        <div style="font-size:24px;margin-bottom:8px">📊</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text)">Yeni Kampanya</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:3px">Excel yükle, tablo oluştur</div>
-      </button>
-      <button onclick="dashboardKapat();kampanyalarSayfasiAc()" style="padding:1.25rem;background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(5,150,105,0.1));border:1px solid rgba(16,185,129,0.2);border-radius:12px;text-align:left;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-        <div style="font-size:24px;margin-bottom:8px">📂</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text)">Kampanyalarım</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:3px">Kayıtlı kampanyalara git</div>
-      </button>
-      <button onclick="dashboardKapat();toggleSettings()" style="padding:1.25rem;background:linear-gradient(135deg,rgba(249,115,22,0.1),rgba(234,88,12,0.1));border:1px solid rgba(249,115,22,0.2);border-radius:12px;text-align:left;cursor:pointer;font-family:'Geist',sans-serif;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-        <div style="font-size:24px;margin-bottom:8px">⚙️</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text)">Ayarlar</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:3px">API key, firma profili</div>
-      </button>
-    </div>
-
-    <!-- Son kampanyalar -->
-    <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-        <div style="font-size:15px;font-weight:600;color:var(--text)">Son Kampanyalar</div>
-        <button onclick="dashboardKapat();kampanyalarSayfasiAc()" style="font-size:12px;color:#a5b4fc;background:none;border:none;cursor:pointer;font-family:'Geist',sans-serif">Tümünü gör →</button>
-      </div>
-      <div id="db-son-kampanyalar">
-        <div style="text-align:center;padding:2rem;color:var(--text3);font-size:13px">⏳ Yükleniyor...</div>
-      </div>
-    </div>
-
-  </div>
 </div>
 
 <!-- ── KAMPANYA KAYDET MODALI ── -->
@@ -2943,26 +2951,6 @@ html, body { overflow-x: hidden; }
         style="padding:11px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;color:var(--text3);font-size:13px;cursor:pointer;font-family:'Geist',sans-serif">
         İptal
       </button>
-    </div>
-  </div>
-</div>
-
-<!-- ── KAMPANYALAR SAYFASI ── -->
-<div id="kampanyalarSayfasi" style="display:none;position:fixed;inset:0;z-index:9980;background:var(--bg);overflow-y:auto">
-  <div style="max-width:900px;margin:0 auto;padding:2rem">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
-      <div>
-        <div style="font-size:22px;font-weight:700;color:var(--text)">Kampanyalar</div>
-        <div style="font-size:13px;color:var(--text3);margin-top:2px">Kaydedilmiş kampanyalarını yönet</div>
-      </div>
-      <button onclick="kampanyalarSayfasiKapat()" style="padding:7px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;cursor:pointer;font-family:'Geist',sans-serif">← Geri</button>
-    </div>
-    <div id="kampanyaListesi" style="display:flex;flex-direction:column;gap:10px">
-      <div style="text-align:center;padding:3rem;color:var(--text3)">
-        <div style="font-size:32px;margin-bottom:8px">📂</div>
-        <div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz kaydedilmiş kampanya yok</div>
-        <div style="font-size:12px;margin-top:4px">Ürün tablosunu doldurup "Kampanyayı Kaydet" butonuna bas</div>
-      </div>
     </div>
   </div>
 </div>
@@ -3259,22 +3247,35 @@ function appNotice(message) {
   appNotice._timer = setTimeout(() => toast.classList.remove('goster'), 2600);
 }
 
+function wsGo(section) {
+  // Tüm workspace panellerini gizle
+  ['ws-ana','ws-dashboard','ws-kampanyalar'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  if (section === 'dashboard') {
+    document.getElementById('ws-dashboard').style.display = 'block';
+    dashboardYukle();
+  } else if (section === 'kampanyalar') {
+    document.getElementById('ws-kampanyalar').style.display = 'block';
+    kampanyalarYukle();
+  } else {
+    document.getElementById('ws-ana').style.display = 'block';
+  }
+}
+
 function appGo(section) {
   setAppNavActive(section);
 
-  if (section === 'dashboard') {
-    dashboardAc();
-    return;
-  }
+  if (section === 'dashboard') { wsGo('dashboard'); return; }
+  if (section === 'kampanyalar') { wsGo('kampanyalar'); return; }
+  if (section === 'urun-havuzu') { wsGo('ana'); switchTab('excel'); return; }
 
   if (section === 'marka-profili') {
     if (typeof toggleSettings === 'function') {
       toggleSettings();
-      setTimeout(function() {
-        if (typeof switchSettingsTab === 'function') switchSettingsTab('firma');
-      }, 80);
-    } else {
-      appNotice('Marka profili ayarlari yakinda bu alana baglanacak.');
+      setTimeout(function() { if (typeof switchSettingsTab === 'function') switchSettingsTab('firma'); }, 80);
     }
     return;
   }
@@ -3284,17 +3285,7 @@ function appGo(section) {
     return;
   }
 
-  if (section === 'kampanyalar') {
-    kampanyalarSayfasiAc();
-    return;
-  }
-
-  switchTab('excel');
-  const targetMap = {
-    'urun-havuzu': '#excelContent'
-  };
-  const target = document.querySelector(targetMap[section] || '.app-workspace') || document.querySelector('.upload');
-  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  wsGo('ana');
 }
 
 window.appGo = appGo;
@@ -7429,16 +7420,11 @@ async function kampanyaSil(id, btn) {
   } catch(e) { alert('Silinemedi: ' + e.message); btn.textContent='🗑'; btn.disabled=false; }
 }
 
-function kampanyalarSayfasiAc() {
-  document.getElementById('kampanyalarSayfasi').style.display = 'block';
-  kampanyalarYukle();
-}
+function kampanyalarSayfasiAc() { wsGo('kampanyalar'); }
 
-function kampanyalarSayfasiKapat() {
-  document.getElementById('kampanyalarSayfasi').style.display = 'none';
-}
+function kampanyalarSayfasiKapat() { wsGo('ana'); }
 
-async function dashboardAc() {
+async function dashboardYukle() {
   document.getElementById('dashboardSayfasi').style.display = 'block';
 
   // Selamlama
@@ -7496,9 +7482,7 @@ async function dashboardAc() {
   }
 }
 
-function dashboardKapat() {
-  document.getElementById('dashboardSayfasi').style.display = 'none';
-}
+function dashboardKapat() { wsGo('ana'); }
 
 function _apiKeyKurulumGoster(settings) {
   const modal = document.getElementById('apiKeySetupModal');
