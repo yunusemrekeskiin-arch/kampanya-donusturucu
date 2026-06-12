@@ -7251,7 +7251,8 @@ async function updateUI(user) {
   _setAvatar(dropAvatar);
   // Kredi sistemi - localStorage'dan oku
   const credits = localStorage.getItem('afisKredisi') || '500';
-  document.getElementById('userCredits').textContent = credits + ' / 500';
+  const credEl = document.getElementById('userCredits');
+  if (credEl) credEl.textContent = credits + ' / 500';
 }
 
 window.addEventListener('load', initAuth);
@@ -7654,7 +7655,11 @@ async function urunHavuzuEslestir(manuel) {
         const pAd = p.name.toLowerCase().trim();
         return pAd === urunAdi || pAd.includes(urunAdi) || urunAdi.includes(pAd);
       });
-      if (eslesme) { rows[i].gorselUrl = eslesme.image_url; eslesen++; }
+      if (eslesme) { 
+        rows[i].gorselUrl = eslesme.image_url; 
+        rows[i].imgUrl = eslesme.image_url;
+        eslesen++; 
+      }
     });
 
     renderTable();
