@@ -7276,17 +7276,24 @@ document.addEventListener('click', (e) => {
 });
 
 async function initAuth() {
+  // onAuthStateChange ÖNCE kurulur — Google OAuth callback'ini yakalasin
+  _supa.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+      if (session) showApp(session.user);
+    } else if (event === 'SIGNED_OUT') {
+      showOnboarding();
+    }
+    // INITIAL_SESSION ve diğer event'lerde hiçbir şey yapma
+    // Google OAuth sırasındaki geçici null session showOnboarding'i tetiklemesin
+  });
+
+  // Sayfa yüklenince mevcut session'ı kontrol et
   const { data: { session } } = await _supa.auth.getSession();
   if (session) {
     showApp(session.user);
   } else {
     showOnboarding();
   }
-
-  _supa.auth.onAuthStateChange((event, session) => {
-    if (session) showApp(session.user);
-    else showOnboarding();
-  });
 }
 
 function showOnboarding() {
