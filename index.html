@@ -7672,7 +7672,11 @@ async function urunSil(id, path, btn) {
 }
 
 async function urunHavuzuEslestir(manuel) {
-  if (!rows || rows.length === 0) return;
+  if (!rows || rows.length === 0) {
+    const msg = document.getElementById('sheetsStatus');
+    if (manuel && msg) { msg.style.color='#f97316'; msg.textContent='⚠️ Önce Excel dosyasını yükle!'; }
+    return;
+  }
 
   const msg = document.getElementById('sheetsStatus');
 
