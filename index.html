@@ -2417,7 +2417,7 @@ html, body { overflow-x: hidden; }
         </div>
         <label style="display:flex;align-items:center;gap:6px;padding:9px 16px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:9px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">
           📁 Görsel Yükle
-          <input type="file" id="urunGorselInput" accept="image/*" style="display:none" onchange="urunGorselOnizle(this)">
+          <input type="file" id="urunGorselInput" accept="image/*" multiple style="display:none" onchange="urunGorselOnizle(this)">
         </label>
       </div>
 
@@ -2426,7 +2426,10 @@ html, body { overflow-x: hidden; }
         <div style="display:flex;gap:14px;align-items:flex-start">
           <img id="urunOnizlemeImg" src="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid var(--border)">
           <div style="flex:1">
-            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px">Bu ürünün adı nedir?</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <div style="font-size:13px;font-weight:600;color:var(--text)">Bu ürünün adı nedir?</div>
+              <div id="urunIsimSayac" style="font-size:11px;color:#a5b4fc;font-weight:600"></div>
+            </div>
             <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Excel'deki ürün adını buraya yaz — aynı isim olsun ki otomatik eşleşsin</div>
             <input id="urunIsimInput" type="text" placeholder="Örn: Kırcoz Banyo 750 Ml"
               style="width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);font-family:'Geist',sans-serif;outline:none;box-sizing:border-box;margin-bottom:8px"
@@ -2469,6 +2472,69 @@ html, body { overflow-x: hidden; }
           <div style="font-size:14px;font-weight:600;color:var(--text2)">Henüz kampanya yok</div>
           <div style="font-size:12px;margin-top:4px">Tabloyu doldurup "Kampanyayı Kaydet" butonuna bas</div>
         </div>
+      </div>
+    </div>
+
+    <!-- PLANLAR İÇERİĞİ -->
+    <div id="ws-planlar" style="display:none;padding:24px">
+      <div style="text-align:center;margin-bottom:2rem">
+        <div style="font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px">Planlar</div>
+        <div style="font-size:14px;color:var(--text3)">İhtiyacına göre plan seç</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:0 auto">
+
+        <!-- Ücretsiz -->
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.5rem;display:flex;flex-direction:column">
+          <div style="font-size:13px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Ücretsiz</div>
+          <div style="font-size:32px;font-weight:800;color:var(--text);margin-bottom:4px">₺0</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:1.5rem">/ ay · Sonsuza kadar</div>
+          <div style="display:flex;flex-direction:column;gap:8px;flex:1;margin-bottom:1.5rem">
+            ${['Excel kampanya yönetimi','Ürün Havuzu (50 görsel)','Kendi API key\'ini kullan','Google Sheets export','Kampanya kaydetme (5 adet)'].map(f=>`
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)">
+              <span style="color:#4ade80;flex-shrink:0">✓</span>${f}
+            </div>`).join('')}
+            ${['Figma export','Canva export','Sınırsız kampanya'].map(f=>`
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3)">
+              <span style="flex-shrink:0">✕</span>${f}
+            </div>`).join('')}
+          </div>
+          <button style="width:100%;padding:10px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:9px;color:var(--text2);font-size:13px;font-weight:600;cursor:default;font-family:'Geist',sans-serif">Mevcut Plan</button>
+        </div>
+
+        <!-- Pro -->
+        <div style="background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(139,92,246,0.1));border:1.5px solid rgba(99,102,241,0.4);border-radius:16px;padding:1.5rem;display:flex;flex-direction:column;position:relative">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap">⭐ En Popüler</div>
+          <div style="font-size:13px;font-weight:600;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Pro</div>
+          <div style="font-size:32px;font-weight:800;color:var(--text);margin-bottom:4px">₺299</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:1.5rem">/ ay</div>
+          <div style="display:flex;flex-direction:column;gap:8px;flex:1;margin-bottom:1.5rem">
+            ${['Ücretsiz\'deki her şey','Sınırsız kampanya','Sınırsız görsel havuzu','<strong style="color:#a5b4fc">Figma export</strong>','<strong style="color:#a5b4fc">Canva export</strong>','Öncelikli destek'].map(f=>`
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)">
+              <span style="color:#a5b4fc;flex-shrink:0">✓</span>${f}
+            </div>`).join('')}
+          </div>
+          <button onclick="alert('Yakında aktif olacak!')" style="width:100%;padding:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:9px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif">Yakında →</button>
+        </div>
+
+        <!-- Business -->
+        <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.5rem;display:flex;flex-direction:column">
+          <div style="font-size:13px;font-weight:600;color:#fbbf24;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Business</div>
+          <div style="font-size:32px;font-weight:800;color:var(--text);margin-bottom:4px">₺799</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:1.5rem">/ ay</div>
+          <div style="display:flex;flex-direction:column;gap:8px;flex:1;margin-bottom:1.5rem">
+            ${['Pro\'daki her şey','Sınırsız kullanıcı','Beyaz etiket (kendi logosu)','API erişimi','Özel entegrasyon desteği','Öncelikli teknik destek'].map(f=>`
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)">
+              <span style="color:#fbbf24;flex-shrink:0">✓</span>${f}
+            </div>`).join('')}
+          </div>
+          <button onclick="alert('Yakında aktif olacak!')" style="width:100%;padding:10px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:9px;color:#fbbf24;font-size:13px;font-weight:700;cursor:pointer;font-family:'Geist',sans-serif">Yakında →</button>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;margin-top:2rem;font-size:13px;color:var(--text3)">
+        Tüm planlarda kendi API key'ini kullanırsın — AI maliyeti sana aittir.
       </div>
     </div>
 
@@ -3294,7 +3360,7 @@ function appNotice(message) {
 }
 
 function wsGo(section) {
-  ['ws-ana','ws-dashboard','ws-kampanyalar','ws-urun-havuzu'].forEach(function(id) {
+  ['ws-ana','ws-dashboard','ws-kampanyalar','ws-urun-havuzu','ws-planlar'].forEach(function(id) {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -3308,6 +3374,8 @@ function wsGo(section) {
   } else if (section === 'urun-havuzu') {
     document.getElementById('ws-urun-havuzu').style.display = 'block';
     urunHavuzuYukle();
+  } else if (section === 'planlar') {
+    document.getElementById('ws-planlar').style.display = 'block';
   } else {
     document.getElementById('ws-ana').style.display = 'block';
   }
@@ -3328,10 +3396,7 @@ function appGo(section) {
     return;
   }
 
-  if (section === 'planlar') {
-    appNotice('Planlar yakinda. Uyeligi ve paketleri burada yonetecegiz.');
-    return;
-  }
+  if (section === 'planlar') { wsGo('planlar'); return; }
 
   wsGo('ana');
 }
@@ -7548,29 +7613,51 @@ function dashboardKapat() { wsGo('ana'); }
 
 // ── ÜRÜN HAVUZU ─────────────────────────────────────────────────
 let _bekleyenGorselFile = null;
+let _bekleyenGorselKuyruk = [];
 let _bekleyenGorselPath = null;
 let _bekleyenGorselUrl = null;
 
 function urunGorselOnizle(input) {
-  const file = input.files[0];
-  if (!file) return;
+  const files = Array.from(input.files);
+  if (!files.length) return;
+
+  // Kuyruğa ekle
+  _bekleyenGorselKuyruk = files;
+  input.value = '';
+  _urunGorselSiradakiGoster();
+}
+
+function _urunGorselSiradakiGoster() {
+  if (_bekleyenGorselKuyruk.length === 0) {
+    document.getElementById('urunIsimModal').style.display = 'none';
+    return;
+  }
+
+  const file = _bekleyenGorselKuyruk[0];
   _bekleyenGorselFile = file;
 
-  // Önizleme göster
+  const kalan = _bekleyenGorselKuyruk.length;
   const reader = new FileReader();
   reader.onload = function(e) {
     document.getElementById('urunOnizlemeImg').src = e.target.result;
     document.getElementById('urunIsimModal').style.display = 'block';
+
+    // Kalan görsel sayısını göster
     const isimInput = document.getElementById('urunIsimInput');
     isimInput.value = '';
+    isimInput.placeholder = kalan > 1 ? (kalan + ' görselden ' + (kalan) + '. sıra — Excel\'den ürün adını yaz') : 'Excel\'deki ürün adını yaz';
     isimInput.focus();
+
+    // Sayaç güncelle
+    const sayac = document.getElementById('urunIsimSayac');
+    if (sayac) sayac.textContent = kalan > 1 ? kalan + ' görsel kaldı' : '';
   };
   reader.readAsDataURL(file);
-  input.value = '';
 }
 
 function urunIsimIptal() {
   _bekleyenGorselFile = null;
+  _bekleyenGorselKuyruk = [];
   document.getElementById('urunIsimModal').style.display = 'none';
   document.getElementById('urunIsimInput').value = '';
 }
@@ -7620,10 +7707,14 @@ async function urunGorselKaydet() {
     status.style.border = '1px solid rgba(16,185,129,0.2)';
     status.style.color = '#4ade80';
     status.textContent = '✅ "' + isim + '" kaydedildi!';
-    setTimeout(function() { status.style.display = 'none'; }, 3000);
+    setTimeout(function() { 
+      if (_bekleyenGorselKuyruk.length === 0) status.style.display = 'none';
+    }, 2000);
 
     _bekleyenGorselFile = null;
+    _bekleyenGorselKuyruk.shift(); // Bu görseli kuyruktan çıkar
     urunHavuzuYukle();
+    _urunGorselSiradakiGoster(); // Sonraki görsele geç
 
   } catch(e) {
     status.style.background = 'rgba(239,68,68,0.08)';
@@ -7656,11 +7747,12 @@ async function urunHavuzuYukle() {
     }
 
     grid.innerHTML = data.map(function(p) {
-      return '<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative">' +
+      return '<div style="background:var(--card-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative" id="urun-card-' + p.id + '">' +
         '<img src="' + p.image_url + '" style="width:100%;aspect-ratio:1;object-fit:cover;display:block" loading="lazy">' +
         '<div style="padding:8px">' +
-        '<div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + p.name + '">' + p.name + '</div>' +
+        '<div id="urun-name-' + p.id + '" style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="' + p.name + '">' + p.name + '</div>' +
         '</div>' +
+        '<button onclick="urunIsimDuzenle(\'' + p.id + '\',\'' + p.name.replace(/'/g,"\\'") + '\')" style="position:absolute;top:6px;left:6px;width:24px;height:24px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:#a5b4fc;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center" title="İsim düzenle">✎</button>' +
         '<button onclick="urunSil(\'' + p.id + '\',\'' + p.image_path + '\',this)" style="position:absolute;top:6px;right:6px;width:24px;height:24px;background:rgba(0,0,0,0.6);border:none;border-radius:50%;color:#f87171;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>' +
         '</div>';
     }).join('');
@@ -7668,6 +7760,18 @@ async function urunHavuzuYukle() {
   } catch(e) {
     grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#f87171;grid-column:1/-1">❌ ' + e.message + '</div>';
   }
+}
+
+async function urunIsimDuzenle(id, mevcutIsim) {
+  const yeniIsim = prompt('Ürün adını düzenle:', mevcutIsim);
+  if (!yeniIsim || yeniIsim.trim() === mevcutIsim) return;
+
+  try {
+    const { error } = await _supa.from('products').update({ name: yeniIsim.trim() }).eq('id', id);
+    if (error) throw new Error(error.message);
+    const nameEl = document.getElementById('urun-name-' + id);
+    if (nameEl) { nameEl.textContent = yeniIsim.trim(); nameEl.title = yeniIsim.trim(); }
+  } catch(e) { alert('Güncellenemedi: ' + e.message); }
 }
 
 async function urunSil(id, path, btn) {
@@ -8674,6 +8778,7 @@ window.wsGo = wsGo;
 window.urunGorselOnizle = urunGorselOnizle;
 window.urunGorselKaydet = urunGorselKaydet;
 window.urunIsimIptal = urunIsimIptal;
+window.urunIsimDuzenle = urunIsimDuzenle;
 window.urunSil = urunSil;
 window.dashboardYukle = dashboardYukle;
 window._apiKeyKurulumKaydet = _apiKeyKurulumKaydet;
