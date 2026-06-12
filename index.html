@@ -2422,18 +2422,28 @@ html, body { overflow-x: hidden; }
       </div>
 
       <!-- Görsel isim giriş modali -->
+      <!-- Görsel isim giriş modali — iki sütunlu layout -->
       <div id="urunIsimModal" style="display:none;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem">
-        <div style="display:flex;gap:14px;align-items:flex-start">
-          <img id="urunOnizlemeImg" src="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid var(--border)">
-          <div style="flex:1">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-              <div style="font-size:13px;font-weight:600;color:var(--text)">Bu ürünün adı nedir?</div>
-              <div id="urunIsimSayac" style="font-size:11px;color:#a5b4fc;font-weight:600"></div>
+        <div style="display:flex;gap:16px;align-items:flex-start">
+
+          <!-- Sol: görsel + isim input -->
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:10px">
+              <img id="urunOnizlemeImg" src="" style="width:80px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid var(--border)">
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                  <div style="font-size:13px;font-weight:600;color:var(--text)">Bu ürünün adı nedir?</div>
+                  <div id="urunIsimSayac" style="font-size:11px;color:#a5b4fc;font-weight:700"></div>
+                </div>
+                <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Sağdaki listeden seç <span style="color:#a5b4fc">→</span> veya elle yaz</div>
+                <input id="urunIsimInput" type="text" placeholder="Örn: Kırcoz Banyo 750 Ml"
+                  style="width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);font-family:'Geist',sans-serif;outline:none;box-sizing:border-box;transition:border-color 0.15s"
+                  onfocus="this.style.borderColor='rgba(99,102,241,0.6)'"
+                  onblur="this.style.borderColor=''"
+                  oninput="_urunListeFiltrele(this.value)"
+                  onkeydown="if(event.key==='Enter')urunGorselKaydet()">
+              </div>
             </div>
-            <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Excel'deki ürün adını buraya yaz — aynı isim olsun ki otomatik eşleşsin</div>
-            <input id="urunIsimInput" type="text" placeholder="Örn: Kırcoz Banyo 750 Ml"
-              style="width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--text);font-family:'Geist',sans-serif;outline:none;box-sizing:border-box;margin-bottom:8px"
-              onkeydown="if(event.key==='Enter')urunGorselKaydet()">
             <div style="display:flex;gap:8px">
               <button onclick="urunGorselKaydet()" style="flex:1;padding:9px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Geist',sans-serif">
                 💾 Kaydet
@@ -2443,6 +2453,26 @@ html, body { overflow-x: hidden; }
               </button>
             </div>
           </div>
+
+          <!-- Sağ: Excel ürün listesi -->
+          <div style="width:270px;flex-shrink:0;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+            <div style="padding:8px 12px;background:rgba(99,102,241,0.06);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:11px;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.05em">📊 Excel Ürünleri</span>
+              <span id="urunListeCount" style="font-size:10px;color:var(--text3)"></span>
+            </div>
+            <div id="urunListeBosMesaj" style="display:none;padding:14px 12px;text-align:center">
+              <div style="font-size:11px;color:var(--text3);line-height:1.6">Excel henüz yüklenmedi.<br>Ana ekrandan Excel yükleyince<br>ürünler burada görünür.</div>
+            </div>
+            <div id="urunListeAramaWrap" style="padding:6px 6px 2px">
+              <input id="urunListeArama" type="text" placeholder="Ürün ara..."
+                style="width:100%;background:var(--input-bg);border:1px solid var(--input-border);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--text);font-family:'Geist',sans-serif;outline:none;box-sizing:border-box"
+                oninput="_urunListeFiltrele(this.value)">
+            </div>
+            <div id="urunListeItems" style="max-height:210px;overflow-y:auto;padding:2px 6px 6px">
+              <!-- JS ile doldurulur -->
+            </div>
+          </div>
+
         </div>
       </div>
       <div id="urunYuklemeStatus" style="display:none;margin-bottom:1rem;padding:10px 14px;border-radius:8px;font-size:13px"></div>
@@ -7650,17 +7680,92 @@ function _urunGorselSiradakiGoster() {
     document.getElementById('urunOnizlemeImg').src = e.target.result;
     document.getElementById('urunIsimModal').style.display = 'block';
 
-    // Kalan görsel sayısını göster
     const isimInput = document.getElementById('urunIsimInput');
     isimInput.value = '';
-    isimInput.placeholder = kalan > 1 ? (kalan + ' görselden ' + (kalan) + '. sıra — Excel\'den ürün adını yaz') : 'Excel\'deki ürün adını yaz';
+    isimInput.placeholder = 'Örn: Kırcoz Banyo 750 Ml';
     isimInput.focus();
 
-    // Sayaç güncelle
     const sayac = document.getElementById('urunIsimSayac');
     if (sayac) sayac.textContent = kalan > 1 ? kalan + ' görsel kaldı' : '';
+
+    // Excel ürün listesini doldur
+    _urunListeDoldur('');
   };
   reader.readAsDataURL(file);
+}
+
+function _urunListeDoldur(filtre) {
+  const items   = document.getElementById('urunListeItems');
+  const bos     = document.getElementById('urunListeBosMesaj');
+  const count   = document.getElementById('urunListeCount');
+  const araWrap = document.getElementById('urunListeAramaWrap');
+  if (!items) return;
+
+  if (!rows || rows.length === 0) {
+    items.innerHTML = '';
+    items.style.display = 'none';
+    if (araWrap) araWrap.style.display = 'none';
+    if (bos) bos.style.display = 'block';
+    if (count) count.textContent = '';
+    return;
+  }
+
+  if (bos) bos.style.display = 'none';
+  if (araWrap) araWrap.style.display = 'block';
+  items.style.display = 'block';
+
+  const q = (filtre || '').toLowerCase().trim();
+
+  const liste = rows
+    .filter(function(r) {
+      if (!q) return true;
+      return (r.marka + ' ' + r.urun).toLowerCase().includes(q);
+    })
+    .sort(function(a, b) {
+      const aVar = !!(a.imgPreview || a.imgUrl);
+      const bVar = !!(b.imgPreview || b.imgUrl);
+      if (aVar === bVar) return 0;
+      return aVar ? 1 : -1;
+    });
+
+  if (count) count.textContent = liste.length + ' / ' + rows.length;
+
+  if (liste.length === 0) {
+    items.innerHTML = '<div style="padding:12px;text-align:center;font-size:11px;color:var(--text3)">Eşleşen ürün bulunamadı</div>';
+    return;
+  }
+
+  items.innerHTML = liste.map(function(r) {
+    const tamAd = (r.marka ? r.marka + ' ' : '') + r.urun;
+    const gorselVar = !!(r.imgPreview || r.imgUrl);
+    const safeAd = tamAd.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+    if (gorselVar) {
+      return '<div style="padding:6px 8px;border-radius:7px;display:flex;align-items:center;justify-content:space-between;gap:6px;opacity:0.38">' +
+        '<div style="min-width:0;flex:1">' +
+        '<div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:line-through">' + r.urun + '</div>' +
+        (r.marka ? '<div style="font-size:10px;color:var(--text3);margin-top:1px">' + r.marka + '</div>' : '') +
+        '</div>' +
+        '<span style="font-size:9px;background:rgba(16,185,129,0.15);color:#4ade80;padding:2px 6px;border-radius:20px;flex-shrink:0;white-space:nowrap">✓ var</span>' +
+        '</div>';
+    }
+
+    return '<div onclick="document.getElementById(\'urunIsimInput\').value=\'' + safeAd + '\';" ' +
+      'style="padding:6px 8px;border-radius:7px;display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;transition:background 0.12s" ' +
+      'onmouseover="this.style.background=\'rgba(99,102,241,0.1)\'" onmouseout="this.style.background=\'\'"> ' +
+      '<div style="min-width:0;flex:1">' +
+      '<div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + r.urun + '</div>' +
+      (r.marka ? '<div style="font-size:10px;color:var(--text3);margin-top:1px">' + r.marka + '</div>' : '') +
+      '</div>' +
+      '<span style="font-size:13px;color:rgba(99,102,241,0.6);flex-shrink:0">→</span>' +
+      '</div>';
+  }).join('');
+}
+
+function _urunListeFiltrele(q) {
+  const araInput = document.getElementById('urunListeArama');
+  if (araInput) araInput.value = q || '';
+  _urunListeDoldur(q);
 }
 
 function urunIsimIptal() {
