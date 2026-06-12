@@ -3338,9 +3338,6 @@ function appGo(section) {
 
 window.appGo = appGo;
 window.appNotice = appNotice;
-window.urunHavuzuEslestir = urunHavuzuEslestir;
-window.kampanyaKaydetModal = kampanyaKaydetModal;
-window.wsGo = wsGo;
 window.setAppNavActive = setAppNavActive;
 
 document.addEventListener('click', function(event) {
@@ -8666,6 +8663,20 @@ const RozetAI      = { analiz:BadgeStudio.uret, render:function(){}, dosyaYukle:
                        dragLeave:BadgeStudio.dragLeave, drop:BadgeStudio.drop };
 const RozetManager = { render:function(){} };
 /* ── END BadgeStudio ── */
+
+// Global erişim
+window.urunHavuzuEslestir = urunHavuzuEslestir;
+window.kampanyaKaydetModal = kampanyaKaydetModal;
+window.kampanyaKaydetOnayla = kampanyaKaydetOnayla;
+window.kampanyaAc = kampanyaAc;
+window.kampanyaSil = kampanyaSil;
+window.wsGo = wsGo;
+window.urunGorselOnizle = urunGorselOnizle;
+window.urunGorselKaydet = urunGorselKaydet;
+window.urunIsimIptal = urunIsimIptal;
+window.urunSil = urunSil;
+window.dashboardYukle = dashboardYukle;
+window._apiKeyKurulumKaydet = _apiKeyKurulumKaydet;
 </script>
 </body>
 </html>
